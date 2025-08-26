@@ -1,69 +1,82 @@
-# React + TypeScript + Vite
+# CatStats 🐱
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Transform your cat into a legendary RPG character! CatStats is a personality analyzer that generates detailed character sheets for cats based on behavioral questionnaires.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Interactive Personality Quiz**: Multi-step questionnaire covering behavior, preferences, and quirks
+- **RPG-Style Character Sheets**: Complete with combat moves, environmental powers, and social skills
+- **Dynamic Stats Visualization**: Radar charts showing wisdom, cunning, agility, stealth, charisma, and resolve
+- **AI-Generated Descriptions**: Unique character abilities powered by Claude AI
+- **Beautiful Theming**: Color schemes that adapt to your cat's dominant personality traits
+- **Export Functionality**: Download character sheets as text files
 
-## Expanding the ESLint configuration
+## Quick Start
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Prerequisites
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Node.js 18+ 
+- Vercel CLI (for API functionality)
+- Anthropic API key
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### Installation
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd cat-stats
+   ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x';
-import reactDom from 'eslint-plugin-react-dom';
+3. Set up environment variables:
+   ```bash
+   # Create .env.local
+   echo "ANTHROPIC_API_KEY=your_api_key_here" > .env.local
+   
+   # Add to Vercel for development
+   vercel env add ANTHROPIC_API_KEY development
+   ```
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+4. Run the development server:
+   ```bash
+   # For full functionality with API
+   vercel dev
+   
+   # For frontend-only development
+   npm run dev
+   ```
+
+## Development
+
+### Available Scripts
+
+- `npm run dev` - Start Vite development server
+- `npm run build` - Build for production  
+- `npm run lint` - Run ESLint
+- `npm run format` - Format code with Prettier
+- `npm test` - Run Jest tests
+- `vercel dev` - Start with API functionality
+
+### Architecture
+
+- **Frontend**: React 19 + TypeScript + Vite
+- **Styling**: Tailwind CSS v4
+- **API**: Vercel Functions (serverless)
+- **AI Integration**: Anthropic Claude API
+- **Testing**: Jest + React Testing Library
+
+## Deployment
+
+Deploy to Vercel:
+
+1. Connect your repository to Vercel
+2. Set the `ANTHROPIC_API_KEY` environment variable
+3. Deploy automatically on push to main
+
+## License
+
+MIT License - see [LICENSE](LICENSE) file for details.
