@@ -3,6 +3,12 @@ export type { Theme } from './themeService';
 
 export { generateTextExport } from './exportService';
 
+export { 
+  shareCharacterSheet, 
+  downloadCharacterImage, 
+  getShareCapabilities 
+} from './shareService';
+
 export { generateCharacterData, LOADING_MESSAGES } from './api/characterApi';
 export type { CharacterGenerationResult } from './api/characterApi';
 

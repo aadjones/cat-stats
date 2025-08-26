@@ -1,7 +1,15 @@
+import { useState } from 'react';
 import type { CharacterSheet as CharacterSheetData } from '../../core/personality/types';
 import { Button } from '../UI/Button';
 import { StatsRadarChart } from './StatsRadarChart';
 import { AbilityCard } from './AbilityCard';
+import { ShareableCard } from './ShareableCard';
+import { 
+  shareCharacterSheet, 
+  downloadCharacterImage, 
+  getShareCapabilities 
+} from '../../services';
+import { isFeatureEnabled } from '../../config/featureFlags';
 
 interface Theme {
   gradient: string;
@@ -23,22 +31,79 @@ export function CharacterSheet({
   onDownload,
 }: CharacterSheetProps) {
   const { characterData, stats, petName, petPhoto } = characterSheet;
+  const [isSharing, setIsSharing] = useState(false);
+  const capabilities = getShareCapabilities();
+
+  const handleShare = async () => {
+    setIsSharing(true);
+    try {
+      const success = await shareCharacterSheet(characterSheet);
+      if (success && capabilities.hasNativeShare) {
+        // Share completed successfully via native sharing
+      } else if (success) {
+        alert(`✨ ${petName}'s character image downloaded and app link copied! Perfect for sharing anywhere.`);
+      }
+    } catch (error) {
+      console.error('Error sharing:', error);
+      alert('Sorry, there was an error sharing. Please try again.');
+    } finally {
+      setIsSharing(false);
+    }
+  };
+
+  const handleDownloadImage = async () => {
+    const success = await downloadCharacterImage(characterSheet);
+    if (success) {
+      alert(`✨ ${petName}'s shareable image downloaded!`);
+    } else {
+      alert('Sorry, there was an error creating the image. Please try again.');
+    }
+  };
 
   return (
-    <div
-      className={`min-h-screen bg-gradient-to-br ${theme.gradient} p-2 sm:p-4`}
-    >
+    <>
+      {/* Hidden shareable card for image generation */}
+      <div className="fixed -top-[9999px] -left-[9999px] pointer-events-none">
+        <ShareableCard characterSheet={characterSheet} theme={theme} />
+      </div>
+      
+      <div
+        className={`min-h-screen bg-gradient-to-br ${theme.gradient} p-2 sm:p-4`}
+      >
       <div className="w-full max-w-4xl mx-auto mb-4 sm:mb-6 flex flex-col sm:flex-row gap-2 sm:gap-4 px-2 sm:px-0">
         <Button variant="secondary" onClick={onReset} size="sm">
           ← Create Another Legend
         </Button>
         <Button
-          onClick={onDownload}
+          onClick={handleShare}
+          disabled={isSharing}
           className="flex items-center justify-center gap-2"
           size="sm"
         >
-          📄 Download Character Sheet
+          {isSharing ? '📸 Creating...' : capabilities.hasNativeShare ? '📱 Share Image' : '📸 Download & Copy Link'}
         </Button>
+        
+        {isFeatureEnabled('SHOW_SEPARATE_DOWNLOAD_BUTTON') && (
+          <Button
+            onClick={handleDownloadImage}
+            variant="secondary"
+            className="flex items-center justify-center gap-2"
+            size="sm"
+          >
+            🖼️ Download Image
+          </Button>
+        )}
+        
+        {isFeatureEnabled('ENABLE_TEXT_EXPORT') && (
+          <Button
+            onClick={onDownload}
+            variant="secondary"
+            className="flex items-center justify-center gap-2"
+            size="sm"
+          >
+            📄 Full Character Sheet
+          </Button>
+        )}
       </div>
 
       <div className="w-full max-w-4xl mx-auto px-2 sm:px-0">
@@ -166,6 +231,7 @@ export function CharacterSheet({
             )}
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

@@ -12,6 +12,7 @@ import {
   validateQuestionnaireForm,
   LOADING_MESSAGES,
 } from '../services';
+import { isFeatureEnabled } from '../config/featureFlags';
 import { QuestionnaireForm } from './Questionnaire/QuestionnaireForm';
 import { CharacterSheet } from './Results/CharacterSheet';
 import { LoadingOverlay } from './UI/LoadingOverlay';
@@ -130,14 +131,16 @@ export function PetPersonalityAnalyzer() {
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-2 sm:p-4">
         <div className="w-full max-w-2xl mx-auto px-2 sm:px-0">
           <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl sm:rounded-2xl p-4 sm:p-8 shadow-xl relative">
-            <Button
-              onClick={handleDebugMode}
-              variant="secondary"
-              size="sm"
-              className="absolute top-2 right-2 sm:top-4 sm:right-4 text-xs"
-            >
-              See Example
-            </Button>
+            {isFeatureEnabled('SHOW_DEBUG_BUTTON') && (
+              <Button
+                onClick={handleDebugMode}
+                variant="secondary"
+                size="sm"
+                className="absolute top-2 right-2 sm:top-4 sm:right-4 text-xs"
+              >
+                See Example
+              </Button>
+            )}
 
             <div className="text-center mb-6 sm:mb-8">
               <h1 className="text-2xl sm:text-4xl font-bold text-white mb-2">
