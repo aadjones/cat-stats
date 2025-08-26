@@ -1,7 +1,11 @@
-import { PetPersonalityAnalyzer } from './components/PetPersonalityAnalyzer';
+import { PetPersonalityAnalyzer, ErrorBoundary } from './components';
 
 function App() {
-  return <PetPersonalityAnalyzer />;
+  return (
+    <ErrorBoundary>
+      <PetPersonalityAnalyzer />
+    </ErrorBoundary>
+  );
 }
 
 export default App;

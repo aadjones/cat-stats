@@ -1,5 +1,5 @@
-import type { UserAnswers } from '../core/personality/types';
-import { multipleChoiceQuestions, openEndedQuestions } from '../core/personality/questions';
+import type { UserAnswers } from '../personality/types';
+import { multipleChoiceQuestions, openEndedQuestions } from '../personality/questions';
 
 export interface ValidationResult {
   isValid: boolean;

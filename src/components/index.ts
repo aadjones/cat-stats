@@ -1,6 +1,10 @@
 // UI Components
 export { Button } from './UI/Button';
 export { LoadingOverlay } from './UI/LoadingOverlay';
+export { ErrorBoundary } from './ErrorBoundary';
+
+// Main Components
+export { PetPersonalityAnalyzer } from './PetPersonalityAnalyzer';
 
 // Questionnaire Components  
 export { MultipleChoiceQuestion } from './Questionnaire/MultipleChoiceQuestion';

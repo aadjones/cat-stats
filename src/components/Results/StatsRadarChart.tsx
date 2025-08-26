@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import type { PetStats } from '../../core/personality/types';
-import { drawRadarChart } from '../../utils/canvasUtils';
+import { drawRadarChart } from './canvasUtils';
 
 interface Theme {
   accentRgb: string;

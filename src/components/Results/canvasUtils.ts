@@ -1,4 +1,4 @@
-import type { PetStats } from '../core/personality/types';
+import type { PetStats } from '../../core/personality/types';
 
 interface Theme {
   accentRgb: string;

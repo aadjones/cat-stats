@@ -5,10 +5,11 @@ export { generateTextExport } from './exportService';
 
 export {
   generateCharacterData,
-  createDebugCharacterData,
   LOADING_MESSAGES,
-} from './characterService';
-export type { CharacterGenerationResult } from './characterService';
+} from './api/characterApi';
+export type { CharacterGenerationResult } from './api/characterApi';
 
-export { validateQuestionnaireForm } from '../utils/validation';
-export type { ValidationResult } from '../utils/validation';
+export { createDebugCharacterData } from './factories/mockCharacterFactory';
+
+export { validateQuestionnaireForm } from '../core/validation';
+export type { ValidationResult } from '../core/validation';
