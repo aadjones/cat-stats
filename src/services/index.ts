@@ -3,10 +3,7 @@ export type { Theme } from './themeService';
 
 export { generateTextExport } from './exportService';
 
-export {
-  generateCharacterData,
-  LOADING_MESSAGES,
-} from './api/characterApi';
+export { generateCharacterData, LOADING_MESSAGES } from './api/characterApi';
 export type { CharacterGenerationResult } from './api/characterApi';
 
 export { createDebugCharacterData } from './factories/mockCharacterFactory';

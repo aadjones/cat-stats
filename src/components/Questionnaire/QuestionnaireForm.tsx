@@ -1,28 +1,42 @@
 import { useState } from 'react';
 import type { UserAnswers } from '../../core/personality/types';
-import { multipleChoiceQuestions, openEndedQuestions } from '../../core/personality/questions';
+import {
+  multipleChoiceQuestions,
+  openEndedQuestions,
+} from '../../core/personality/questions';
 import { Button } from '../UI/Button';
 import { MultipleChoiceQuestion } from './MultipleChoiceQuestion';
 import { OpenEndedQuestion } from './OpenEndedQuestion';
+import { PhotoUpload } from '../UI/PhotoUpload';
 
 interface QuestionnaireFormProps {
-  onSubmit: (petName: string, answers: UserAnswers) => void;
+  onSubmit: (
+    petName: string,
+    answers: UserAnswers,
+    petPhoto?: string | null
+  ) => void;
   loading?: boolean;
 }
 
-export function QuestionnaireForm({ onSubmit, loading = false }: QuestionnaireFormProps) {
+export function QuestionnaireForm({
+  onSubmit,
+  loading = false,
+}: QuestionnaireFormProps) {
   const [petName, setPetName] = useState('');
   const [answers, setAnswers] = useState<UserAnswers>({});
+  const [petPhoto, setPetPhoto] = useState<string | null>(null);
 
   const handleAnswerChange = (questionId: string, value: string) => {
-    setAnswers(prev => ({
+    setAnswers((prev) => ({
       ...prev,
       [questionId]: value,
     }));
   };
 
   const handleSubmit = () => {
-    const requiredMCQuestions = multipleChoiceQuestions.every((q) => answers[q.id]);
+    const requiredMCQuestions = multipleChoiceQuestions.every(
+      (q) => answers[q.id]
+    );
     const requiredOpenEnded = openEndedQuestions.every((q) =>
       answers[q.id]?.trim()
     );
@@ -43,7 +57,7 @@ export function QuestionnaireForm({ onSubmit, loading = false }: QuestionnaireFo
       return;
     }
 
-    onSubmit(petName, answers);
+    onSubmit(petName, answers, petPhoto);
   };
 
   return (
@@ -58,9 +72,13 @@ export function QuestionnaireForm({ onSubmit, loading = false }: QuestionnaireFo
             value={petName}
             onChange={(e) => setPetName(e.target.value)}
             className="w-full bg-white/10 border border-white/30 rounded-lg px-3 sm:px-4 py-3 sm:py-2 text-white placeholder-white/50 focus:bg-white/20 focus:border-white/50 transition-colors text-base sm:text-sm min-h-[44px] sm:min-h-0"
-            placeholder="e.g., Fluffy"
+            placeholder="e.g., Dr. Mittens"
           />
         </div>
+      </div>
+
+      <div className="mb-6 sm:mb-8">
+        <PhotoUpload onPhotoChange={setPetPhoto} currentPhoto={petPhoto} />
       </div>
 
       {multipleChoiceQuestions.map((question, qIndex) => (
@@ -103,7 +121,7 @@ export function QuestionnaireForm({ onSubmit, loading = false }: QuestionnaireFo
         className="w-full"
         size="lg"
       >
-        {loading ? 'Creating Your Legend...' : 'Create Cat Legend'}
+        {loading ? 'Creating Your Legend...' : 'Create Pet Legend'}
       </Button>
     </div>
   );

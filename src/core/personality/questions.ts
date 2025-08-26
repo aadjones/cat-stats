@@ -3,33 +3,33 @@ import type { Question, OpenEndedQuestion } from './types';
 export const multipleChoiceQuestions: Question[] = [
   {
     id: 'meeting_people',
-    question: 'When your pet meets a new person, they typically...',
+    question: 'When meeting a new person, your pet typically...',
     options: [
       {
         value: 'A',
-        text: 'Immediately runs up with a toy or starts showing off',
+        text: 'Runs up with a toy or starts showing off',
         stats: { charisma: 25, boldness: 10 },
       },
       {
         value: 'B',
-        text: "Approaches slowly, sniffs cautiously, then decides if they're worthy",
+        text: 'Approaches slowly, sniffs cautiously, then decides if the human is worthy',
         stats: { wisdom: 15, cunning: 10 },
       },
       {
         value: 'C',
-        text: 'Watches from a safe distance until they prove themselves',
+        text: 'Watches from a safe distance until the human proves itself',
         stats: { stealth: 20, wisdom: 15 },
       },
       {
         value: 'D',
-        text: 'Hides completely until the person leaves',
+        text: 'Hides completely until the human leaves',
         stats: { charisma: -10, stealth: 25 },
       },
     ],
   },
   {
     id: 'problem_solving',
-    question: "Your pet's problem-solving approach is...",
+    question: "Your pet's problem-solving approach is to...",
     options: [
       {
         value: 'A',

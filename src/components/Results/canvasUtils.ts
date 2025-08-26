@@ -16,11 +16,11 @@ export function drawRadarChart(
   // Set up high DPI scaling
   const dpr = window.devicePixelRatio || 1;
   const rect = { width: canvas.width, height: canvas.height };
-  
+
   canvas.width = rect.width * dpr;
   canvas.height = rect.height * dpr;
   ctx.scale(dpr, dpr);
-  
+
   canvas.style.width = rect.width + 'px';
   canvas.style.height = rect.height + 'px';
 
@@ -57,7 +57,7 @@ export function drawRadarChart(
   for (let i = 1; i <= 5; i++) {
     ctx.beginPath();
     ctx.arc(centerX, centerY, (radius * i) / 5, 0, 2 * Math.PI);
-    
+
     // Major grid lines (every 50 points) are brighter
     if (i % 2 === 1) {
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
@@ -126,7 +126,7 @@ export function drawRadarChart(
     ctx.beginPath();
     ctx.arc(x, y, 6, 0, 2 * Math.PI);
     ctx.fill();
-    
+
     // Inner highlight
     ctx.shadowBlur = 0;
     ctx.fillStyle = '#FFFFFF';
@@ -142,23 +142,23 @@ export function drawRadarChart(
     const labelX = centerX + Math.cos(angle) * labelDistance;
     const labelY = centerY + Math.sin(angle) * labelDistance;
     const text = `${statLabels[i]} (${statValues[i]})`;
-    
+
     // Responsive font size
     const fontSize = Math.max(10, Math.min(12, rect.width * 0.035));
     ctx.font = `bold ${fontSize}px system-ui, sans-serif`;
     const textMetrics = ctx.measureText(text);
     const textWidth = textMetrics.width;
-    
+
     // Clamp positions to stay within canvas bounds
     const margin = Math.max(5, rect.width * 0.02);
     const minX = textWidth / 2 + margin;
     const maxX = rect.width - textWidth / 2 - margin;
     const minY = fontSize + margin;
     const maxY = rect.height - fontSize - margin;
-    
+
     const clampedX = Math.max(minX, Math.min(maxX, labelX));
     const clampedY = Math.max(minY, Math.min(maxY, labelY));
-    
+
     // Semi-transparent background with rounded corners effect
     ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
     const padding = Math.max(3, rect.width * 0.01);
@@ -168,7 +168,7 @@ export function drawRadarChart(
       textWidth + padding * 2,
       fontSize + padding * 2
     );
-    
+
     // High-contrast text
     ctx.fillStyle = '#FFFFFF';
     ctx.textAlign = 'center';

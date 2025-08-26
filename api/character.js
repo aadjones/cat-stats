@@ -5,9 +5,9 @@ export default async function handler(req, res) {
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    return res.status(500).json({ 
+    return res.status(500).json({
       error: 'API key not configured',
-      debug: 'Environment variable ANTHROPIC_API_KEY not found'
+      debug: 'Environment variable ANTHROPIC_API_KEY not found',
     });
   }
 
@@ -23,7 +23,7 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
-    
+
     if (!response.ok) {
       return res.status(response.status).json(data);
     }

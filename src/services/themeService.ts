@@ -6,7 +6,10 @@ export interface Theme {
   accentRgb: string;
 }
 
-type StatName = keyof Pick<PetStats, 'wisdom' | 'cunning' | 'agility' | 'stealth' | 'charisma' | 'resolve'>;
+type StatName = keyof Pick<
+  PetStats,
+  'wisdom' | 'cunning' | 'agility' | 'stealth' | 'charisma' | 'resolve'
+>;
 
 const THEMES: Record<StatName, Theme> = {
   wisdom: {

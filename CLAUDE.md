@@ -15,30 +15,40 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 When something isn't working, **STOP FLAILING** and become systematic:
 
 ### 1. State Your Theory
+
 Form a specific, testable hypothesis about the root cause:
+
 - "I think X is happening because of Y"
 - "The symptom suggests Z might be broken"
 
 ### 2. Design a Minimal Test
+
 Create the simplest possible test to prove/disprove your theory:
+
 - Isolate one variable at a time
 - Remove all unnecessary complexity
 - Make the test outcome binary (works/doesn't work)
 
 ### 3. Collect Evidence
+
 Look at actual data, not assumptions:
+
 - Browser DevTools (Network, Console, Elements)
 - Build outputs and error messages
 - File contents and configurations
 
 ### 4. Test Systematically
+
 Run tests in logical order:
+
 - Start with the most likely cause
 - Test one thing at a time
 - Document what you tried and the results
 
 ### 5. Form New Theory
+
 Based on evidence, either:
+
 - Confirm your theory and fix the root cause
 - Reject your theory and form a new one
 - Discover the issue was elsewhere entirely
@@ -50,10 +60,12 @@ Based on evidence, either:
 **SYMPTOM**: CSS file extremely small (~3kB), no color classes like `bg-red-500` generated, styling looks broken.
 
 **ROOT CAUSE**: Tailwind CSS v4 completely changed the import syntax:
-- ❌ **OLD (v3)**: `@tailwind base; @tailwind components; @tailwind utilities;`  
+
+- ❌ **OLD (v3)**: `@tailwind base; @tailwind components; @tailwind utilities;`
 - ✅ **NEW (v4)**: `@import "tailwindcss";`
 
-**SOLUTION**: 
+**SOLUTION**:
+
 1. Update `src/index.css` to use `@import "tailwindcss";`
 2. Remove conflicting Vite default CSS that overrides Tailwind
 3. Install `@tailwindcss/postcss` plugin for PostCSS processing
@@ -65,10 +77,12 @@ Based on evidence, either:
 **SYMPTOM**: `FUNCTION_INVOCATION_FAILED` errors, APIs returning HTML instead of JSON.
 
 **ROOT CAUSE**: Vercel now requires plain JavaScript files for API functions, not TypeScript.
+
 - ❌ `api/character.ts` - Causes function invocation failures
 - ✅ `api/character.js` - Works correctly
 
 **SOLUTION**:
+
 1. Convert all `api/*.ts` files to `api/*.js` files
 2. Remove TypeScript imports (e.g., `import type { VercelRequest, VercelResponse }`)
 3. Use simple ES6 exports: `export default async function handler(req, res) {}`
@@ -113,7 +127,9 @@ Write **focused unit tests for core analysis logic only**. Follow these principl
 - **Test files use `.test.ts` or `.spec.ts` suffix**
 
 ## Pre-commit Requirements
+
 Before committing to git, ensure:
+
 - **Tests pass**: `npm test` shows all green
 - **Code is formatted**: `npm run format` to auto-format all files
 - **Linting passes**: `npm run lint` with zero errors or warnings
@@ -155,10 +171,11 @@ This is a React + TypeScript + Vite application called "CatStats" - a pet person
 The app uses Vercel Functions to proxy API calls to Anthropic Claude API:
 
 - **Development**: `vercel dev` (requires Vercel CLI + `.env.local` with `ANTHROPIC_API_KEY`)
-- **Production**: Deploy to Vercel and set `ANTHROPIC_API_KEY` environment variable  
+- **Production**: Deploy to Vercel and set `ANTHROPIC_API_KEY` environment variable
 - **API endpoint**: `/api/character` (proxies to `https://api.anthropic.com/v1/messages`)
 
 ### Development Setup
+
 1. Install Vercel CLI: `npm install -g vercel`
 2. Create `.env.local`: `ANTHROPIC_API_KEY=your_api_key_here`
 3. Run locally: `vercel dev` instead of `npm run dev`

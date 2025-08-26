@@ -22,7 +22,10 @@ export function calculatePetStats(answers: UserAnswers): PetStats {
     if (!selectedOption?.stats) return;
 
     Object.entries(selectedOption.stats).forEach(([stat, value]) => {
-      if (typeof value === 'number' && Object.prototype.hasOwnProperty.call(stats, stat)) {
+      if (
+        typeof value === 'number' &&
+        Object.prototype.hasOwnProperty.call(stats, stat)
+      ) {
         const statKey = stat as keyof PetStats;
         stats[statKey] = Math.max(0, Math.min(100, stats[statKey] + value));
       }

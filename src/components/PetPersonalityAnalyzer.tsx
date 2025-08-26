@@ -1,13 +1,16 @@
 import { useState } from 'react';
-import type { UserAnswers, CharacterSheet as CharacterSheetData } from '../core/personality/types';
+import type {
+  UserAnswers,
+  CharacterSheet as CharacterSheetData,
+} from '../core/personality/types';
 import { calculatePetStats } from '../core/personality/statsCalculator';
-import { 
-  generateCharacterData, 
+import {
+  generateCharacterData,
   createDebugCharacterData,
   getColorTheme,
   generateTextExport,
   validateQuestionnaireForm,
-  LOADING_MESSAGES
+  LOADING_MESSAGES,
 } from '../services';
 import { QuestionnaireForm } from './Questionnaire/QuestionnaireForm';
 import { CharacterSheet } from './Results/CharacterSheet';
@@ -18,11 +21,16 @@ type AppStep = 'questionnaire' | 'result';
 
 export function PetPersonalityAnalyzer() {
   const [currentStep, setCurrentStep] = useState<AppStep>('questionnaire');
-  const [characterSheet, setCharacterSheet] = useState<CharacterSheetData | null>(null);
+  const [characterSheet, setCharacterSheet] =
+    useState<CharacterSheetData | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('');
 
-  const handleFormSubmit = async (petName: string, answers: UserAnswers) => {
+  const handleFormSubmit = async (
+    petName: string,
+    answers: UserAnswers,
+    petPhoto?: string | null
+  ) => {
     const validation = validateQuestionnaireForm(petName, answers);
     if (!validation.isValid) {
       alert(validation.errorMessage);
@@ -34,7 +42,7 @@ export function PetPersonalityAnalyzer() {
 
     // Cycle through loading messages
     const messageInterval = setInterval(() => {
-      setLoadingMessage(prev => {
+      setLoadingMessage((prev) => {
         const currentIndex = LOADING_MESSAGES.indexOf(prev);
         const nextIndex = (currentIndex + 1) % LOADING_MESSAGES.length;
         return LOADING_MESSAGES[nextIndex];
@@ -44,14 +52,15 @@ export function PetPersonalityAnalyzer() {
     try {
       const stats = calculatePetStats(answers);
       const result = await generateCharacterData(petName, answers);
-      
+
       if (result.success && result.characterData) {
         const newCharacterSheet: CharacterSheetData = {
           characterData: result.characterData,
           stats,
           petName,
+          petPhoto,
         };
-        
+
         setCharacterSheet(newCharacterSheet);
         setCurrentStep('result');
       } else {
@@ -59,7 +68,9 @@ export function PetPersonalityAnalyzer() {
       }
     } catch (error) {
       console.error('Error generating character sheet:', error);
-      alert('Sorry, there was an error generating your pet\'s character sheet. Please try again.');
+      alert(
+        "Sorry, there was an error generating your pet's character sheet. Please try again."
+      );
     } finally {
       setLoading(false);
       setLoadingMessage('');
@@ -82,6 +93,7 @@ export function PetPersonalityAnalyzer() {
       characterData: createDebugCharacterData(),
       stats: debugStats,
       petName: 'Sente',
+      petPhoto: '/images/sente.jpg',
     };
 
     setCharacterSheet(debugCharacterSheet);
@@ -101,7 +113,7 @@ export function PetPersonalityAnalyzer() {
 
   if (currentStep === 'result' && characterSheet) {
     const theme = getColorTheme(characterSheet.stats);
-    
+
     return (
       <CharacterSheet
         characterSheet={characterSheet}
@@ -124,12 +136,16 @@ export function PetPersonalityAnalyzer() {
               size="sm"
               className="absolute top-2 right-2 sm:top-4 sm:right-4 text-xs"
             >
-              Debug
+              See Example
             </Button>
 
             <div className="text-center mb-6 sm:mb-8">
-              <h1 className="text-2xl sm:text-4xl font-bold text-white mb-2">CatStats</h1>
-              <p className="text-sm sm:text-base text-white/80">Turn your cat into a legend!</p>
+              <h1 className="text-2xl sm:text-4xl font-bold text-white mb-2">
+                CatStats
+              </h1>
+              <p className="text-sm sm:text-base text-white/80">
+                Turn your pet into a legend!
+              </p>
             </div>
 
             <QuestionnaireForm onSubmit={handleFormSubmit} loading={loading} />

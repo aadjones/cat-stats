@@ -120,23 +120,23 @@ Create videogame-style abilities based on the pet's behaviors. Make ability name
     });
 
     const data = await response.json();
-    
+
     if (!response.ok) {
       console.error('API Error Response:', data);
-      return { 
-        success: false, 
-        error: data.error?.message || `API Error: ${response.status}` 
+      return {
+        success: false,
+        error: data.error?.message || `API Error: ${response.status}`,
       };
     }
-    
+
     if (!data.content || !data.content[0]) {
       console.error('Unexpected API Response:', data);
-      return { 
-        success: false, 
-        error: 'Invalid API response format' 
+      return {
+        success: false,
+        error: 'Invalid API response format',
       };
     }
-    
+
     let jsonContent = data.content[0].text;
 
     jsonContent = jsonContent
@@ -154,7 +154,8 @@ Create videogame-style abilities based on the pet's behaviors. Make ability name
     console.error('Error generating character sheet:', error);
     return {
       success: false,
-      error: "Sorry, there was an error generating your pet's character sheet. Please try again.",
+      error:
+        "Sorry, there was an error generating your pet's character sheet. Please try again.",
     };
   }
 }

@@ -40,7 +40,9 @@ export function MultipleChoiceQuestion({
                 <div className="w-2.5 h-2.5 sm:w-2 sm:h-2 rounded-full bg-white"></div>
               )}
             </div>
-            <span className="text-white/90 text-sm sm:text-sm leading-relaxed">{option.text}</span>
+            <span className="text-white/90 text-sm sm:text-sm leading-relaxed">
+              {option.text}
+            </span>
           </div>
         ))}
       </div>

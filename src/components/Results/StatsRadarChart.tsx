@@ -25,12 +25,12 @@ export function StatsRadarChart({ stats, theme }: StatsRadarChartProps) {
 
       const rect = container.getBoundingClientRect();
       const size = Math.min(rect.width, 350); // Max 350px, but responsive
-      
+
       canvas.width = size;
       canvas.height = size;
       canvas.style.width = size + 'px';
       canvas.style.height = size + 'px';
-      
+
       drawRadarChart(canvas, stats, theme);
     };
 
@@ -46,10 +46,7 @@ export function StatsRadarChart({ stats, theme }: StatsRadarChartProps) {
         Core Attributes
       </h3>
       <div className="flex justify-center w-full max-w-[280px] sm:max-w-[350px] mx-auto">
-        <canvas
-          ref={canvasRef}
-          className="max-w-full h-auto"
-        />
+        <canvas ref={canvasRef} className="max-w-full h-auto" />
       </div>
     </div>
   );

@@ -64,4 +64,5 @@ export interface CharacterSheet {
   characterData: CharacterData;
   stats: PetStats;
   petName: string;
+  petPhoto?: string | null;
 }

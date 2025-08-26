@@ -1,5 +1,8 @@
 import type { UserAnswers } from '../personality/types';
-import { multipleChoiceQuestions, openEndedQuestions } from '../personality/questions';
+import {
+  multipleChoiceQuestions,
+  openEndedQuestions,
+} from '../personality/questions';
 
 export interface ValidationResult {
   isValid: boolean;
@@ -17,7 +20,9 @@ export function validateQuestionnaireForm(
     };
   }
 
-  const requiredMCQuestions = multipleChoiceQuestions.every((q) => answers[q.id]);
+  const requiredMCQuestions = multipleChoiceQuestions.every(
+    (q) => answers[q.id]
+  );
   if (!requiredMCQuestions) {
     return {
       isValid: false,

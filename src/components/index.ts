@@ -1,12 +1,13 @@
 // UI Components
 export { Button } from './UI/Button';
 export { LoadingOverlay } from './UI/LoadingOverlay';
+export { PhotoUpload } from './UI/PhotoUpload';
 export { ErrorBoundary } from './ErrorBoundary';
 
 // Main Components
 export { PetPersonalityAnalyzer } from './PetPersonalityAnalyzer';
 
-// Questionnaire Components  
+// Questionnaire Components
 export { MultipleChoiceQuestion } from './Questionnaire/MultipleChoiceQuestion';
 export { OpenEndedQuestion } from './Questionnaire/OpenEndedQuestion';
 export { QuestionnaireForm } from './Questionnaire/QuestionnaireForm';
