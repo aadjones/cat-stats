@@ -1,6 +1,6 @@
 # CatStats 🐈‍⬛
 
-Transform your pet into a legendary RPG character! CatStats is a personality analyzer that generates detailed character sheets for cats based on behavioral questionnaires.
+Transform your pet into a legendary RPG character! CatStats is a personality analyzer that generates detailed character sheets for pets based on behavioral questionnaires.
 
 ## Features
 
@@ -24,7 +24,7 @@ Transform your pet into a legendary RPG character! CatStats is a personality ana
 1. Clone the repository:
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/aadjones/cat-stats
    cd cat-stats
    ```
 
