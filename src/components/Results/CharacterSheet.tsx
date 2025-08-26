@@ -25,34 +25,36 @@ export function CharacterSheet({
   const { characterData, stats, petName } = characterSheet;
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br ${theme.gradient} p-4`}>
-      <div className="max-w-4xl mx-auto mb-6 flex gap-4">
-        <Button variant="secondary" onClick={onReset}>
+    <div className={`min-h-screen bg-gradient-to-br ${theme.gradient} p-2 sm:p-4`}>
+      <div className="w-full max-w-4xl mx-auto mb-4 sm:mb-6 flex flex-col sm:flex-row gap-2 sm:gap-4 px-2 sm:px-0">
+        <Button variant="secondary" onClick={onReset} size="sm">
           ← Create Another Legend
         </Button>
         <Button
           onClick={onDownload}
-          className="flex items-center gap-2"
+          className="flex items-center justify-center gap-2"
+          size="sm"
         >
           📄 Download Character Sheet
         </Button>
       </div>
 
-      <div className="max-w-4xl mx-auto bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 shadow-xl">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">
+      <div className="w-full max-w-4xl mx-auto px-2 sm:px-0">
+        <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl sm:rounded-2xl p-4 sm:p-8 shadow-xl">
+        <div className="text-center mb-4 sm:mb-8">
+          <h1 className="text-2xl sm:text-4xl font-bold text-white mb-2">
             {petName.toUpperCase()}
           </h1>
-          <p className="text-white/80 text-xl">{characterData.archetype}</p>
+          <p className="text-white/80 text-lg sm:text-xl">{characterData.archetype}</p>
         </div>
 
-        <div className="mb-8">
+        <div className="mb-4 sm:mb-8">
           <StatsRadarChart stats={stats} theme={theme} />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-white/10 backdrop-blur-md border border-white/30 rounded-lg p-6">
-            <h3 className="text-white font-bold text-lg mb-4">Combat Moves</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-8">
+          <div className="bg-white/10 backdrop-blur-md border border-white/30 rounded-lg p-4 sm:p-6">
+            <h3 className="text-white font-bold text-base sm:text-lg mb-3 sm:mb-4">Combat Moves</h3>
             {characterData.combatMoves.map((ability, index) => (
               <AbilityCard
                 key={index}
@@ -62,8 +64,8 @@ export function CharacterSheet({
             ))}
           </div>
 
-          <div className="bg-white/10 backdrop-blur-md border border-white/30 rounded-lg p-6">
-            <h3 className="text-white font-bold text-lg mb-4">
+          <div className="bg-white/10 backdrop-blur-md border border-white/30 rounded-lg p-4 sm:p-6">
+            <h3 className="text-white font-bold text-base sm:text-lg mb-3 sm:mb-4">
               Environmental Powers
             </h3>
             {characterData.environmentalPowers.map((ability, index) => (
@@ -75,8 +77,8 @@ export function CharacterSheet({
             ))}
           </div>
 
-          <div className="bg-white/10 backdrop-blur-md border border-white/30 rounded-lg p-6">
-            <h3 className="text-white font-bold text-lg mb-4">Social Skills</h3>
+          <div className="bg-white/10 backdrop-blur-md border border-white/30 rounded-lg p-4 sm:p-6">
+            <h3 className="text-white font-bold text-base sm:text-lg mb-3 sm:mb-4">Social Skills</h3>
             {characterData.socialSkills.map((ability, index) => (
               <AbilityCard
                 key={index}
@@ -86,8 +88,8 @@ export function CharacterSheet({
             ))}
           </div>
 
-          <div className="bg-white/10 backdrop-blur-md border border-white/30 rounded-lg p-6">
-            <h3 className="text-white font-bold text-lg mb-4">Passive Traits</h3>
+          <div className="bg-white/10 backdrop-blur-md border border-white/30 rounded-lg p-4 sm:p-6">
+            <h3 className="text-white font-bold text-base sm:text-lg mb-3 sm:mb-4">Passive Traits</h3>
             {characterData.passiveTraits.map((ability, index) => (
               <AbilityCard
                 key={index}
@@ -98,8 +100,8 @@ export function CharacterSheet({
           </div>
         </div>
 
-        <div className="bg-red-500/20 backdrop-blur-md border border-red-500/30 rounded-lg p-6 mb-6">
-          <h3 className="text-red-300 font-bold text-lg mb-2">
+        <div className="bg-red-500/20 backdrop-blur-md border border-red-500/30 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
+          <h3 className="text-red-300 font-bold text-base sm:text-lg mb-2">
             ⚠️ Critical Vulnerability
           </h3>
           <div className="text-white">
@@ -109,8 +111,8 @@ export function CharacterSheet({
         </div>
 
         {characterData.timeModifiers && characterData.timeModifiers.length > 0 && (
-          <div className="bg-white/10 backdrop-blur-md border border-white/30 rounded-lg p-6">
-            <h3 className="text-white font-bold text-lg mb-4">
+          <div className="bg-white/10 backdrop-blur-md border border-white/30 rounded-lg p-4 sm:p-6">
+            <h3 className="text-white font-bold text-base sm:text-lg mb-3 sm:mb-4">
               Situational Modifiers
             </h3>
             {characterData.timeModifiers.map((modifier, index) => (
@@ -121,6 +123,7 @@ export function CharacterSheet({
             ))}
           </div>
         )}
+        </div>
       </div>
     </div>
   );

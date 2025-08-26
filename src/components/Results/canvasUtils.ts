@@ -13,9 +13,20 @@ export function drawRadarChart(
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
-  const centerX = canvas.width / 2;
-  const centerY = canvas.height / 2;
-  const radius = 100; // Reduced to leave more space for labels
+  // Set up high DPI scaling
+  const dpr = window.devicePixelRatio || 1;
+  const rect = { width: canvas.width, height: canvas.height };
+  
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.scale(dpr, dpr);
+  
+  canvas.style.width = rect.width + 'px';
+  canvas.style.height = rect.height + 'px';
+
+  const centerX = rect.width / 2;
+  const centerY = rect.height / 2;
+  const radius = Math.min(rect.width, rect.height) * 0.28; // Responsive radius
 
   const statLabels = [
     'Wisdom',
@@ -127,32 +138,35 @@ export function drawRadarChart(
   // CONTRAST SYSTEM: High-contrast labels with background, positioned to fit canvas
   for (let i = 0; i < statLabels.length; i++) {
     const angle = (i * 2 * Math.PI) / statLabels.length - Math.PI / 2;
-    const labelDistance = radius + 30; // Reduced distance to fit in canvas
+    const labelDistance = radius + Math.max(25, rect.width * 0.08); // Responsive label distance
     const labelX = centerX + Math.cos(angle) * labelDistance;
     const labelY = centerY + Math.sin(angle) * labelDistance;
     const text = `${statLabels[i]} (${statValues[i]})`;
     
-    // Measure text for background
-    ctx.font = 'bold 12px system-ui, sans-serif'; // Slightly smaller font
+    // Responsive font size
+    const fontSize = Math.max(10, Math.min(12, rect.width * 0.035));
+    ctx.font = `bold ${fontSize}px system-ui, sans-serif`;
     const textMetrics = ctx.measureText(text);
     const textWidth = textMetrics.width;
     
     // Clamp positions to stay within canvas bounds
-    const minX = textWidth / 2 + 5;
-    const maxX = canvas.width - textWidth / 2 - 5;
-    const minY = 15;
-    const maxY = canvas.height - 15;
+    const margin = Math.max(5, rect.width * 0.02);
+    const minX = textWidth / 2 + margin;
+    const maxX = rect.width - textWidth / 2 - margin;
+    const minY = fontSize + margin;
+    const maxY = rect.height - fontSize - margin;
     
     const clampedX = Math.max(minX, Math.min(maxX, labelX));
     const clampedY = Math.max(minY, Math.min(maxY, labelY));
     
     // Semi-transparent background with rounded corners effect
     ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+    const padding = Math.max(3, rect.width * 0.01);
     ctx.fillRect(
-      clampedX - textWidth / 2 - 4,
-      clampedY - 8,
-      textWidth + 8,
-      16
+      clampedX - textWidth / 2 - padding,
+      clampedY - fontSize / 2 - padding,
+      textWidth + padding * 2,
+      fontSize + padding * 2
     );
     
     // High-contrast text

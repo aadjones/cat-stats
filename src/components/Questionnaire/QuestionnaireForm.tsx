@@ -47,17 +47,17 @@ export function QuestionnaireForm({ onSubmit, loading = false }: QuestionnaireFo
   };
 
   return (
-    <div className="space-y-6">
-      <div className="mb-8">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="mb-6 sm:mb-8">
         <div>
-          <label className="block text-white font-semibold mb-2">
+          <label className="block text-white font-semibold mb-2 text-sm sm:text-base">
             Pet Name
           </label>
           <input
             type="text"
             value={petName}
             onChange={(e) => setPetName(e.target.value)}
-            className="w-full bg-white/10 border border-white/30 rounded-lg px-4 py-2 text-white placeholder-white/50 focus:bg-white/20 focus:border-white/50 transition-colors"
+            className="w-full bg-white/10 border border-white/30 rounded-lg px-3 sm:px-4 py-3 sm:py-2 text-white placeholder-white/50 focus:bg-white/20 focus:border-white/50 transition-colors text-base sm:text-sm min-h-[44px] sm:min-h-0"
             placeholder="e.g., Fluffy"
           />
         </div>
@@ -74,7 +74,7 @@ export function QuestionnaireForm({ onSubmit, loading = false }: QuestionnaireFo
       ))}
 
       <div className="space-y-3">
-        <h3 className="text-white font-semibold text-lg">
+        <h3 className="text-white font-semibold text-base sm:text-lg">
           What's your pet's biggest fear or weakness?
         </h3>
         <textarea
@@ -82,7 +82,7 @@ export function QuestionnaireForm({ onSubmit, loading = false }: QuestionnaireFo
           onChange={(e) =>
             handleAnswerChange('stress_weakness', e.target.value)
           }
-          className="w-full bg-white/10 border border-white/30 rounded-lg px-4 py-2 text-white placeholder-white/50 focus:bg-white/20 focus:border-white/50 transition-colors h-16"
+          className="w-full bg-white/10 border border-white/30 rounded-lg px-3 sm:px-4 py-3 sm:py-2 text-white placeholder-white/50 focus:bg-white/20 focus:border-white/50 transition-colors h-20 sm:h-16 text-base sm:text-sm resize-none"
           placeholder="e.g., Thunder storms, vacuum cleaner, doorbell..."
         />
       </div>
