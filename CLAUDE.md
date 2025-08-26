@@ -22,25 +22,35 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Write **focused unit tests for core analysis logic only**. Follow these principles:
 
 ### What to Test
+
 - **Core algorithms**: Pet personality calculations, stat generation, character creation logic
 - **Data transformations**: User input processing, stat calculations, character data formatting
 - **Business rules**: Personality archetype assignment, attribute scoring, character sheet generation
 - **Edge cases**: Invalid inputs, missing data, boundary conditions
 
 ### What NOT to Test
+
 - **UI interactions**: Don't test React components, user interactions, or rendering
 - **Complex mocking**: Avoid heavy mocking of external APIs or file systems
 - **Implementation details**: Don't test internal function calls or intermediate states
 
 ### Test Quality Guidelines
+
 - **Behavioral, not brittle**: Test that personality calculations are reasonable, not exact values
 - **Meaningful assertions**: Verify core functionality works as intended
 - **Value-driven**: Only write tests that would catch real regressions in pet analysis
 - **Fast and reliable**: Tests should run quickly without external dependencies
 
 ### Test Organization
+
 - **All tests go in `src/test/`**: Mirror the source structure (e.g., `src/test/core/personality/`)
 - **Test files use `.test.ts` or `.spec.ts` suffix**
+
+## Pre-commit Requirements
+Before committing to git, ensure:
+- **Tests pass**: `npm test` shows all green
+- **Code is formatted**: `npm run format` to auto-format all files
+- **Linting passes**: `npm run lint` with zero errors or warnings
 
 ## Development Commands
 
@@ -50,18 +60,21 @@ Write **focused unit tests for core analysis logic only**. Follow these principl
 - **Preview production build**: `npm run preview`
 - **Run tests**: `npm test`
 - **Run tests in watch mode**: `npm run test:watch`
+- **Format code**: `npm run format`
 
 ## Architecture Overview
 
 This is a React + TypeScript + Vite application called "CatStats" - a pet personality analyzer that generates RPG-style character sheets for cats.
 
 ### Core Structure
+
 - **Frontend Framework**: React 19 with TypeScript
 - **Build Tool**: Vite with HMR (Hot Module Replacement)
 - **Styling**: CSS with Tailwind-style utility classes (inline styles)
 - **Linting**: ESLint with React-specific rules
 
 ### Key Components
+
 - Main application logic is in `src/App.tsx` (currently default Vite template)
 - Complete pet analyzer implementation exists in `docs/pet_personality_analyzer.tsx` (not yet integrated)
 - The pet analyzer includes:
@@ -72,12 +85,15 @@ This is a React + TypeScript + Vite application called "CatStats" - a pet person
   - Dynamic theming based on dominant pet attributes
 
 ### External Dependencies
+
 The pet analyzer component attempts to call the Anthropic Claude API directly from the browser (lines 434-449 in pet_personality_analyzer.tsx), which will require:
+
 - API key configuration
 - CORS handling
 - Possible backend proxy implementation
 
 ### Development Notes
+
 - Uses ES modules (`"type": "module"` in package.json)
 - TypeScript configuration split between app and node contexts
 - Standard Vite React setup with minimal dependencies

@@ -11,10 +11,12 @@ export interface PetStats {
 export interface QuestionOption {
   value: string;
   text: string;
-  stats: Partial<PetStats & {
-    territory: string;
-    energy: string;
-  }>;
+  stats: Partial<
+    PetStats & {
+      territory: string;
+      energy: string;
+    }
+  >;
 }
 
 export interface Question {
