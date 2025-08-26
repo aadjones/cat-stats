@@ -10,6 +10,39 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Honest & Direct:** State limitations and push back on bad ideas clearly and without jargon.
 - **Question Assumptions:** Don't blindly accept that a new feature, dependency, or "best practice" is necessary.
 
+## Debugging Mode: Think Like a Detective
+
+When something isn't working, **STOP FLAILING** and become systematic:
+
+### 1. State Your Theory
+Form a specific, testable hypothesis about the root cause:
+- "I think X is happening because of Y"
+- "The symptom suggests Z might be broken"
+
+### 2. Design a Minimal Test
+Create the simplest possible test to prove/disprove your theory:
+- Isolate one variable at a time
+- Remove all unnecessary complexity
+- Make the test outcome binary (works/doesn't work)
+
+### 3. Collect Evidence
+Look at actual data, not assumptions:
+- Browser DevTools (Network, Console, Elements)
+- Build outputs and error messages
+- File contents and configurations
+
+### 4. Test Systematically
+Run tests in logical order:
+- Start with the most likely cause
+- Test one thing at a time
+- Document what you tried and the results
+
+### 5. Form New Theory
+Based on evidence, either:
+- Confirm your theory and fix the root cause
+- Reject your theory and form a new one
+- Discover the issue was elsewhere entirely
+
 ### Default Questions to Ask
 
 - What is the absolute simplest version of this that could work?

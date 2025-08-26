@@ -120,6 +120,23 @@ Create videogame-style abilities based on the pet's behaviors. Make ability name
     });
 
     const data = await response.json();
+    
+    if (!response.ok) {
+      console.error('API Error Response:', data);
+      return { 
+        success: false, 
+        error: data.error?.message || `API Error: ${response.status}` 
+      };
+    }
+    
+    if (!data.content || !data.content[0]) {
+      console.error('Unexpected API Response:', data);
+      return { 
+        success: false, 
+        error: 'Invalid API response format' 
+      };
+    }
+    
     let jsonContent = data.content[0].text;
 
     jsonContent = jsonContent

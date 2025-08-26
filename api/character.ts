@@ -5,9 +5,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  console.log('Environment check:', {
+    hasKey: !!process.env.ANTHROPIC_API_KEY,
+    keyPrefix: process.env.ANTHROPIC_API_KEY?.slice(0, 10) + '...'
+  });
+  
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    return res.status(500).json({ error: 'API key not configured' });
+    return res.status(500).json({ 
+      error: 'API key not configured',
+      debug: 'Environment variable ANTHROPIC_API_KEY not found'
+    });
   }
 
   try {
