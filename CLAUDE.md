@@ -84,13 +84,18 @@ This is a React + TypeScript + Vite application called "CatStats" - a pet person
   - PDF/text export functionality
   - Dynamic theming based on dominant pet attributes
 
-### External Dependencies
+### API Setup (Required for Character Generation)
 
-The pet analyzer component attempts to call the Anthropic Claude API directly from the browser (lines 434-449 in pet_personality_analyzer.tsx), which will require:
+The app uses Vercel Functions to proxy API calls to Anthropic Claude API:
 
-- API key configuration
-- CORS handling
-- Possible backend proxy implementation
+- **Development**: `vercel dev` (requires Vercel CLI + `.env.local` with `ANTHROPIC_API_KEY`)
+- **Production**: Deploy to Vercel and set `ANTHROPIC_API_KEY` environment variable  
+- **API endpoint**: `/api/character` (proxies to `https://api.anthropic.com/v1/messages`)
+
+### Development Setup
+1. Install Vercel CLI: `npm install -g vercel`
+2. Create `.env.local`: `ANTHROPIC_API_KEY=your_api_key_here`
+3. Run locally: `vercel dev` instead of `npm run dev`
 
 ### Development Notes
 
