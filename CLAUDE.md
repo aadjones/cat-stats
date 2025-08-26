@@ -1,0 +1,84 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Core Development Principles
+
+- **Simple > Clever:** Prefer simple, readable solutions even if they are less "elegant."
+- **Delete > Add:** Aggressively seek opportunities to remove code and dependencies.
+- **Working > Perfect:** Focus on delivering a working solution for the immediate problem.
+- **Honest & Direct:** State limitations and push back on bad ideas clearly and without jargon.
+- **Question Assumptions:** Don't blindly accept that a new feature, dependency, or "best practice" is necessary.
+
+### Default Questions to Ask
+
+- What is the absolute simplest version of this that could work?
+- Are we building something we don't need yet?
+- Is this solving a real problem, or an imaginary one?
+- Can we test this idea with a small experiment instead of a big rewrite?
+
+## Testing Philosophy
+
+Write **focused unit tests for core analysis logic only**. Follow these principles:
+
+### What to Test
+- **Core algorithms**: Pet personality calculations, stat generation, character creation logic
+- **Data transformations**: User input processing, stat calculations, character data formatting
+- **Business rules**: Personality archetype assignment, attribute scoring, character sheet generation
+- **Edge cases**: Invalid inputs, missing data, boundary conditions
+
+### What NOT to Test
+- **UI interactions**: Don't test React components, user interactions, or rendering
+- **Complex mocking**: Avoid heavy mocking of external APIs or file systems
+- **Implementation details**: Don't test internal function calls or intermediate states
+
+### Test Quality Guidelines
+- **Behavioral, not brittle**: Test that personality calculations are reasonable, not exact values
+- **Meaningful assertions**: Verify core functionality works as intended
+- **Value-driven**: Only write tests that would catch real regressions in pet analysis
+- **Fast and reliable**: Tests should run quickly without external dependencies
+
+### Test Organization
+- **All tests go in `src/test/`**: Mirror the source structure (e.g., `src/test/core/personality/`)
+- **Test files use `.test.ts` or `.spec.ts` suffix**
+
+## Development Commands
+
+- **Start development server**: `npm run dev`
+- **Build for production**: `npm run build` (runs TypeScript compiler first, then Vite build)
+- **Lint code**: `npm run lint`
+- **Preview production build**: `npm run preview`
+- **Run tests**: `npm test`
+- **Run tests in watch mode**: `npm run test:watch`
+
+## Architecture Overview
+
+This is a React + TypeScript + Vite application called "CatStats" - a pet personality analyzer that generates RPG-style character sheets for cats.
+
+### Core Structure
+- **Frontend Framework**: React 19 with TypeScript
+- **Build Tool**: Vite with HMR (Hot Module Replacement)
+- **Styling**: CSS with Tailwind-style utility classes (inline styles)
+- **Linting**: ESLint with React-specific rules
+
+### Key Components
+- Main application logic is in `src/App.tsx` (currently default Vite template)
+- Complete pet analyzer implementation exists in `docs/pet_personality_analyzer.tsx` (not yet integrated)
+- The pet analyzer includes:
+  - Multi-step questionnaire system
+  - Statistical calculation engine for pet attributes (wisdom, cunning, agility, etc.)
+  - Canvas-based radar chart visualization
+  - PDF/text export functionality
+  - Dynamic theming based on dominant pet attributes
+
+### External Dependencies
+The pet analyzer component attempts to call the Anthropic Claude API directly from the browser (lines 434-449 in pet_personality_analyzer.tsx), which will require:
+- API key configuration
+- CORS handling
+- Possible backend proxy implementation
+
+### Development Notes
+- Uses ES modules (`"type": "module"` in package.json)
+- TypeScript configuration split between app and node contexts
+- Standard Vite React setup with minimal dependencies
+- No testing framework currently configured
