@@ -43,6 +43,39 @@ Based on evidence, either:
 - Reject your theory and form a new one
 - Discover the issue was elsewhere entirely
 
+## Critical Deployment Lessons (2025)
+
+### Tailwind CSS v4 Breaking Changes
+
+**SYMPTOM**: CSS file extremely small (~3kB), no color classes like `bg-red-500` generated, styling looks broken.
+
+**ROOT CAUSE**: Tailwind CSS v4 completely changed the import syntax:
+- ❌ **OLD (v3)**: `@tailwind base; @tailwind components; @tailwind utilities;`  
+- ✅ **NEW (v4)**: `@import "tailwindcss";`
+
+**SOLUTION**: 
+1. Update `src/index.css` to use `@import "tailwindcss";`
+2. Remove conflicting Vite default CSS that overrides Tailwind
+3. Install `@tailwindcss/postcss` plugin for PostCSS processing
+
+**EVIDENCE**: CSS file jumps from 3kB to 27kB when fixed correctly.
+
+### Vercel API Functions Must Use JavaScript (2025)
+
+**SYMPTOM**: `FUNCTION_INVOCATION_FAILED` errors, APIs returning HTML instead of JSON.
+
+**ROOT CAUSE**: Vercel now requires plain JavaScript files for API functions, not TypeScript.
+- ❌ `api/character.ts` - Causes function invocation failures
+- ✅ `api/character.js` - Works correctly
+
+**SOLUTION**:
+1. Convert all `api/*.ts` files to `api/*.js` files
+2. Remove TypeScript imports (e.g., `import type { VercelRequest, VercelResponse }`)
+3. Use simple ES6 exports: `export default async function handler(req, res) {}`
+4. Keep `vercel.json` minimal or use simple rewrites
+
+**DON'T**: Over-commit to git during debugging. Test changes locally first.
+
 ### Default Questions to Ask
 
 - What is the absolute simplest version of this that could work?
