@@ -15,7 +15,7 @@ export function drawRadarChart(
 
   const centerX = canvas.width / 2;
   const centerY = canvas.height / 2;
-  const radius = 120;
+  const radius = 100; // Reduced to leave more space for labels
 
   const statLabels = [
     'Wisdom',
@@ -36,25 +36,31 @@ export function drawRadarChart(
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Draw grid circles
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-  ctx.lineWidth = 1;
+  // CONTRAST SYSTEM: Draw dark background circle for better contrast
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, radius + 25, 0, 2 * Math.PI);
+  ctx.fill();
+
+  // CONTRAST SYSTEM: High-contrast grid circles with visual hierarchy
   for (let i = 1; i <= 5; i++) {
     ctx.beginPath();
     ctx.arc(centerX, centerY, (radius * i) / 5, 0, 2 * Math.PI);
+    
+    // Major grid lines (every 50 points) are brighter
+    if (i % 2 === 1) {
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+      ctx.lineWidth = i === 5 ? 2 : 1;
+    } else {
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.lineWidth = 1;
+    }
     ctx.stroke();
   }
 
-  // Draw scale labels
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-  ctx.font = '10px sans-serif';
-  ctx.textAlign = 'center';
-  for (let i = 1; i <= 5; i++) {
-    const scaleRadius = (radius * i) / 5;
-    ctx.fillText((i * 20).toString(), centerX + scaleRadius + 5, centerY + 3);
-  }
+  // Scale numbers removed - visual grid lines are sufficient
 
-  // Draw axes and labels
+  // CONTRAST SYSTEM: High-contrast axes
   for (let i = 0; i < statLabels.length; i++) {
     const angle = (i * 2 * Math.PI) / statLabels.length - Math.PI / 2;
     const x = centerX + Math.cos(angle) * radius;
@@ -63,18 +69,12 @@ export function drawRadarChart(
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
     ctx.lineTo(x, y);
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.lineWidth = 1;
     ctx.stroke();
-
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-    ctx.font = 'bold 12px sans-serif';
-    ctx.textAlign = 'center';
-    const labelX = centerX + Math.cos(angle) * (radius + 25);
-    const labelY = centerY + Math.sin(angle) * (radius + 25) + 4;
-    ctx.fillText(`${statLabels[i]} (${statValues[i]})`, labelX, labelY);
   }
 
-  // Draw data polygon
+  // Draw data polygon with enhanced visibility
   ctx.beginPath();
   for (let i = 0; i < statValues.length; i++) {
     const angle = (i * 2 * Math.PI) / statValues.length - Math.PI / 2;
@@ -90,23 +90,75 @@ export function drawRadarChart(
   }
   ctx.closePath();
 
-  // Fill and stroke the polygon
-  ctx.fillStyle = `rgba(${theme.accentRgb}, 0.3)`;
+  // CONTRAST SYSTEM: Enhanced data polygon with glow effect
+  ctx.shadowColor = theme.accent;
+  ctx.shadowBlur = 8;
+  ctx.fillStyle = `rgba(${theme.accentRgb}, 0.4)`;
   ctx.fill();
-  ctx.strokeStyle = `rgba(${theme.accentRgb}, 0.8)`;
-  ctx.lineWidth = 2;
+  ctx.shadowBlur = 0;
+
+  ctx.strokeStyle = theme.accent;
+  ctx.lineWidth = 3;
   ctx.stroke();
 
-  // Draw data points
-  ctx.fillStyle = theme.accent;
+  // CONTRAST SYSTEM: Enhanced data points with glow
   for (let i = 0; i < statValues.length; i++) {
     const angle = (i * 2 * Math.PI) / statValues.length - Math.PI / 2;
     const value = statValues[i] / 100;
     const x = centerX + Math.cos(angle) * radius * value;
     const y = centerY + Math.sin(angle) * radius * value;
 
+    // Outer glow
+    ctx.shadowColor = theme.accent;
+    ctx.shadowBlur = 6;
+    ctx.fillStyle = theme.accent;
     ctx.beginPath();
-    ctx.arc(x, y, 4, 0, 2 * Math.PI);
+    ctx.arc(x, y, 6, 0, 2 * Math.PI);
     ctx.fill();
+    
+    // Inner highlight
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#FFFFFF';
+    ctx.beginPath();
+    ctx.arc(x, y, 3, 0, 2 * Math.PI);
+    ctx.fill();
+  }
+
+  // CONTRAST SYSTEM: High-contrast labels with background, positioned to fit canvas
+  for (let i = 0; i < statLabels.length; i++) {
+    const angle = (i * 2 * Math.PI) / statLabels.length - Math.PI / 2;
+    const labelDistance = radius + 30; // Reduced distance to fit in canvas
+    const labelX = centerX + Math.cos(angle) * labelDistance;
+    const labelY = centerY + Math.sin(angle) * labelDistance;
+    const text = `${statLabels[i]} (${statValues[i]})`;
+    
+    // Measure text for background
+    ctx.font = 'bold 12px system-ui, sans-serif'; // Slightly smaller font
+    const textMetrics = ctx.measureText(text);
+    const textWidth = textMetrics.width;
+    
+    // Clamp positions to stay within canvas bounds
+    const minX = textWidth / 2 + 5;
+    const maxX = canvas.width - textWidth / 2 - 5;
+    const minY = 15;
+    const maxY = canvas.height - 15;
+    
+    const clampedX = Math.max(minX, Math.min(maxX, labelX));
+    const clampedY = Math.max(minY, Math.min(maxY, labelY));
+    
+    // Semi-transparent background with rounded corners effect
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+    ctx.fillRect(
+      clampedX - textWidth / 2 - 4,
+      clampedY - 8,
+      textWidth + 8,
+      16
+    );
+    
+    // High-contrast text
+    ctx.fillStyle = '#FFFFFF';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, clampedX, clampedY);
   }
 }
