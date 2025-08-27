@@ -188,7 +188,7 @@ export function PetPersonalityAnalyzer() {
                 CatStats
               </h1>
               <p className="text-sm sm:text-base text-white/80">
-                Turn your pet into a legend!
+                Turn your pet into a friggin' legend!
               </p>
             </div>
 
