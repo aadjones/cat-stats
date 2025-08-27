@@ -1,4 +1,6 @@
-@import 'tailwindcss';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* Ensure dark themes work consistently across all browsers/devices */
 html {
@@ -13,5 +15,8 @@ html {
 
 /* Ensure gradients render properly on all devices */
 .bg-gradient-to-br {
-  background: linear-gradient(to bottom right, var(--tw-gradient-stops)) !important;
+  background: linear-gradient(
+    to bottom right,
+    var(--tw-gradient-stops)
+  ) !important;
 }

@@ -24,9 +24,8 @@ export default async function handler(req, res) {
     res.status(200).json({
       success: true,
       message: `Migrated ${migratedCount} characters to Vercel KV`,
-      characters: Object.keys(characters)
+      characters: Object.keys(characters),
     });
-
   } catch (error) {
     console.error('Error migrating characters:', error);
     res.status(500).json({ error: 'Migration failed', details: error.message });

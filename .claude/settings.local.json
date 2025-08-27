@@ -14,7 +14,8 @@
       "WebSearch",
       "Bash(npm run lint)",
       "Bash(vercel env:*)",
-      "Bash(vercel dev:*)"
+      "Bash(vercel dev:*)",
+      "Bash(npm uninstall:*)"
     ],
     "deny": [],
     "ask": []
