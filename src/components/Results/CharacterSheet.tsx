@@ -137,7 +137,7 @@ export function CharacterSheet({
       </div>
 
       <div
-        className={`min-h-screen bg-gradient-to-br ${theme.gradient} p-2 sm:p-4`}
+        className={`min-h-screen bg-slate-900 bg-gradient-to-br ${theme.gradient} p-2 sm:p-4`}
       >
         <div className="w-full max-w-4xl mx-auto mb-4 sm:mb-6 flex flex-col sm:flex-row gap-2 sm:gap-4 px-2 sm:px-0">
           <Button variant="secondary" onClick={onReset} size="sm">

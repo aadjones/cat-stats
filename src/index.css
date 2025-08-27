@@ -1,1 +1,17 @@
 @import 'tailwindcss';
+
+/* Ensure dark themes work consistently across all browsers/devices */
+html {
+  color-scheme: dark;
+}
+
+/* Force minimum contrast for critical text elements */
+.text-white {
+  color: white !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Ensure gradients render properly on all devices */
+.bg-gradient-to-br {
+  background: linear-gradient(to bottom right, var(--tw-gradient-stops)) !important;
+}

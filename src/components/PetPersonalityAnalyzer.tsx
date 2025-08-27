@@ -169,7 +169,7 @@ export function PetPersonalityAnalyzer() {
   return (
     <>
       <LoadingOverlay message={loadingMessage} visible={loading} />
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-2 sm:p-4">
+      <div className="min-h-screen bg-slate-900 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-2 sm:p-4">
         <div className="w-full max-w-2xl mx-auto px-2 sm:px-0">
           <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl sm:rounded-2xl p-4 sm:p-8 shadow-xl relative">
             {isFeatureEnabled('SHOW_DEBUG_BUTTON') && (
