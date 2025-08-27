@@ -17,8 +17,7 @@ export function Button({
     'font-bold rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed';
 
   const variantClasses = {
-    primary:
-      'bg-blue-600 text-white hover:bg-blue-700',
+    primary: 'bg-blue-600 text-white hover:bg-blue-700',
     secondary:
       'bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white/30',
   };

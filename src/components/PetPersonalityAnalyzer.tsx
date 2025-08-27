@@ -169,10 +169,10 @@ export function PetPersonalityAnalyzer() {
   return (
     <>
       <LoadingOverlay message={loadingMessage} visible={loading} />
-      <div 
+      <div
         className="min-h-screen p-2 sm:p-4"
-        style={{ 
-          background: 'linear-gradient(135deg, #581c87, #312e81, #1e3a8a)' 
+        style={{
+          background: 'linear-gradient(135deg, #581c87, #312e81, #1e3a8a)',
         }}
       >
         <div className="w-full max-w-2xl mx-auto px-2 sm:px-0">
