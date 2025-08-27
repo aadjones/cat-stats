@@ -9,7 +9,10 @@
       "Bash(vercel logs:*)",
       "Bash(npm run dev:*)",
       "Bash(npm run typecheck:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(npm audit:*)",
+      "WebSearch",
+      "Bash(npm run lint)"
     ],
     "deny": [],
     "ask": []

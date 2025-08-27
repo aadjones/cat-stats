@@ -1,5 +1,6 @@
 import type { UserAnswers, CharacterData } from '../../core/personality/types';
 import { openEndedQuestions } from '../../core/personality/questions';
+import { parseCharacterData } from '../../core/validation/jsonParsing';
 
 export const LOADING_MESSAGES = [
   "Analyzing your pet's personality... 🤔",
@@ -139,16 +140,26 @@ Create videogame-style abilities based on the pet's behaviors. Make ability name
 
     let jsonContent = data.content[0].text;
 
+    // Clean up potential markdown formatting from API response
     jsonContent = jsonContent
       .replace(/```json\n?/g, '')
       .replace(/```\n?/g, '')
       .trim();
 
-    const characterData = JSON.parse(jsonContent);
+    // Safely parse and validate the character data
+    const parseResult = parseCharacterData(jsonContent);
+    
+    if (!parseResult.success) {
+      console.error('Character data validation failed:', parseResult.error);
+      return {
+        success: false,
+        error: 'Invalid character data format received from API',
+      };
+    }
 
     return {
       success: true,
-      characterData,
+      characterData: parseResult.data,
     };
   } catch (error) {
     console.error('Error generating character sheet:', error);
