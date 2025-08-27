@@ -12,7 +12,9 @@
       "Bash(cat:*)",
       "Bash(npm audit:*)",
       "WebSearch",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "Bash(vercel env:*)",
+      "Bash(vercel dev:*)"
     ],
     "deny": [],
     "ask": []
