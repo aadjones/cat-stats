@@ -169,7 +169,12 @@ export function PetPersonalityAnalyzer() {
   return (
     <>
       <LoadingOverlay message={loadingMessage} visible={loading} />
-      <div className="min-h-screen bg-indigo-900 p-2 sm:p-4">
+      <div 
+        className="min-h-screen p-2 sm:p-4"
+        style={{ 
+          background: 'linear-gradient(135deg, #581c87, #312e81, #1e3a8a)' 
+        }}
+      >
         <div className="w-full max-w-2xl mx-auto px-2 sm:px-0">
           <div className="bg-gray-800 border border-gray-600 rounded-xl sm:rounded-2xl p-4 sm:p-8 shadow-xl relative">
             {isFeatureEnabled('SHOW_DEBUG_BUTTON') && (
@@ -188,7 +193,7 @@ export function PetPersonalityAnalyzer() {
                 CatStats
               </h1>
               <p className="text-sm sm:text-base text-white/80">
-                Turn your pet into a friggin' legend!
+                Turn your pet into a legend!
               </p>
             </div>
 
