@@ -1,6 +1,4 @@
 import { kv } from '@vercel/kv';
-import fs from 'fs/promises';
-import path from 'path';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -14,26 +12,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    let character = null;
-
-    // Try Vercel KV first
-    try {
-      character = await kv.get(`character:${id}`);
-    } catch (kvError) {
-      console.log('KV not available, falling back to JSON file');
-    }
-
-    // Fallback to JSON file for development
-    if (!character) {
-      try {
-        const dataPath = path.join(process.cwd(), 'data', 'characters.json');
-        const fileContent = await fs.readFile(dataPath, 'utf-8');
-        const characters = JSON.parse(fileContent);
-        character = characters[id];
-      } catch (fileError) {
-        console.log('JSON file not available either');
-      }
-    }
+    const character = await kv.get(`character:${id}`);
 
     if (!character) {
       return res.status(404).json({ error: 'Character not found' });
