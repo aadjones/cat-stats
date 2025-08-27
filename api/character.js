@@ -11,6 +11,28 @@ export default async function handler(req, res) {
     });
   }
 
+  // Validate request body structure
+  const { model, max_tokens, messages } = req.body;
+  
+  if (!model || typeof model !== 'string') {
+    return res.status(400).json({ error: 'Invalid or missing model parameter' });
+  }
+  
+  if (!max_tokens || typeof max_tokens !== 'number' || max_tokens > 4000) {
+    return res.status(400).json({ error: 'Invalid max_tokens parameter (must be number ≤ 4000)' });
+  }
+  
+  if (!Array.isArray(messages) || messages.length === 0) {
+    return res.status(400).json({ error: 'Messages must be a non-empty array' });
+  }
+  
+  // Validate message structure
+  for (const message of messages) {
+    if (!message.role || !message.content || typeof message.role !== 'string' || typeof message.content !== 'string') {
+      return res.status(400).json({ error: 'Invalid message format' });
+    }
+  }
+
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -19,7 +41,7 @@ export default async function handler(req, res) {
         'x-api-key': apiKey,
         'anthropic-version': '2023-06-01',
       },
-      body: JSON.stringify(req.body),
+      body: JSON.stringify({ model, max_tokens, messages }),
     });
 
     const data = await response.json();
