@@ -11,12 +11,63 @@ html {
 .text-white {
   color: white !important;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  /* Safari iOS text rendering fix */
+  text-shadow:
+    0px 0px rgba(0, 0, 0, 0),
+    0 1px 3px rgba(0, 0, 0, 0.5);
+  -webkit-text-fill-color: white;
 }
 
-/* Ensure gradients render properly on all devices */
+/* Safari gradient rendering fixes */
 .bg-gradient-to-br {
   background: linear-gradient(
     to bottom right,
     var(--tw-gradient-stops)
   ) !important;
+  /* Safari iOS fallback - force hardware acceleration */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  /* Safari text rendering fix */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.bg-gradient-to-r {
+  background: linear-gradient(to right, var(--tw-gradient-stops)) !important;
+  /* Safari iOS fallback - force hardware acceleration */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  /* Safari text rendering fix */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Force Safari to properly render all gradient directions */
+@supports (-webkit-backdrop-filter: blur(1px)) {
+  .bg-gradient-to-br {
+    background: -webkit-linear-gradient(
+      225deg,
+      var(--tw-gradient-stops)
+    ) !important;
+  }
+
+  .bg-gradient-to-r {
+    background: -webkit-linear-gradient(
+      left,
+      var(--tw-gradient-stops)
+    ) !important;
+    /* Safari iOS fallback - force hardware acceleration */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+}
+
+/* Safari backdrop-blur rendering fixes */
+.backdrop-blur-md {
+  /* Safari iOS fallback for backdrop-blur */
+  -webkit-backdrop-filter: blur(12px) !important;
+  backdrop-filter: blur(12px) !important;
+  /* Force hardware acceleration */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
