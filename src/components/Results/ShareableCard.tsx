@@ -114,26 +114,28 @@ export function ShareableCard({ characterSheet, theme }: ShareableCardProps) {
   const statRowStyle: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'space-between',
     marginBottom: '8px',
   };
 
   const statNameStyle: React.CSSProperties = {
     color: 'rgba(255, 255, 255, 0.9)',
     fontWeight: '500',
+    width: '80px',
+    flexShrink: 0,
   };
 
   const statBarContainerStyle: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
+    marginLeft: 'auto',
   };
 
   const statBarStyle: React.CSSProperties = {
     width: '64px',
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     borderRadius: '10px',
-    height: '8px',
+    height: '12px',
     overflow: 'hidden',
   };
 
@@ -143,6 +145,8 @@ export function ShareableCard({ characterSheet, theme }: ShareableCardProps) {
     fontSize: '14px',
     width: '32px',
     textAlign: 'right',
+    flexShrink: 0,
+    lineHeight: '1',
   };
 
   const abilityStyle: React.CSSProperties = {
@@ -194,32 +198,6 @@ export function ShareableCard({ characterSheet, theme }: ShareableCardProps) {
 
   return (
     <div id="shareable-card" style={containerStyle}>
-      {/* Background pattern for visual interest */}
-      <div style={{ position: 'absolute', inset: '0', opacity: '0.1' }}>
-        <div
-          style={{
-            position: 'absolute',
-            top: '40px',
-            right: '40px',
-            width: '128px',
-            height: '128px',
-            borderRadius: '50%',
-            backgroundColor: 'rgba(255, 255, 255, 0.2)',
-          }}
-        ></div>
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '80px',
-            left: '40px',
-            width: '80px',
-            height: '80px',
-            borderRadius: '50%',
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
-          }}
-        ></div>
-      </div>
-
       <div style={contentStyle}>
         {/* Header with pet photo and name */}
         <div style={headerStyle}>

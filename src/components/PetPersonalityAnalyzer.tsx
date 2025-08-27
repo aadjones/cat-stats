@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type {
   UserAnswers,
   CharacterSheet as CharacterSheetData,
@@ -6,12 +6,12 @@ import type {
 import { calculatePetStats } from '../core/personality/statsCalculator';
 import {
   generateCharacterData,
-  createDebugCharacterData,
   getColorTheme,
   generateTextExport,
   validateQuestionnaireForm,
   LOADING_MESSAGES,
 } from '../services';
+import { loadCharacter, saveCharacter } from '../services/characterStorage';
 import { isFeatureEnabled } from '../config/featureFlags';
 import { QuestionnaireForm } from './Questionnaire/QuestionnaireForm';
 import { CharacterSheet } from './Results/CharacterSheet';
@@ -26,6 +26,47 @@ export function PetPersonalityAnalyzer() {
     useState<CharacterSheetData | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('');
+  const [currentCharacterId, setCurrentCharacterId] = useState<string | null>(
+    null
+  );
+
+  // Check for shared character URL on mount
+  useEffect(() => {
+    const checkForSharedCharacter = async () => {
+      const path = window.location.pathname;
+      const legendMatch = path.match(/^\/legend\/([a-z0-9]{6})$/);
+
+      if (legendMatch) {
+        const characterId = legendMatch[1];
+        setLoading(true);
+        setLoadingMessage('Loading shared character...');
+
+        try {
+          const sharedCharacter = await loadCharacter(characterId);
+          if (sharedCharacter) {
+            setCharacterSheet(sharedCharacter);
+            setCurrentCharacterId(characterId);
+            setCurrentStep('result');
+          } else {
+            alert(
+              'Character not found. It may have been removed or the link is invalid.'
+            );
+            // Clear the URL and return to questionnaire
+            window.history.replaceState({}, '', '/');
+          }
+        } catch (error) {
+          console.error('Error loading shared character:', error);
+          alert('Sorry, there was an error loading the shared character.');
+          window.history.replaceState({}, '', '/');
+        } finally {
+          setLoading(false);
+          setLoadingMessage('');
+        }
+      }
+    };
+
+    checkForSharedCharacter();
+  }, []);
 
   const handleFormSubmit = async (
     petName: string,
@@ -64,6 +105,16 @@ export function PetPersonalityAnalyzer() {
 
         setCharacterSheet(newCharacterSheet);
         setCurrentStep('result');
+
+        // Auto-save the character for sharing
+        try {
+          const characterId = await saveCharacter(newCharacterSheet);
+          setCurrentCharacterId(characterId);
+          console.log(`Character saved with ID: ${characterId}`);
+        } catch (saveError) {
+          console.error('Error saving character for sharing:', saveError);
+          // Don't block the user flow if saving fails
+        }
       } else {
         alert(result.error || 'Failed to generate character sheet');
       }
@@ -80,30 +131,18 @@ export function PetPersonalityAnalyzer() {
   };
 
   const handleDebugMode = () => {
-    const debugStats = {
-      wisdom: 90,
-      cunning: 60,
-      agility: 65,
-      stealth: 95,
-      charisma: 60,
-      resolve: 90,
-      boldness: 75,
-    };
-
-    const debugCharacterSheet: CharacterSheetData = {
-      characterData: createDebugCharacterData(),
-      stats: debugStats,
-      petName: 'Sente',
-      petPhoto: '/images/sente.jpg',
-    };
-
-    setCharacterSheet(debugCharacterSheet);
-    setCurrentStep('result');
+    // Redirect to the shared character URL
+    window.location.href = '/legend/sente1';
   };
 
   const handleReset = () => {
     setCurrentStep('questionnaire');
     setCharacterSheet(null);
+    setCurrentCharacterId(null);
+    // Clear the URL if we're on a shared character page
+    if (window.location.pathname.includes('/legend/')) {
+      window.history.replaceState({}, '', '/');
+    }
   };
 
   const handleDownload = () => {
@@ -119,6 +158,7 @@ export function PetPersonalityAnalyzer() {
       <CharacterSheet
         characterSheet={characterSheet}
         theme={theme}
+        characterId={currentCharacterId}
         onReset={handleReset}
         onDownload={handleDownload}
       />

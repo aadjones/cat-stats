@@ -7,6 +7,7 @@ export {
   shareCharacterSheet,
   downloadCharacterImage,
   getShareCapabilities,
+  generateShareableImage,
 } from './shareService';
 
 export { generateCharacterData, LOADING_MESSAGES } from './api/characterApi';

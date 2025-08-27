@@ -1,8 +1,9 @@
 // Feature flags for enabling/disabling functionality
 export const FEATURE_FLAGS = {
   // Share/Export features
-  SHOW_SEPARATE_DOWNLOAD_BUTTON: false, // Redundant now that main share button downloads
-  ENABLE_TEXT_EXPORT: true, // Keep the full character sheet text export
+  SHOW_SEPARATE_DOWNLOAD_BUTTON: false,
+  ENABLE_TEXT_EXPORT: false,
+  ENABLE_SHARE_IMAGE: false,
 
   // Debug features
   SHOW_DEBUG_BUTTON: true, // "See Example" button

@@ -8,7 +8,9 @@ import {
   shareCharacterSheet,
   downloadCharacterImage,
   getShareCapabilities,
+  generateShareableImage,
 } from '../../services';
+import { getCharacterShareUrl } from '../../services/characterStorage';
 import { isFeatureEnabled } from '../../config/featureFlags';
 
 interface Theme {
@@ -20,6 +22,7 @@ interface Theme {
 interface CharacterSheetProps {
   characterSheet: CharacterSheetData;
   theme: Theme;
+  characterId: string | null;
   onReset: () => void;
   onDownload: () => void;
 }
@@ -27,6 +30,7 @@ interface CharacterSheetProps {
 export function CharacterSheet({
   characterSheet,
   theme,
+  characterId,
   onReset,
   onDownload,
 }: CharacterSheetProps) {
@@ -62,6 +66,69 @@ export function CharacterSheet({
     }
   };
 
+  const handleShareFullCharacter = async () => {
+    if (!characterId) {
+      alert('Character not saved yet. Please try again in a moment.');
+      return;
+    }
+
+    const shareUrl = getCharacterShareUrl(characterId);
+
+    // Generate the preview image first
+    const imageBlob = await generateShareableImage('shareable-card');
+
+    try {
+      if (navigator.share && imageBlob && 'canShare' in navigator) {
+        const imageFile = new File([imageBlob], `${petName}-CatStats.png`, {
+          type: 'image/png',
+        });
+
+        const shareData = {
+          text: `Meet ${petName} - ${characterData.archetype}! 🐈‍⬛⚔️\n\nCheck out the full character sheet: ${shareUrl}`,
+          files: [imageFile],
+        };
+
+        if (navigator.canShare(shareData)) {
+          await navigator.share(shareData);
+          return;
+        }
+      }
+
+      // Fallback: native share without image but with URL
+      if (navigator.share) {
+        await navigator.share({
+          title: `Meet ${petName} - ${characterData.archetype}`,
+          text: `Check out ${petName}'s complete legendary character sheet! 🐈‍⬛⚔️`,
+          url: shareUrl,
+        });
+      } else {
+        // Final fallback: download image and copy link
+        if (imageBlob) {
+          const url = URL.createObjectURL(imageBlob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `${petName}-CatStats-Preview.png`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+        }
+
+        await navigator.clipboard.writeText(shareUrl);
+        alert(
+          `✨ Preview image downloaded and character link copied! Share both to give the full experience.`
+        );
+      }
+    } catch (error) {
+      // User canceled the share dialog - this is normal, do nothing
+      if ((error as Error).name === 'AbortError') {
+        return;
+      }
+      console.error('Error sharing character:', error);
+      alert('Sorry, there was an error sharing. Please try again.');
+    }
+  };
+
   return (
     <>
       {/* Hidden shareable card for image generation */}
@@ -76,18 +143,31 @@ export function CharacterSheet({
           <Button variant="secondary" onClick={onReset} size="sm">
             ← Create Another Legend
           </Button>
-          <Button
-            onClick={handleShare}
-            disabled={isSharing}
-            className="flex items-center justify-center gap-2"
-            size="sm"
-          >
-            {isSharing
-              ? '📸 Creating...'
-              : capabilities.hasNativeShare
-                ? '📱 Share Image'
-                : '📸 Download & Copy Link'}
-          </Button>
+          {isFeatureEnabled('ENABLE_SHARE_IMAGE') && (
+            <Button
+              onClick={handleShare}
+              disabled={isSharing}
+              className="flex items-center justify-center gap-2"
+              size="sm"
+            >
+              {isSharing
+                ? '📸 Creating...'
+                : capabilities.hasNativeShare
+                  ? '📱 Share Image'
+                  : '📸 Download & Copy Link'}
+            </Button>
+          )}
+
+          {characterId && (
+            <Button
+              onClick={handleShareFullCharacter}
+              variant="primary"
+              className="flex items-center justify-center gap-2"
+              size="sm"
+            >
+              🔗 Share Full Character
+            </Button>
+          )}
 
           {isFeatureEnabled('SHOW_SEPARATE_DOWNLOAD_BUTTON') && (
             <Button
