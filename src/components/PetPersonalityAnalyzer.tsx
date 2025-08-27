@@ -116,6 +116,7 @@ export function PetPersonalityAnalyzer() {
           // Don't block the user flow if saving fails
         }
       } else {
+        console.error('Character generation failed:', result);
         alert(result.error || 'Failed to generate character sheet');
       }
     } catch (error) {
