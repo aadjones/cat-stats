@@ -18,7 +18,7 @@ export function Button({
 
   const variantClasses = {
     primary:
-      'bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600',
+      'bg-blue-600 text-white hover:bg-blue-700',
     secondary:
       'bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white/30',
   };
