@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
+import { put } from '@vercel/blob';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -11,6 +12,28 @@ export default async function handler(req, res) {
 
     if (!characterData || !characterData.id) {
       return res.status(400).json({ error: 'Invalid character data' });
+    }
+
+    // Handle image upload to Vercel Blob if present
+    if (characterData.petPhoto && characterData.petPhoto.startsWith('data:')) {
+      try {
+        // Convert base64 data URL to blob
+        const base64Data = characterData.petPhoto.split(',')[1];
+        const buffer = Buffer.from(base64Data, 'base64');
+
+        // Upload to Vercel Blob
+        const blob = await put(`pet-photos/${characterData.id}.jpg`, buffer, {
+          access: 'public',
+          contentType: 'image/jpeg',
+        });
+
+        // Replace the base64 data with the blob URL
+        characterData.petPhoto = blob.url;
+      } catch (imageError) {
+        console.error('Error uploading image to blob storage:', imageError);
+        // Continue without image rather than failing entirely
+        characterData.petPhoto = null;
+      }
     }
 
     // Read existing characters file

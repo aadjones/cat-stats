@@ -17,32 +17,47 @@ export function generateCharacterId(): string {
 export async function saveCharacter(
   characterSheet: CharacterSheet
 ): Promise<string> {
-  const id = generateCharacterId();
-  const storedCharacter: StoredCharacter = {
-    ...characterSheet,
-    id,
-    created: new Date().toISOString(),
-  };
+  let attempts = 0;
+  const maxAttempts = 5;
 
-  try {
-    const response = await fetch('/api/save-character', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(storedCharacter),
-    });
+  while (attempts < maxAttempts) {
+    const id = generateCharacterId();
+    const storedCharacter: StoredCharacter = {
+      ...characterSheet,
+      id,
+      created: new Date().toISOString(),
+    };
 
-    if (!response.ok) {
-      throw new Error(`Failed to save character: ${response.statusText}`);
+    try {
+      const response = await fetch('/api/save-character', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(storedCharacter),
+      });
+
+      if (response.status === 409) {
+        // ID collision, try again
+        attempts++;
+        continue;
+      }
+
+      if (!response.ok) {
+        throw new Error(`Failed to save character: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      return result.id;
+    } catch (error) {
+      console.error('Error saving character:', error);
+      throw error;
     }
-
-    const result = await response.json();
-    return result.id;
-  } catch (error) {
-    console.error('Error saving character:', error);
-    throw error;
   }
+
+  throw new Error(
+    'Failed to generate unique character ID after multiple attempts'
+  );
 }
 
 export async function loadCharacter(
@@ -67,9 +82,8 @@ export async function loadCharacter(
 }
 
 export function getCharacterShareUrl(id: string): string {
-  // Use production domain, fallback to current origin for development
-  const baseUrl = import.meta.env.PROD
-    ? 'https://cat-stats-six.vercel.app'
-    : window.location.origin;
+  // Always use production domain for sharing
+  // In development, shared characters work locally anyway
+  const baseUrl = 'https://cat-stats-six.vercel.app';
   return `${baseUrl}/legend/${id}`;
 }
