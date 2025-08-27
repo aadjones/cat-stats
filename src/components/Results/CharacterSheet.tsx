@@ -194,7 +194,7 @@ export function CharacterSheet({
         </div>
 
         <div className="w-full max-w-4xl mx-auto px-2 sm:px-0">
-          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl sm:rounded-2xl p-4 sm:p-8 shadow-xl relative">
+          <div className="bg-gray-800 border border-gray-600 rounded-xl sm:rounded-2xl p-4 sm:p-8 shadow-xl relative">
             {/* Desktop photo - top-right corner */}
             {petPhoto && (
               <div className="hidden sm:block absolute top-6 right-6">
@@ -235,7 +235,7 @@ export function CharacterSheet({
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-8">
-              <div className="bg-white/10 backdrop-blur-md border border-white/30 rounded-lg p-4 sm:p-6">
+              <div className="bg-gray-800 border border-gray-600 rounded-lg p-4 sm:p-6">
                 <h3 className="text-white font-bold text-base sm:text-lg mb-3 sm:mb-4">
                   Combat Moves
                 </h3>
@@ -248,7 +248,7 @@ export function CharacterSheet({
                 ))}
               </div>
 
-              <div className="bg-white/10 backdrop-blur-md border border-white/30 rounded-lg p-4 sm:p-6">
+              <div className="bg-gray-800 border border-gray-600 rounded-lg p-4 sm:p-6">
                 <h3 className="text-white font-bold text-base sm:text-lg mb-3 sm:mb-4">
                   Environmental Powers
                 </h3>
@@ -261,7 +261,7 @@ export function CharacterSheet({
                 ))}
               </div>
 
-              <div className="bg-white/10 backdrop-blur-md border border-white/30 rounded-lg p-4 sm:p-6">
+              <div className="bg-gray-800 border border-gray-600 rounded-lg p-4 sm:p-6">
                 <h3 className="text-white font-bold text-base sm:text-lg mb-3 sm:mb-4">
                   Social Skills
                 </h3>
@@ -274,7 +274,7 @@ export function CharacterSheet({
                 ))}
               </div>
 
-              <div className="bg-white/10 backdrop-blur-md border border-white/30 rounded-lg p-4 sm:p-6">
+              <div className="bg-gray-800 border border-gray-600 rounded-lg p-4 sm:p-6">
                 <h3 className="text-white font-bold text-base sm:text-lg mb-3 sm:mb-4">
                   Passive Traits
                 </h3>
@@ -288,7 +288,7 @@ export function CharacterSheet({
               </div>
             </div>
 
-            <div className="bg-red-500/20 backdrop-blur-md border border-red-500/30 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
+            <div className="bg-red-900 border border-red-600 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
               <h3 className="text-red-300 font-bold text-base sm:text-lg mb-2">
                 ⚠️ Critical Vulnerability
               </h3>

@@ -15,7 +15,8 @@
       "Bash(npm run lint)",
       "Bash(vercel env:*)",
       "Bash(vercel dev:*)",
-      "Bash(npm uninstall:*)"
+      "Bash(npm uninstall:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []

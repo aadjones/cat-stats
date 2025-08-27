@@ -134,14 +134,14 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="bg-white/10 backdrop-blur-md border border-white/30 rounded-lg px-4 py-2 text-white hover:bg-white/20 transition-colors text-sm cursor-pointer"
+              className="bg-gray-700 border border-gray-500 rounded-lg px-4 py-2 text-white hover:bg-gray-600 transition-colors text-sm cursor-pointer"
             >
               Change Photo
             </button>
             <button
               type="button"
               onClick={removePicture}
-              className="bg-red-500/20 backdrop-blur-md border border-red-500/30 rounded-lg px-4 py-2 text-red-300 hover:bg-red-500/30 transition-colors text-sm cursor-pointer"
+              className="bg-red-800 border border-red-600 rounded-lg px-4 py-2 text-red-300 hover:bg-red-700 transition-colors text-sm cursor-pointer"
             >
               Remove
             </button>

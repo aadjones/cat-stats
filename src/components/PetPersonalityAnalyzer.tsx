@@ -171,7 +171,7 @@ export function PetPersonalityAnalyzer() {
       <LoadingOverlay message={loadingMessage} visible={loading} />
       <div className="min-h-screen bg-indigo-900 p-2 sm:p-4">
         <div className="w-full max-w-2xl mx-auto px-2 sm:px-0">
-          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl sm:rounded-2xl p-4 sm:p-8 shadow-xl relative">
+          <div className="bg-gray-800 border border-gray-600 rounded-xl sm:rounded-2xl p-4 sm:p-8 shadow-xl relative">
             {isFeatureEnabled('SHOW_DEBUG_BUTTON') && (
               <Button
                 onClick={handleDebugMode}

@@ -71,3 +71,66 @@ html {
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
 }
+
+/* Safari iOS 18.3 color compatibility fixes */
+.text-red-300 {
+  color: #fca5a5 !important;
+}
+
+.text-cyan-300 {
+  color: #67e8f9 !important;
+}
+
+.text-yellow-300 {
+  color: #fde047 !important;
+}
+
+.text-purple-300 {
+  color: #d8b4fe !important;
+}
+
+.text-gray-200 {
+  color: #e5e7eb !important;
+}
+
+.text-gray-300 {
+  color: #d1d5db !important;
+}
+
+/* Safari iOS 18.3 background color fixes */
+.bg-gray-800 {
+  background-color: #1f2937 !important;
+}
+
+.bg-gray-700 {
+  background-color: #374151 !important;
+}
+
+.bg-red-900 {
+  background-color: #7f1d1d !important;
+}
+
+.bg-red-800 {
+  background-color: #991b1b !important;
+}
+
+.bg-indigo-900 {
+  background-color: #312e81 !important;
+}
+
+.bg-blue-600 {
+  background-color: #2563eb !important;
+}
+
+/* Safari iOS 18.3 border color fixes */
+.border-gray-600 {
+  border-color: #4b5563 !important;
+}
+
+.border-gray-500 {
+  border-color: #6b7280 !important;
+}
+
+.border-red-600 {
+  border-color: #dc2626 !important;
+}

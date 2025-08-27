@@ -7,10 +7,10 @@ interface AbilityCardProps {
 
 export function AbilityCard({ ability, colorClass }: AbilityCardProps) {
   return (
-    <div className="bg-white/10 rounded-lg p-3 mb-3">
+    <div className="bg-gray-700 rounded-lg p-3 mb-3">
       <div className={`${colorClass} font-bold`}>{ability.name}</div>
-      <div className="text-white/60 text-sm italic">{ability.stats}</div>
-      <div className="text-white/80 text-sm">{ability.description}</div>
+      <div className="text-gray-300 text-sm italic">{ability.stats}</div>
+      <div className="text-gray-200 text-sm">{ability.description}</div>
     </div>
   );
 }
