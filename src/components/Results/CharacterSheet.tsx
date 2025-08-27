@@ -166,7 +166,7 @@ export function CharacterSheet({
               className="flex items-center justify-center gap-2"
               size="sm"
             >
-              🔗 Share Full Character
+              📤 Share Character
             </Button>
           )}
 
