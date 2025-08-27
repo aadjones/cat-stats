@@ -148,7 +148,7 @@ Create videogame-style abilities based on the pet's behaviors. Make ability name
 
     // Safely parse and validate the character data
     const parseResult = parseCharacterData(jsonContent);
-    
+
     if (!parseResult.success) {
       console.error('Character data validation failed:', parseResult.error);
       return {

@@ -1,4 +1,9 @@
-import type { CharacterData, CharacterAbility, CharacterWeakness, CharacterModifier } from '../personality/types';
+import type {
+  CharacterData,
+  CharacterAbility,
+  CharacterWeakness,
+  CharacterModifier,
+} from '../personality/types';
 
 export interface SafeParseResult<T> {
   success: boolean;
@@ -9,25 +14,28 @@ export interface SafeParseResult<T> {
 /**
  * Safely parse JSON with error handling and basic validation
  */
-export function safeJsonParse<T>(jsonString: string, validator?: (data: unknown) => data is T): SafeParseResult<T> {
+export function safeJsonParse<T>(
+  jsonString: string,
+  validator?: (data: unknown) => data is T
+): SafeParseResult<T> {
   try {
     const parsed = JSON.parse(jsonString);
-    
+
     if (validator && !validator(parsed)) {
       return {
         success: false,
-        error: 'Parsed data failed validation'
+        error: 'Parsed data failed validation',
       };
     }
-    
+
     return {
       success: true,
-      data: parsed as T
+      data: parsed as T,
     };
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Failed to parse JSON'
+      error: error instanceof Error ? error.message : 'Failed to parse JSON',
     };
   }
 }
@@ -78,7 +86,7 @@ export function isCharacterData(obj: unknown): obj is CharacterData {
   }
 
   const data = obj as CharacterData;
-  
+
   return (
     typeof data.archetype === 'string' &&
     Array.isArray(data.combatMoves) &&
@@ -98,6 +106,8 @@ export function isCharacterData(obj: unknown): obj is CharacterData {
 /**
  * Parse and validate CharacterData from Claude API response
  */
-export function parseCharacterData(jsonString: string): SafeParseResult<CharacterData> {
+export function parseCharacterData(
+  jsonString: string
+): SafeParseResult<CharacterData> {
   return safeJsonParse(jsonString, isCharacterData);
 }

@@ -8,7 +8,9 @@ interface ShareData {
   files?: File[];
 }
 
-export async function generateShareableImage(elementId: string): Promise<Blob | null> {
+export async function generateShareableImage(
+  elementId: string
+): Promise<Blob | null> {
   try {
     const element = document.getElementById(elementId);
     if (!element) {
@@ -35,12 +37,14 @@ export async function generateShareableImage(elementId: string): Promise<Blob | 
   }
 }
 
-export async function shareCharacterSheet(characterSheet: CharacterSheet): Promise<boolean> {
+export async function shareCharacterSheet(
+  characterSheet: CharacterSheet
+): Promise<boolean> {
   const { petName, characterData } = characterSheet;
-  
+
   // Generate the image first
   const imageBlob = await generateShareableImage('shareable-card');
-  
+
   const shareData: ShareData = {
     title: `Meet ${petName} - ${characterData.archetype}`,
     text: `Check out ${petName}'s legendary character sheet! 🐈‍⬛⚔️ Create your own: https://cat-stats-six.vercel.app/`,
@@ -48,10 +52,12 @@ export async function shareCharacterSheet(characterSheet: CharacterSheet): Promi
 
   // If we have an image and native sharing is supported, include the image
   if (imageBlob && navigator.share && 'canShare' in navigator) {
-    const imageFile = new File([imageBlob], `${petName}-CatStats.png`, { type: 'image/png' });
-    
+    const imageFile = new File([imageBlob], `${petName}-CatStats.png`, {
+      type: 'image/png',
+    });
+
     const shareWithFile = { ...shareData, files: [imageFile] };
-    
+
     if (navigator.canShare(shareWithFile)) {
       try {
         await navigator.share(shareWithFile);
@@ -86,7 +92,7 @@ export async function shareCharacterSheet(characterSheet: CharacterSheet): Promi
   if (imageBlob) {
     downloadImage(imageBlob, petName);
   }
-  
+
   // Copy app link to clipboard for easy sharing
   try {
     await navigator.clipboard.writeText('https://cat-stats-six.vercel.app/');
@@ -116,14 +122,16 @@ export function getShareCapabilities() {
   };
 }
 
-export async function downloadCharacterImage(characterSheet: CharacterSheet): Promise<boolean> {
+export async function downloadCharacterImage(
+  characterSheet: CharacterSheet
+): Promise<boolean> {
   const { petName } = characterSheet;
   const imageBlob = await generateShareableImage('shareable-card');
-  
+
   if (imageBlob) {
     downloadImage(imageBlob, petName);
     return true;
   }
-  
+
   return false;
 }

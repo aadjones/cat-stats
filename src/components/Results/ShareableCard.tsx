@@ -30,14 +30,23 @@ export function ShareableCard({ characterSheet, theme }: ShareableCardProps) {
   // Convert theme gradient to actual CSS gradient for html2canvas
   const getGradientStyle = () => {
     const gradientMap: Record<string, string> = {
-      'from-blue-900 via-indigo-900 to-purple-900': 'linear-gradient(135deg, #1e3a8a, #312e81, #581c87)',
-      'from-emerald-900 via-teal-900 to-cyan-900': 'linear-gradient(135deg, #064e3b, #134e4a, #164e63)',
-      'from-red-900 via-orange-900 to-amber-900': 'linear-gradient(135deg, #7f1d1d, #7c2d12, #78350f)',
-      'from-pink-900 via-purple-900 to-fuchsia-900': 'linear-gradient(135deg, #831843, #581c87, #701a75)',
-      'from-slate-900 via-gray-900 to-zinc-900': 'linear-gradient(135deg, #0f172a, #111827, #18181b)',
-      'from-yellow-900 via-amber-900 to-orange-900': 'linear-gradient(135deg, #713f12, #78350f, #7c2d12)',
+      'from-blue-900 via-indigo-900 to-purple-900':
+        'linear-gradient(135deg, #1e3a8a, #312e81, #581c87)',
+      'from-emerald-900 via-teal-900 to-cyan-900':
+        'linear-gradient(135deg, #064e3b, #134e4a, #164e63)',
+      'from-red-900 via-orange-900 to-amber-900':
+        'linear-gradient(135deg, #7f1d1d, #7c2d12, #78350f)',
+      'from-pink-900 via-purple-900 to-fuchsia-900':
+        'linear-gradient(135deg, #831843, #581c87, #701a75)',
+      'from-slate-900 via-gray-900 to-zinc-900':
+        'linear-gradient(135deg, #0f172a, #111827, #18181b)',
+      'from-yellow-900 via-amber-900 to-orange-900':
+        'linear-gradient(135deg, #713f12, #78350f, #7c2d12)',
     };
-    return gradientMap[theme.gradient] || 'linear-gradient(135deg, #312e81, #581c87, #7c2d12)';
+    return (
+      gradientMap[theme.gradient] ||
+      'linear-gradient(135deg, #312e81, #581c87, #7c2d12)'
+    );
   };
 
   const containerStyle: React.CSSProperties = {
@@ -187,24 +196,28 @@ export function ShareableCard({ characterSheet, theme }: ShareableCardProps) {
     <div id="shareable-card" style={containerStyle}>
       {/* Background pattern for visual interest */}
       <div style={{ position: 'absolute', inset: '0', opacity: '0.1' }}>
-        <div style={{ 
-          position: 'absolute', 
-          top: '40px', 
-          right: '40px', 
-          width: '128px', 
-          height: '128px', 
-          borderRadius: '50%', 
-          backgroundColor: 'rgba(255, 255, 255, 0.2)' 
-        }}></div>
-        <div style={{ 
-          position: 'absolute', 
-          bottom: '80px', 
-          left: '40px', 
-          width: '80px', 
-          height: '80px', 
-          borderRadius: '50%', 
-          backgroundColor: 'rgba(255, 255, 255, 0.1)' 
-        }}></div>
+        <div
+          style={{
+            position: 'absolute',
+            top: '40px',
+            right: '40px',
+            width: '128px',
+            height: '128px',
+            borderRadius: '50%',
+            backgroundColor: 'rgba(255, 255, 255, 0.2)',
+          }}
+        ></div>
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '80px',
+            left: '40px',
+            width: '80px',
+            height: '80px',
+            borderRadius: '50%',
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          }}
+        ></div>
       </div>
 
       <div style={contentStyle}>
@@ -223,12 +236,8 @@ export function ShareableCard({ characterSheet, theme }: ShareableCardProps) {
               />
             </div>
           )}
-          <h1 style={titleStyle}>
-            {petName.toUpperCase()}
-          </h1>
-          <p style={subtitleStyle}>
-            {characterData.archetype}
-          </p>
+          <h1 style={titleStyle}>{petName.toUpperCase()}</h1>
+          <p style={subtitleStyle}>{characterData.archetype}</p>
         </div>
 
         {/* Top 3 Stats */}
@@ -250,9 +259,7 @@ export function ShareableCard({ characterSheet, theme }: ShareableCardProps) {
                       }}
                     ></div>
                   </div>
-                  <span style={statValueStyle}>
-                    {stat.value}
-                  </span>
+                  <span style={statValueStyle}>{stat.value}</span>
                 </div>
               </div>
             ))}
@@ -260,22 +267,30 @@ export function ShareableCard({ characterSheet, theme }: ShareableCardProps) {
         </div>
 
         {/* Signature Abilities */}
-        <div style={{...sectionStyle, flexGrow: 1}}>
+        <div style={{ ...sectionStyle, flexGrow: 1 }}>
           <h3 style={sectionTitleStyle}>Signature Moves</h3>
           <div>
             {bestCombatMove && (
-              <div style={{...abilityStyle, backgroundColor: 'rgba(239, 68, 68, 0.2)'}}>
-                <div style={{...abilityTitleStyle, color: '#fecaca'}}>
+              <div
+                style={{
+                  ...abilityStyle,
+                  backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                }}
+              >
+                <div style={{ ...abilityTitleStyle, color: '#fecaca' }}>
                   ⚔️ {bestCombatMove.name}
                 </div>
-                <div style={abilityDescStyle}>
-                  {bestCombatMove.description}
-                </div>
+                <div style={abilityDescStyle}>{bestCombatMove.description}</div>
               </div>
             )}
             {bestSocialSkill && (
-              <div style={{...abilityStyle, backgroundColor: 'rgba(251, 191, 36, 0.2)'}}>
-                <div style={{...abilityTitleStyle, color: '#fde68a'}}>
+              <div
+                style={{
+                  ...abilityStyle,
+                  backgroundColor: 'rgba(251, 191, 36, 0.2)',
+                }}
+              >
+                <div style={{ ...abilityTitleStyle, color: '#fde68a' }}>
                   💬 {bestSocialSkill.name}
                 </div>
                 <div style={abilityDescStyle}>
@@ -288,10 +303,10 @@ export function ShareableCard({ characterSheet, theme }: ShareableCardProps) {
 
         {/* Critical Vulnerability (fun factor) */}
         <div style={vulnerabilityStyle}>
-          <div style={{...abilityTitleStyle, color: '#fecaca'}}>
+          <div style={{ ...abilityTitleStyle, color: '#fecaca' }}>
             ⚠️ {characterData.weakness.name}
           </div>
-          <div style={{...abilityDescStyle, fontSize: '12px'}}>
+          <div style={{ ...abilityDescStyle, fontSize: '12px' }}>
             {characterData.weakness.description}
           </div>
         </div>
