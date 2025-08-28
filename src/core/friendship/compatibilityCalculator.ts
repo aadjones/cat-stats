@@ -14,7 +14,10 @@ export function calculateCompatibility(
   char1: CharacterSheet,
   char2: CharacterSheet
 ): CompatibilityMetrics {
-  const statCompatibility = calculateStatCompatibility(char1.stats, char2.stats);
+  const statCompatibility = calculateStatCompatibility(
+    char1.stats,
+    char2.stats
+  );
   const abilitySync = analyzeAbilitySync(char1, char2);
   const conflictAreas = identifyConflictAreas(char1, char2);
   const scenarios = analyzeScenarioCompatibility(char1, char2);
@@ -98,7 +101,14 @@ function analyzeSocialBalance(charisma1: number, charisma2: number): number {
  */
 function findComplementaryStats(stats1: PetStats, stats2: PetStats): string[] {
   const complementary: string[] = [];
-  const statNames = ['wisdom', 'cunning', 'agility', 'stealth', 'charisma', 'resolve'] as const;
+  const statNames = [
+    'wisdom',
+    'cunning',
+    'agility',
+    'stealth',
+    'charisma',
+    'resolve',
+  ] as const;
 
   for (const stat of statNames) {
     const val1 = stats1[stat];
@@ -107,7 +117,9 @@ function findComplementaryStats(stats1: PetStats, stats2: PetStats): string[] {
     // One is strong (>75), other is weak (<50)
     if ((val1 > 75 && val2 < 50) || (val2 > 75 && val1 < 50)) {
       const strongPet = val1 > val2 ? '1' : '2';
-      complementary.push(`${stat} (Pet ${strongPet} covers for Pet ${strongPet === '1' ? '2' : '1'})`);
+      complementary.push(
+        `${stat} (Pet ${strongPet} covers for Pet ${strongPet === '1' ? '2' : '1'})`
+      );
     }
   }
 
@@ -146,29 +158,42 @@ function calculatePersonalityClash(stats1: PetStats, stats2: PetStats): number {
 /**
  * Analyze ability synergies and conflicts
  */
-function analyzeAbilitySync(char1: CharacterSheet, char2: CharacterSheet): AbilitySync {
+function analyzeAbilitySync(
+  char1: CharacterSheet,
+  char2: CharacterSheet
+): AbilitySync {
   const synergies: string[] = [];
   const conflicts: string[] = [];
   const emergentBehaviors: string[] = [];
 
   // Analyze combat move synergies
-  char1.characterData.combatMoves.forEach(move1 => {
-    char2.characterData.combatMoves.forEach(move2 => {
+  char1.characterData.combatMoves.forEach((move1) => {
+    char2.characterData.combatMoves.forEach((move2) => {
       if (detectMoveSynergy(move1.description, move2.description)) {
-        synergies.push(`${move1.name} + ${move2.name}: Coordinated attack potential`);
+        synergies.push(
+          `${move1.name} + ${move2.name}: Coordinated attack potential`
+        );
       }
       if (detectMoveConflict(move1.description, move2.description)) {
-        conflicts.push(`${move1.name} vs ${move2.name}: Conflicting approaches`);
+        conflicts.push(
+          `${move1.name} vs ${move2.name}: Conflicting approaches`
+        );
       }
     });
   });
 
   // Analyze environmental power combinations
-  const envPowers1 = char1.characterData.environmentalPowers.map(p => p.name.toLowerCase());
-  const envPowers2 = char2.characterData.environmentalPowers.map(p => p.name.toLowerCase());
+  const envPowers1 = char1.characterData.environmentalPowers.map((p) =>
+    p.name.toLowerCase()
+  );
+  const envPowers2 = char2.characterData.environmentalPowers.map((p) =>
+    p.name.toLowerCase()
+  );
 
-  if (envPowers1.some(p => p.includes('stealth') || p.includes('hide')) &&
-      envPowers2.some(p => p.includes('rescue') || p.includes('help'))) {
+  if (
+    envPowers1.some((p) => p.includes('stealth') || p.includes('hide')) &&
+    envPowers2.some((p) => p.includes('rescue') || p.includes('help'))
+  ) {
     emergentBehaviors.push('Stealth reconnaissance for rescue missions');
   }
 
@@ -176,7 +201,10 @@ function analyzeAbilitySync(char1: CharacterSheet, char2: CharacterSheet): Abili
   const weakness1 = char1.characterData.weakness.description.toLowerCase();
   const weakness2 = char2.characterData.weakness.description.toLowerCase();
 
-  if (!weakness1.includes(weakness2.split(' ')[0]) && !weakness2.includes(weakness1.split(' ')[0])) {
+  if (
+    !weakness1.includes(weakness2.split(' ')[0]) &&
+    !weakness2.includes(weakness1.split(' ')[0])
+  ) {
     synergies.push('Complementary weaknesses - can support each other');
   } else {
     conflicts.push('Similar vulnerabilities - mutual weakness amplification');
@@ -190,13 +218,20 @@ function analyzeAbilitySync(char1: CharacterSheet, char2: CharacterSheet): Abili
  */
 function detectMoveSynergy(desc1: string, desc2: string): boolean {
   const synergyKeywords = [
-    ['stealth', 'ambush'], ['distract', 'attack'], ['defense', 'offense'],
-    ['stretch', 'reach'], ['speed', 'precision'], ['loud', 'quiet']
+    ['stealth', 'ambush'],
+    ['distract', 'attack'],
+    ['defense', 'offense'],
+    ['stretch', 'reach'],
+    ['speed', 'precision'],
+    ['loud', 'quiet'],
   ];
 
-  return synergyKeywords.some(([word1, word2]) =>
-    (desc1.toLowerCase().includes(word1) && desc2.toLowerCase().includes(word2)) ||
-    (desc1.toLowerCase().includes(word2) && desc2.toLowerCase().includes(word1))
+  return synergyKeywords.some(
+    ([word1, word2]) =>
+      (desc1.toLowerCase().includes(word1) &&
+        desc2.toLowerCase().includes(word2)) ||
+      (desc1.toLowerCase().includes(word2) &&
+        desc2.toLowerCase().includes(word1))
   );
 }
 
@@ -205,19 +240,26 @@ function detectMoveSynergy(desc1: string, desc2: string): boolean {
  */
 function detectMoveConflict(desc1: string, desc2: string): boolean {
   const conflictKeywords = [
-    ['loud', 'stealth'], ['fast', 'slow'], ['aggressive', 'gentle'],
-    ['attention', 'hide'], ['team', 'solo']
+    ['loud', 'stealth'],
+    ['fast', 'slow'],
+    ['aggressive', 'gentle'],
+    ['attention', 'hide'],
+    ['team', 'solo'],
   ];
 
-  return conflictKeywords.some(([word1, word2]) =>
-    desc1.toLowerCase().includes(word1) && desc2.toLowerCase().includes(word2)
+  return conflictKeywords.some(
+    ([word1, word2]) =>
+      desc1.toLowerCase().includes(word1) && desc2.toLowerCase().includes(word2)
   );
 }
 
 /**
  * Identify potential areas of conflict
  */
-function identifyConflictAreas(char1: CharacterSheet, char2: CharacterSheet): ConflictArea[] {
+function identifyConflictAreas(
+  char1: CharacterSheet,
+  char2: CharacterSheet
+): ConflictArea[] {
   const conflicts: ConflictArea[] = [];
 
   // Territory conflicts based on stats
@@ -225,7 +267,8 @@ function identifyConflictAreas(char1: CharacterSheet, char2: CharacterSheet): Co
     conflicts.push({
       area: 'Territory',
       severity: 'High',
-      description: 'Both pets have high boldness - likely to compete for prime spots'
+      description:
+        'Both pets have high boldness - likely to compete for prime spots',
     });
   }
 
@@ -234,7 +277,8 @@ function identifyConflictAreas(char1: CharacterSheet, char2: CharacterSheet): Co
     conflicts.push({
       area: 'Attention',
       severity: 'Medium',
-      description: 'Both are highly charismatic - may compete for human attention'
+      description:
+        'Both are highly charismatic - may compete for human attention',
     });
   }
 
@@ -245,7 +289,7 @@ function identifyConflictAreas(char1: CharacterSheet, char2: CharacterSheet): Co
     conflicts.push({
       area: 'Activity Level',
       severity: 'Medium',
-      description: 'Significant energy level difference may cause friction'
+      description: 'Significant energy level difference may cause friction',
     });
   }
 
@@ -263,14 +307,16 @@ function analyzeScenarioCompatibility(
   const stats2 = char2.stats;
 
   // Living space compatibility
-  const territorialClash = (stats1.boldness > 70 && stats2.boldness > 70) ? -30 : 0;
-  const stealthBalance = Math.abs(stats1.stealth - stats2.stealth) < 30 ? 20 : 0;
+  const territorialClash =
+    stats1.boldness > 70 && stats2.boldness > 70 ? -30 : 0;
+  const stealthBalance =
+    Math.abs(stats1.stealth - stats2.stealth) < 30 ? 20 : 0;
   const livingSpace = Math.max(0, 70 + stealthBalance + territorialClash);
 
   // First meeting prediction
   const avgCharisma = (stats1.charisma + stats2.charisma) / 2;
   const charismaDiff = Math.abs(stats1.charisma - stats2.charisma);
-  
+
   let firstMeeting: ScenarioCompatibility['firstMeeting'];
   if (avgCharisma > 70 && charismaDiff < 30) {
     firstMeeting = 'Instant Friends';

@@ -9,8 +9,8 @@ export default async function handler(req, res) {
     const { character1, character2 } = req.body;
 
     if (!character1 || !character2) {
-      return res.status(400).json({ 
-        error: 'Both character1 and character2 are required' 
+      return res.status(400).json({
+        error: 'Both character1 and character2 are required',
       });
     }
 
@@ -20,8 +20,8 @@ export default async function handler(req, res) {
     if (typeof character1 === 'string') {
       char1Data = await kv.get(`character:${character1}`);
       if (!char1Data) {
-        return res.status(404).json({ 
-          error: `Character with ID '${character1}' not found` 
+        return res.status(404).json({
+          error: `Character with ID '${character1}' not found`,
         });
       }
     } else {
@@ -31,8 +31,8 @@ export default async function handler(req, res) {
     if (typeof character2 === 'string') {
       char2Data = await kv.get(`character:${character2}`);
       if (!char2Data) {
-        return res.status(404).json({ 
-          error: `Character with ID '${character2}' not found` 
+        return res.status(404).json({
+          error: `Character with ID '${character2}' not found`,
         });
       }
     } else {
@@ -42,12 +42,15 @@ export default async function handler(req, res) {
     // Validate that we have different characters
     if (char1Data.id === char2Data.id) {
       return res.status(400).json({
-        error: 'Cannot generate friendship report for the same character'
+        error: 'Cannot generate friendship report for the same character',
       });
     }
 
     // Calculate compatibility metrics (simplified for API - full logic would be imported)
-    const compatibilityMetrics = calculateBasicCompatibility(char1Data, char2Data);
+    const compatibilityMetrics = calculateBasicCompatibility(
+      char1Data,
+      char2Data
+    );
 
     // Structure Claude prompt
     const prompt = `Generate a friendship compatibility report as an ULTIMATE SHOWDOWN between these two pets. Return your response as valid JSON in this exact format:
@@ -73,16 +76,16 @@ Archetype: ${char1Data.characterData.archetype}
 Stats: Wisdom ${char1Data.stats.wisdom}, Cunning ${char1Data.stats.cunning}, Agility ${char1Data.stats.agility}, Stealth ${char1Data.stats.stealth}, Charisma ${char1Data.stats.charisma}, Resolve ${char1Data.stats.resolve}, Boldness ${char1Data.stats.boldness}
 
 Combat Moves:
-${char1Data.characterData.combatMoves.map(m => `- ${m.name}: ${m.description}`).join('\n')}
+${char1Data.characterData.combatMoves.map((m) => `- ${m.name}: ${m.description}`).join('\n')}
 
 Environmental Powers:
-${char1Data.characterData.environmentalPowers.map(p => `- ${p.name}: ${p.description}`).join('\n')}
+${char1Data.characterData.environmentalPowers.map((p) => `- ${p.name}: ${p.description}`).join('\n')}
 
 Social Skills:
-${char1Data.characterData.socialSkills.map(s => `- ${s.name}: ${s.description}`).join('\n')}
+${char1Data.characterData.socialSkills.map((s) => `- ${s.name}: ${s.description}`).join('\n')}
 
 Passive Traits:
-${char1Data.characterData.passiveTraits.map(t => `- ${t.name}: ${t.description}`).join('\n')}
+${char1Data.characterData.passiveTraits.map((t) => `- ${t.name}: ${t.description}`).join('\n')}
 
 Weakness: ${char1Data.characterData.weakness.name} - ${char1Data.characterData.weakness.description}
 
@@ -91,16 +94,16 @@ Archetype: ${char2Data.characterData.archetype}
 Stats: Wisdom ${char2Data.stats.wisdom}, Cunning ${char2Data.stats.cunning}, Agility ${char2Data.stats.agility}, Stealth ${char2Data.stats.stealth}, Charisma ${char2Data.stats.charisma}, Resolve ${char2Data.stats.resolve}, Boldness ${char2Data.stats.boldness}
 
 Combat Moves:
-${char2Data.characterData.combatMoves.map(m => `- ${m.name}: ${m.description}`).join('\n')}
+${char2Data.characterData.combatMoves.map((m) => `- ${m.name}: ${m.description}`).join('\n')}
 
 Environmental Powers:
-${char2Data.characterData.environmentalPowers.map(p => `- ${p.name}: ${p.description}`).join('\n')}
+${char2Data.characterData.environmentalPowers.map((p) => `- ${p.name}: ${p.description}`).join('\n')}
 
 Social Skills:
-${char2Data.characterData.socialSkills.map(s => `- ${s.name}: ${s.description}`).join('\n')}
+${char2Data.characterData.socialSkills.map((s) => `- ${s.name}: ${s.description}`).join('\n')}
 
 Passive Traits:
-${char2Data.characterData.passiveTraits.map(t => `- ${t.name}: ${t.description}`).join('\n')}
+${char2Data.characterData.passiveTraits.map((t) => `- ${t.name}: ${t.description}`).join('\n')}
 
 Weakness: ${char2Data.characterData.weakness.name} - ${char2Data.characterData.weakness.description}
 
@@ -113,9 +116,9 @@ Compatibility Analysis:
 Create a dramatic ULTIMATE SHOWDOWN report that's humorous and shareable:
 
 RELATIONSHIP DYNAMICS based on compatibility score:
-- 20-40: "Sworn Enemies" / "Eternal Rivals" / "Territory War"
-- 41-70: "Reluctant Truce" / "Competitive Allies" / "Chaos Partners" / "Frenemies"  
-- 71-100: "Legendary Alliance" / "Soulmate Sidekicks" / "Perfect Harmony"
+- Under 50: "Sworn Enemies" / "Eternal Rivals" / "Territory War"
+- 50-74: "Reluctant Truce" / "Cautious Coexistence" / "Wary Partnership" / "Frenemies" / "Chaos Partners"
+- 75+: "Legendary Alliance" / "Soulmate Sidekicks" / "Perfect Harmony"
 
 SIGNATURE CLASH should be:
 - A dramatic name like "The Battle of the Sunny Spot" or "Blanket Fort Siege"
@@ -133,6 +136,14 @@ EXPANDABLE SECTIONS should be CONCISE but punchy:
 - For enemies: highlight the best conflicts and rivalry moments
 - For allies: focus on their most impressive combined chaos
 - Cut any fluff - only the most entertaining scenarios
+
+SIGNATURE MOVES section should be formatted as actual RPG abilities:
+- For allies: Create exactly 2 combined abilities they could perform together
+- For enemies: Create exactly 2 signature clash moves they'd use against each other
+- Format each move on a new line as: "Move Name: Brief description of the ability/clash"
+- Example format:
+  Synchronized Chaos Strike: Both pets coordinate maximum destruction during zoomies
+  Territorial Dominance Display: Alpha staredown that determines furniture ownership
 
 Make it shareable and screenshot-worthy. Reference specific abilities by name. Return ONLY valid JSON with no other text.`;
 
@@ -193,9 +204,13 @@ Make it shareable and screenshot-worthy. Reference specific abilities by name. R
     }
 
     // Validate required fields
-    if (!friendshipReport.overallScore || !friendshipReport.relationshipDynamic || 
-        !friendshipReport.signatureClash || !friendshipReport.finalVerdict || 
-        !friendshipReport.expandableSections) {
+    if (
+      !friendshipReport.overallScore ||
+      !friendshipReport.relationshipDynamic ||
+      !friendshipReport.signatureClash ||
+      !friendshipReport.finalVerdict ||
+      !friendshipReport.expandableSections
+    ) {
       return res.status(500).json({
         error: 'Incomplete friendship report received from Claude API',
       });
@@ -210,7 +225,6 @@ Make it shareable and screenshot-worthy. Reference specific abilities by name. R
     };
 
     res.status(200).json(finalReport);
-
   } catch (error) {
     console.error('Error generating friendship report:', error);
     res.status(500).json({
@@ -229,7 +243,7 @@ function calculateBasicCompatibility(char1, char2) {
   const conflicts = [];
 
   // MAJOR PERSONALITY CLASHES - lowered thresholds for more conflicts
-  
+
   // Alpha battle: Both bold = WAR (lowered threshold)
   if (stats1.boldness > 60 && stats2.boldness > 60) {
     totalPenalty += 45;
@@ -249,13 +263,15 @@ function calculateBasicCompatibility(char1, char2) {
   }
 
   // Energy chaos: Big mismatch = incompatible (lowered threshold)
-  const energyDiff = Math.abs((stats1.agility + stats1.boldness) - (stats2.agility + stats2.boldness));
+  const energyDiff = Math.abs(
+    stats1.agility + stats1.boldness - (stats2.agility + stats2.boldness)
+  );
   if (energyDiff > 60) {
     totalPenalty += 30;
     conflicts.push('Energy level chaos');
   }
 
-  // Wisdom gap: Frustration (lowered threshold)  
+  // Wisdom gap: Frustration (lowered threshold)
   if (Math.abs(stats1.wisdom - stats2.wisdom) > 45) {
     totalPenalty += 25;
     conflicts.push('Intelligence frustration');
@@ -274,8 +290,8 @@ function calculateBasicCompatibility(char1, char2) {
   }
 
   // NEW: Any stat over 85 = diva problems
-  const highStats1 = Object.values(stats1).filter(stat => stat > 85).length;
-  const highStats2 = Object.values(stats2).filter(stat => stat > 85).length;
+  const highStats1 = Object.values(stats1).filter((stat) => stat > 85).length;
+  const highStats2 = Object.values(stats2).filter((stat) => stat > 85).length;
   if (highStats1 > 0 && highStats2 > 0) {
     totalPenalty += 25;
     conflicts.push('Dual perfectionist clash');
@@ -283,14 +299,18 @@ function calculateBasicCompatibility(char1, char2) {
 
   // BONUSES for rare good combinations
   let bonuses = 0;
-  
+
   // Perfect complement: high/low pairs that work
-  if ((stats1.wisdom > 80 && stats2.resolve > 80) || (stats2.wisdom > 80 && stats1.resolve > 80)) {
+  if (
+    (stats1.wisdom > 80 && stats2.resolve > 80) ||
+    (stats2.wisdom > 80 && stats1.resolve > 80)
+  ) {
     bonuses += 20;
   }
-  
+
   // Balanced energy (not too high, not too low, close together)
-  const avgEnergy = ((stats1.agility + stats1.boldness + stats2.agility + stats2.boldness) / 4);
+  const avgEnergy =
+    (stats1.agility + stats1.boldness + stats2.agility + stats2.boldness) / 4;
   if (avgEnergy > 40 && avgEnergy < 70 && energyDiff < 30) {
     bonuses += 15;
   }
@@ -317,7 +337,13 @@ function calculateBasicCompatibility(char1, char2) {
   return {
     overallScore,
     energyMatch: Math.max(10, 80 - Math.round(energyDiff * 0.8)),
-    socialBalance: Math.max(10, 80 - (conflicts.filter(c => c.includes('diva') || c.includes('Alpha')).length * 30)),
+    socialBalance: Math.max(
+      10,
+      80 -
+        conflicts.filter((c) => c.includes('diva') || c.includes('Alpha'))
+          .length *
+          30
+    ),
     conflicts,
   };
 }

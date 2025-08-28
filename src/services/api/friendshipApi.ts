@@ -2,11 +2,11 @@ import type { CharacterSheet } from '../../core/personality/types';
 import type { FriendshipReport } from '../../core/friendship/types';
 
 export const FRIENDSHIP_LOADING_MESSAGES = [
-  "Analyzing pet personalities... 🐱🐶",
-  "Calculating compatibility scores... 💕", 
-  "Predicting first meeting scenarios... 👋",
-  "Imagining living dynamics... 🏠",
-  "Generating friendship report... 📋"
+  'Analyzing pet personalities... 🐱🐶',
+  'Calculating compatibility scores... 💕',
+  'Predicting first meeting scenarios... 👋',
+  'Imagining living dynamics... 🏠',
+  'Generating friendship report... 📋',
 ];
 
 export interface FriendshipGenerationResult {
@@ -17,8 +17,8 @@ export interface FriendshipGenerationResult {
 
 export async function generateFriendshipReport(
   character1: CharacterSheet | string, // Full object or ID
-  character2: CharacterSheet | string  // Full object or ID
-): Promise<FriendshipGenerationResult> {
+  character2: CharacterSheet | string // Full object or ID
+): Promise<FriendshipReport> {
   try {
     const response = await fetch('/api/friendship-report', {
       method: 'POST',
@@ -35,32 +35,29 @@ export async function generateFriendshipReport(
 
     if (!response.ok) {
       console.error('Friendship API Error Response:', data);
-      return {
-        success: false,
-        error: data.error || `API Error: ${response.status}`,
-      };
+      throw new Error(data.error || `API Error: ${response.status}`);
     }
 
     // Validate the response has required fields
-    if (!data.overallScore || !data.friendshipType || !data.sections) {
+    if (
+      !data.overallScore ||
+      !data.relationshipDynamic ||
+      !data.signatureClash ||
+      !data.finalVerdict ||
+      !data.expandableSections
+    ) {
       console.error('Invalid friendship report response:', data);
-      return {
-        success: false,
-        error: 'Invalid friendship report format received',
-      };
+      throw new Error('Invalid friendship report format received');
     }
 
-    return {
-      success: true,
-      friendshipReport: data,
-    };
-
+    return data;
   } catch (error) {
     console.error('Error generating friendship report:', error);
-    return {
-      success: false,
-      error: "Sorry, there was an error generating the friendship report. Please try again.",
-    };
+    throw error instanceof Error
+      ? error
+      : new Error(
+          'Sorry, there was an error generating the friendship report. Please try again.'
+        );
   }
 }
 
@@ -75,16 +72,21 @@ export function validateFriendshipInput(
   if (!char1 || !char2) {
     return {
       isValid: false,
-      errorMessage: 'Both characters are required to generate a friendship report',
+      errorMessage:
+        'Both characters are required to generate a friendship report',
     };
   }
 
   // If both are character objects, check they're different
   if (typeof char1 === 'object' && typeof char2 === 'object') {
-    if (char1.petName === char2.petName && char1.characterData.archetype === char2.characterData.archetype) {
+    if (
+      char1.petName === char2.petName &&
+      char1.characterData.archetype === char2.characterData.archetype
+    ) {
       return {
         isValid: false,
-        errorMessage: 'Please select two different characters for the friendship report',
+        errorMessage:
+          'Please select two different characters for the friendship report',
       };
     }
   }
@@ -94,7 +96,8 @@ export function validateFriendshipInput(
     if (char1 === char2) {
       return {
         isValid: false,
-        errorMessage: 'Please select two different characters for the friendship report',
+        errorMessage:
+          'Please select two different characters for the friendship report',
       };
     }
   }
@@ -109,7 +112,9 @@ export function getCharacterDisplayNames(
   char1: CharacterSheet | string,
   char2: CharacterSheet | string
 ): [string, string] {
-  const name1 = typeof char1 === 'string' ? `Character ${char1}` : char1.petName;
-  const name2 = typeof char2 === 'string' ? `Character ${char2}` : char2.petName;
+  const name1 =
+    typeof char1 === 'string' ? `Character ${char1}` : char1.petName;
+  const name2 =
+    typeof char2 === 'string' ? `Character ${char2}` : char2.petName;
   return [name1, name2];
 }

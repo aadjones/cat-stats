@@ -13,7 +13,7 @@ describe('Compatibility Calculator', () => {
     stats,
     characterData: {
       archetype: 'Test Archetype',
-      combatMoves: combatMoves.map(m => ({
+      combatMoves: combatMoves.map((m) => ({
         ...m,
         stats: 'Test • 100% • Instant',
       })),
@@ -72,8 +72,11 @@ describe('Compatibility Calculator', () => {
 
     test('similar energy levels result in higher compatibility', () => {
       const char1 = createTestCharacter('Active1', highEnergyStats);
-      const char2 = createTestCharacter('Active2', { ...highEnergyStats, charisma: 75 });
-      
+      const char2 = createTestCharacter('Active2', {
+        ...highEnergyStats,
+        charisma: 75,
+      });
+
       const char3 = createTestCharacter('Calm', lowEnergyStats);
 
       const similarEnergyResult = calculateCompatibility(char1, char2);
@@ -85,8 +88,14 @@ describe('Compatibility Calculator', () => {
     });
 
     test('moderate charisma differences create good social balance', () => {
-      const char1 = createTestCharacter('Outgoing', { ...balancedStats, charisma: 80 });
-      const char2 = createTestCharacter('Reserved', { ...balancedStats, charisma: 60 });
+      const char1 = createTestCharacter('Outgoing', {
+        ...balancedStats,
+        charisma: 80,
+      });
+      const char2 = createTestCharacter('Reserved', {
+        ...balancedStats,
+        charisma: 60,
+      });
 
       const result = calculateCompatibility(char1, char2);
 
@@ -94,8 +103,14 @@ describe('Compatibility Calculator', () => {
     });
 
     test('extreme charisma differences reduce social balance', () => {
-      const char1 = createTestCharacter('SuperOutgoing', { ...balancedStats, charisma: 95 });
-      const char2 = createTestCharacter('VeryReserved', { ...balancedStats, charisma: 20 });
+      const char1 = createTestCharacter('SuperOutgoing', {
+        ...balancedStats,
+        charisma: 95,
+      });
+      const char2 = createTestCharacter('VeryReserved', {
+        ...balancedStats,
+        charisma: 20,
+      });
 
       const result = calculateCompatibility(char1, char2);
 
@@ -116,15 +131,25 @@ describe('Compatibility Calculator', () => {
 
       const result = calculateCompatibility(char1, char2);
 
-      expect(result.statCompatibility.complementaryStrengths.length).toBeGreaterThan(0);
-      expect(result.statCompatibility.complementaryStrengths.some(s => 
-        s.includes('wisdom') || s.includes('agility')
-      )).toBe(true);
+      expect(
+        result.statCompatibility.complementaryStrengths.length
+      ).toBeGreaterThan(0);
+      expect(
+        result.statCompatibility.complementaryStrengths.some(
+          (s) => s.includes('wisdom') || s.includes('agility')
+        )
+      ).toBe(true);
     });
 
     test('identifies personality clashes from high boldness', () => {
-      const char1 = createTestCharacter('Bold1', { ...balancedStats, boldness: 90 });
-      const char2 = createTestCharacter('Bold2', { ...balancedStats, boldness: 85 });
+      const char1 = createTestCharacter('Bold1', {
+        ...balancedStats,
+        boldness: 90,
+      });
+      const char2 = createTestCharacter('Bold2', {
+        ...balancedStats,
+        boldness: 85,
+      });
 
       const result = calculateCompatibility(char1, char2);
 
@@ -132,16 +157,18 @@ describe('Compatibility Calculator', () => {
     });
 
     test('detects combat move synergies', () => {
-      const char1 = createTestCharacter(
-        'Stealth',
-        balancedStats,
-        [{ name: 'Silent Strike', description: 'A stealthy attack from the shadows' }]
-      );
-      const char2 = createTestCharacter(
-        'Distractor',
-        balancedStats,
-        [{ name: 'Loud Distraction', description: 'Creates noise to distract enemies' }]
-      );
+      const char1 = createTestCharacter('Stealth', balancedStats, [
+        {
+          name: 'Silent Strike',
+          description: 'A stealthy attack from the shadows',
+        },
+      ]);
+      const char2 = createTestCharacter('Distractor', balancedStats, [
+        {
+          name: 'Loud Distraction',
+          description: 'Creates noise to distract enemies',
+        },
+      ]);
 
       const result = calculateCompatibility(char1, char2);
 
@@ -149,16 +176,18 @@ describe('Compatibility Calculator', () => {
     });
 
     test('detects ability conflicts', () => {
-      const char1 = createTestCharacter(
-        'Loud',
-        balancedStats,
-        [{ name: 'Thunder Roar', description: 'Makes very loud aggressive noise' }]
-      );
-      const char2 = createTestCharacter(
-        'Stealth',
-        balancedStats,
-        [{ name: 'Silent Mode', description: 'Maintains complete stealth and quiet' }]
-      );
+      const char1 = createTestCharacter('Loud', balancedStats, [
+        {
+          name: 'Thunder Roar',
+          description: 'Makes very loud aggressive noise',
+        },
+      ]);
+      const char2 = createTestCharacter('Stealth', balancedStats, [
+        {
+          name: 'Silent Mode',
+          description: 'Maintains complete stealth and quiet',
+        },
+      ]);
 
       const result = calculateCompatibility(char1, char2);
 
@@ -166,28 +195,50 @@ describe('Compatibility Calculator', () => {
     });
 
     test('identifies territory conflicts for high boldness pets', () => {
-      const char1 = createTestCharacter('Territorial1', { ...balancedStats, boldness: 85 });
-      const char2 = createTestCharacter('Territorial2', { ...balancedStats, boldness: 80 });
+      const char1 = createTestCharacter('Territorial1', {
+        ...balancedStats,
+        boldness: 85,
+      });
+      const char2 = createTestCharacter('Territorial2', {
+        ...balancedStats,
+        boldness: 80,
+      });
 
       const result = calculateCompatibility(char1, char2);
 
-      const territoryConflicts = result.conflictAreas.filter(c => c.area === 'Territory');
+      const territoryConflicts = result.conflictAreas.filter(
+        (c) => c.area === 'Territory'
+      );
       expect(territoryConflicts.length).toBeGreaterThan(0);
     });
 
     test('identifies attention conflicts for high charisma pets', () => {
-      const char1 = createTestCharacter('Charismatic1', { ...balancedStats, charisma: 85 });
-      const char2 = createTestCharacter('Charismatic2', { ...balancedStats, charisma: 80 });
+      const char1 = createTestCharacter('Charismatic1', {
+        ...balancedStats,
+        charisma: 85,
+      });
+      const char2 = createTestCharacter('Charismatic2', {
+        ...balancedStats,
+        charisma: 80,
+      });
 
       const result = calculateCompatibility(char1, char2);
 
-      const attentionConflicts = result.conflictAreas.filter(c => c.area === 'Attention');
+      const attentionConflicts = result.conflictAreas.filter(
+        (c) => c.area === 'Attention'
+      );
       expect(attentionConflicts.length).toBeGreaterThan(0);
     });
 
     test('predicts instant friendship for high charisma similar pets', () => {
-      const char1 = createTestCharacter('Friendly1', { ...balancedStats, charisma: 85 });
-      const char2 = createTestCharacter('Friendly2', { ...balancedStats, charisma: 80 });
+      const char1 = createTestCharacter('Friendly1', {
+        ...balancedStats,
+        charisma: 85,
+      });
+      const char2 = createTestCharacter('Friendly2', {
+        ...balancedStats,
+        charisma: 80,
+      });
 
       const result = calculateCompatibility(char1, char2);
 
@@ -195,15 +246,15 @@ describe('Compatibility Calculator', () => {
     });
 
     test('predicts cautious meeting for high stealth with low charisma pets', () => {
-      const char1 = createTestCharacter('Sneaky1', { 
-        ...balancedStats, 
-        stealth: 90, 
-        charisma: 30 // Low charisma to avoid "Gradual Warming"
+      const char1 = createTestCharacter('Sneaky1', {
+        ...balancedStats,
+        stealth: 90,
+        charisma: 30, // Low charisma to avoid "Gradual Warming"
       });
-      const char2 = createTestCharacter('Sneaky2', { 
-        ...balancedStats, 
-        stealth: 85, 
-        charisma: 35 // Low charisma 
+      const char2 = createTestCharacter('Sneaky2', {
+        ...balancedStats,
+        stealth: 85,
+        charisma: 35, // Low charisma
       });
 
       const result = calculateCompatibility(char1, char2);
@@ -212,8 +263,14 @@ describe('Compatibility Calculator', () => {
     });
 
     test('calculates living space compatibility', () => {
-      const char1 = createTestCharacter('Peaceful1', { ...balancedStats, boldness: 40 });
-      const char2 = createTestCharacter('Peaceful2', { ...balancedStats, boldness: 35 });
+      const char1 = createTestCharacter('Peaceful1', {
+        ...balancedStats,
+        boldness: 40,
+      });
+      const char2 = createTestCharacter('Peaceful2', {
+        ...balancedStats,
+        boldness: 35,
+      });
 
       const result = calculateCompatibility(char1, char2);
 
@@ -221,8 +278,14 @@ describe('Compatibility Calculator', () => {
     });
 
     test('predicts mutual support for high resolve pets', () => {
-      const char1 = createTestCharacter('Stable1', { ...balancedStats, resolve: 85 });
-      const char2 = createTestCharacter('Stable2', { ...balancedStats, resolve: 80 });
+      const char1 = createTestCharacter('Stable1', {
+        ...balancedStats,
+        resolve: 85,
+      });
+      const char2 = createTestCharacter('Stable2', {
+        ...balancedStats,
+        resolve: 80,
+      });
 
       const result = calculateCompatibility(char1, char2);
 
@@ -230,8 +293,14 @@ describe('Compatibility Calculator', () => {
     });
 
     test('predicts amplified chaos for low resolve pets', () => {
-      const char1 = createTestCharacter('Anxious1', { ...balancedStats, resolve: 30 });
-      const char2 = createTestCharacter('Anxious2', { ...balancedStats, resolve: 25 });
+      const char1 = createTestCharacter('Anxious1', {
+        ...balancedStats,
+        resolve: 30,
+      });
+      const char2 = createTestCharacter('Anxious2', {
+        ...balancedStats,
+        resolve: 25,
+      });
 
       const result = calculateCompatibility(char1, char2);
 
