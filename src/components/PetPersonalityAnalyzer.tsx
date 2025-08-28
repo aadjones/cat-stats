@@ -15,10 +15,11 @@ import { loadCharacter, saveCharacter } from '../services/characterStorage';
 import { isFeatureEnabled } from '../config/featureFlags';
 import { QuestionnaireForm } from './Questionnaire/QuestionnaireForm';
 import { CharacterSheet } from './Results/CharacterSheet';
+import { ShowdownPage } from './Results/ShowdownPage';
 import { LoadingOverlay } from './UI/LoadingOverlay';
 import { Button } from './UI/Button';
 
-type AppStep = 'questionnaire' | 'result';
+type AppStep = 'questionnaire' | 'result' | 'showdown';
 
 export function PetPersonalityAnalyzer() {
   const [currentStep, setCurrentStep] = useState<AppStep>('questionnaire');
@@ -29,12 +30,14 @@ export function PetPersonalityAnalyzer() {
   const [currentCharacterId, setCurrentCharacterId] = useState<string | null>(
     null
   );
+  const [showdownId, setShowdownId] = useState<string | null>(null);
 
-  // Check for shared character URL on mount
+  // Check for shared character or showdown URL on mount
   useEffect(() => {
-    const checkForSharedCharacter = async () => {
+    const checkForSharedContent = async () => {
       const path = window.location.pathname;
       const legendMatch = path.match(/^\/legend\/([a-z0-9]{6})$/);
+      const showdownMatch = path.match(/^\/showdown\/([a-z0-9]{6,10})$/);
 
       if (legendMatch) {
         const characterId = legendMatch[1];
@@ -62,10 +65,14 @@ export function PetPersonalityAnalyzer() {
           setLoading(false);
           setLoadingMessage('');
         }
+      } else if (showdownMatch) {
+        const showdownId = showdownMatch[1];
+        setShowdownId(showdownId);
+        setCurrentStep('showdown');
       }
     };
 
-    checkForSharedCharacter();
+    checkForSharedContent();
   }, []);
 
   const handleFormSubmit = async (
@@ -164,6 +171,10 @@ export function PetPersonalityAnalyzer() {
         onDownload={handleDownload}
       />
     );
+  }
+
+  if (currentStep === 'showdown' && showdownId) {
+    return <ShowdownPage showdownId={showdownId} onReset={handleReset} />;
   }
 
   return (

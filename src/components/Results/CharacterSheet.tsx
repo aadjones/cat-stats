@@ -4,6 +4,7 @@ import { Button } from '../UI/Button';
 import { StatsRadarChart } from './StatsRadarChart';
 import { AbilityCard } from './AbilityCard';
 import { ShareableCard } from './ShareableCard';
+import { FriendshipModal } from './FriendshipModal';
 import {
   shareCharacterSheet,
   downloadCharacterImage,
@@ -36,6 +37,7 @@ export function CharacterSheet({
 }: CharacterSheetProps) {
   const { characterData, stats, petName, petPhoto } = characterSheet;
   const [isSharing, setIsSharing] = useState(false);
+  const [showFriendshipModal, setShowFriendshipModal] = useState(false);
   const capabilities = getShareCapabilities();
 
   const handleShare = async () => {
@@ -169,6 +171,15 @@ export function CharacterSheet({
               📤 Share Character
             </Button>
           )}
+
+          <Button
+            onClick={() => setShowFriendshipModal(true)}
+            variant="secondary"
+            className="flex items-center justify-center gap-2"
+            size="sm"
+          >
+            ⚔️ Compare with Friends
+          </Button>
 
           {isFeatureEnabled('SHOW_SEPARATE_DOWNLOAD_BUTTON') && (
             <Button
@@ -324,6 +335,15 @@ export function CharacterSheet({
           </div>
         </div>
       </div>
+
+      {/* Friendship Modal */}
+      {showFriendshipModal && (
+        <FriendshipModal
+          currentCharacter={characterSheet}
+          characterId={characterId}
+          onClose={() => setShowFriendshipModal(false)}
+        />
+      )}
     </>
   );
 }
