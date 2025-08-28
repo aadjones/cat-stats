@@ -35,6 +35,7 @@ export interface ScenarioCompatibility {
 }
 
 export interface FriendshipReport {
+  showdownId?: string; // Unique ID for sharing
   petNames: [string, string];
   overallScore: number; // 0-100
   relationshipDynamic: string; // "Legendary Alliance", "Sworn Enemies", etc.

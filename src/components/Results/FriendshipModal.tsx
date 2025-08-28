@@ -27,9 +27,22 @@ export function FriendshipModal({
     null
   );
 
+  const extractCharacterId = (input: string): string => {
+    const trimmed = input.trim();
+
+    // Try to extract ID from full URL: /legend/abc123 or https://site.com/legend/abc123
+    const urlMatch = trimmed.match(/\/legend\/([a-z0-9]{6})/i);
+    if (urlMatch) {
+      return urlMatch[1];
+    }
+
+    // Otherwise assume it's just the ID
+    return trimmed;
+  };
+
   const handleGenerateShowdown = async () => {
     if (!friendCharacterId.trim()) {
-      setError("Please enter your friend's character ID");
+      setError("Please enter your friend's character ID or share link");
       return;
     }
 
@@ -39,6 +52,8 @@ export function FriendshipModal({
       );
       return;
     }
+
+    const extractedId = extractCharacterId(friendCharacterId);
 
     setLoading(true);
     setError('');
@@ -55,11 +70,15 @@ export function FriendshipModal({
     }, 3000);
 
     try {
-      const report = await generateFriendshipReport(
-        characterId,
-        friendCharacterId.trim()
-      );
-      setShowdownReport(report);
+      const report = await generateFriendshipReport(characterId, extractedId);
+
+      // Redirect to the showdown page instead of showing in modal
+      if (report.showdownId) {
+        window.location.href = `/showdown/${report.showdownId}`;
+      } else {
+        // Fallback if no showdownId - show in modal (shouldn't happen)
+        setShowdownReport(report);
+      }
     } catch (err) {
       setError(
         err instanceof Error ? err.message : 'Failed to generate showdown'
@@ -125,14 +144,14 @@ export function FriendshipModal({
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-semibold text-white mb-2">
-                  Friend's Character ID
+                  Friend's Character ID or Share Link
                 </label>
                 <input
                   type="text"
                   value={friendCharacterId}
                   onChange={(e) => setFriendCharacterId(e.target.value)}
-                  placeholder="e.g., 5xk1je"
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  placeholder="e.g., 5xk1je or paste their full character link"
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                   disabled={loading}
                 />
               </div>

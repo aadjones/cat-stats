@@ -216,13 +216,25 @@ Make it shareable and screenshot-worthy. Reference specific abilities by name. R
       });
     }
 
+    // Generate unique showdown ID (8 characters for uniqueness)
+    const showdownId = Math.random().toString(36).substring(2, 10);
+
     // Add metadata
     const finalReport = {
       ...friendshipReport,
+      showdownId,
       petNames: [char1Data.petName, char2Data.petName],
       compatibility: compatibilityMetrics,
       generatedAt: new Date().toISOString(),
     };
+
+    // Save showdown to KV for sharing
+    try {
+      await kv.set(`showdown:${showdownId}`, finalReport);
+    } catch (saveError) {
+      console.error('Failed to save showdown to KV:', saveError);
+      // Continue anyway - don't block the response
+    }
 
     res.status(200).json(finalReport);
   } catch (error) {

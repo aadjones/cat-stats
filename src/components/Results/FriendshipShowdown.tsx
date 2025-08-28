@@ -17,15 +17,15 @@ export function FriendshipShowdown({
   };
 
   const getRelationshipColor = (score: number) => {
-    if (score >= 70) return 'from-green-600 to-emerald-600';
-    if (score >= 40) return 'from-yellow-600 to-orange-600';
-    return 'from-red-600 to-rose-600';
+    if (score >= 75) return 'from-green-600 to-emerald-600'; // Compatible: Green
+    if (score >= 50) return 'from-yellow-600 to-orange-600'; // Neutral/Truce: Yellow-Orange
+    return 'from-red-600 to-rose-600'; // Enemies: Red
   };
 
   const getRelationshipEmoji = (score: number) => {
-    if (score >= 70) return '🤝';
-    if (score >= 40) return '⚔️';
-    return '💥';
+    if (score >= 75) return '🤝'; // Compatible: Handshake
+    if (score >= 50) return '⚔️'; // Neutral: Crossed swords
+    return '💥'; // Enemies: Explosion
   };
 
   return (
