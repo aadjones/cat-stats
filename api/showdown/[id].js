@@ -1,6 +1,13 @@
 import { kv } from '@vercel/kv';
 
 export default async function handler(req, res) {
+  // Add debugging to see if this route is even being hit
+  console.log('Showdown API route hit with:', {
+    method: req.method,
+    query: req.query,
+    url: req.url
+  });
+
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -22,9 +29,12 @@ export default async function handler(req, res) {
     }
 
     // Load showdown from KV
+    console.log(`Attempting to load showdown with key: showdown:${id}`);
     const showdownData = await kv.get(`showdown:${id}`);
+    console.log('KV lookup result:', showdownData ? 'Found data' : 'No data found');
 
     if (!showdownData) {
+      console.log(`Showdown not found for ID: ${id}`);
       return res.status(404).json({
         error:
           'Showdown not found. It may have been removed or the link is invalid.',

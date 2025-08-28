@@ -228,12 +228,21 @@ Make it shareable and screenshot-worthy. Reference specific abilities by name. R
       generatedAt: new Date().toISOString(),
     };
 
-    // Save showdown to KV for sharing
+    // Save showdown to KV for sharing - this is critical for the showdown page to work
     try {
       await kv.set(`showdown:${showdownId}`, finalReport);
+      console.log(`Successfully saved showdown:${showdownId} to KV`);
     } catch (saveError) {
       console.error('Failed to save showdown to KV:', saveError);
-      // Continue anyway - don't block the response
+      console.error('Showdown save error details:', {
+        showdownId,
+        errorMessage: saveError.message,
+        errorStack: saveError.stack
+      });
+      
+      // Don't redirect user to a broken showdown page - return the data without showdownId
+      const { showdownId: _, ...reportWithoutId } = finalReport;
+      return res.status(200).json(reportWithoutId);
     }
 
     res.status(200).json(finalReport);
