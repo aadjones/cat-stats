@@ -173,20 +173,38 @@
 
                 // Format the result nicely
                 const formatted = `
-                    <h3>✅ Friendship Report Generated!</h3>
-                    <p><strong>Pets:</strong> ${data.petNames.join(' & ')}</p>
-                    <p><strong>Overall Compatibility:</strong> ${data.overallScore}/100</p>
-                    <p><strong>Friendship Type:</strong> ${data.friendshipType}</p>
-                    <p><strong>Chaos Level:</strong> ${data.chaosLevel}</p>
+                    <h2>🏟️ ULTIMATE SHOWDOWN</h2>
+                    <h3>${data.petNames.join(' vs ')}</h3>
                     
-                    <h4>Sections:</h4>
-                    <div><strong>First Meeting:</strong><br>${data.sections.firstMeeting}</div>
-                    <br>
-                    <div><strong>Living Dynamics:</strong><br>${data.sections.livingDynamics}</div>
-                    <br>
-                    <div><strong>Predicted Shenanigans:</strong><br>${data.sections.predictedShenanigans}</div>
-                    <br>
-                    <div><strong>Mutual Support:</strong><br>${data.sections.mutualSupport}</div>
+                    <div style="background: #e6f3ff; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                        <h4>⚔️ ${data.signatureClash.name}</h4>
+                        <p>${data.signatureClash.description}</p>
+                        <p><strong>Compatibility Score:</strong> ${data.overallScore}/100</p>
+                        <p><strong>Relationship Dynamic:</strong> ${data.relationshipDynamic}</p>
+                        <p><strong>Final Verdict:</strong> ${data.finalVerdict}</p>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <details>
+                            <summary><strong>📜 Full Battle Report</strong></summary>
+                            <div style="margin-top: 10px;">${data.expandableSections.fullBattleReport}</div>
+                        </details>
+                        
+                        <details>
+                            <summary><strong>🏠 Living Dynamics</strong></summary>
+                            <div style="margin-top: 10px;">${data.expandableSections.livingDynamics}</div>
+                        </details>
+                        
+                        <details>
+                            <summary><strong>⚡ Signature Moves</strong></summary>
+                            <div style="margin-top: 10px;">${data.expandableSections.signatureMoves}</div>
+                        </details>
+                        
+                        <details>
+                            <summary><strong>🔥 Chaos Incidents</strong></summary>
+                            <div style="margin-top: 10px;">${data.expandableSections.chaosIncidents}</div>
+                        </details>
+                    </div>
 
                     <details>
                         <summary><strong>Raw JSON Response</strong></summary>

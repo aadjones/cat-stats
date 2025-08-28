@@ -50,18 +50,22 @@ export default async function handler(req, res) {
     const compatibilityMetrics = calculateBasicCompatibility(char1Data, char2Data);
 
     // Structure Claude prompt
-    const prompt = `Generate a friendship compatibility report between these two pets. Return your response as valid JSON in this exact format:
+    const prompt = `Generate a friendship compatibility report as an ULTIMATE SHOWDOWN between these two pets. Return your response as valid JSON in this exact format:
 
 {
   "overallScore": 75,
-  "friendshipType": "Partners in Crime",
-  "sections": {
-    "firstMeeting": "Detailed scenario of how they would first meet...",
-    "livingDynamics": "How they would share living space...",
-    "predictedShenanigans": "Adventures and mischief they would get into...",
-    "mutualSupport": "How they would help each other..."
+  "relationshipDynamic": "Legendary Alliance",
+  "signatureClash": {
+    "name": "The Great Blanket Fort Siege",
+    "description": "Dr. Mittens' stretch abilities vs Sente's fortress mastery"
   },
-  "chaosLevel": "Moderate Mayhem"
+  "finalVerdict": "Unstoppable tactical partnership",
+  "expandableSections": {
+    "fullBattleReport": "Detailed dramatic encounter of how they would first meet and establish dominance or alliance...",
+    "livingDynamics": "Day-to-day coexistence predictions, territory sharing, and household hierarchy...",
+    "signatureMoves": "Combined abilities they could perform together, or epic individual clashes if they're rivals...",
+    "chaosIncidents": "Specific mischief scenarios and probability of household mayhem..."
+  }
 }
 
 Pet 1 - ${char1Data.petName}:
@@ -106,7 +110,31 @@ Compatibility Analysis:
 - Social balance: ${compatibilityMetrics.socialBalance}/100
 - Potential conflicts: ${compatibilityMetrics.conflicts.join(', ') || 'None detected'}
 
-Create a humorous but believable friendship report focusing on specific ability interactions. Reference their actual abilities and personality traits. Make it funny but grounded in their real behaviors. Return ONLY valid JSON with no other text.`;
+Create a dramatic ULTIMATE SHOWDOWN report that's humorous and shareable:
+
+RELATIONSHIP DYNAMICS based on compatibility score:
+- 20-40: "Sworn Enemies" / "Eternal Rivals" / "Territory War"
+- 41-70: "Reluctant Truce" / "Competitive Allies" / "Chaos Partners" / "Frenemies"  
+- 71-100: "Legendary Alliance" / "Soulmate Sidekicks" / "Perfect Harmony"
+
+SIGNATURE CLASH should be:
+- A dramatic name like "The Battle of the Sunny Spot" or "Blanket Fort Siege"
+- Brief description highlighting their specific abilities in conflict/cooperation
+- Make it sound epic but playful
+
+FINAL VERDICT should be:
+- One punchy line about the relationship outcome
+- Reference specific abilities or traits
+- Keep it dramatic but fun
+
+EXPANDABLE SECTIONS should be CONCISE but punchy:
+- Keep each section to 2-3 sentences max
+- Use specific abilities, not generic descriptions
+- For enemies: highlight the best conflicts and rivalry moments
+- For allies: focus on their most impressive combined chaos
+- Cut any fluff - only the most entertaining scenarios
+
+Make it shareable and screenshot-worthy. Reference specific abilities by name. Return ONLY valid JSON with no other text.`;
 
     // Call Claude API
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -165,7 +193,9 @@ Create a humorous but believable friendship report focusing on specific ability 
     }
 
     // Validate required fields
-    if (!friendshipReport.overallScore || !friendshipReport.friendshipType || !friendshipReport.sections) {
+    if (!friendshipReport.overallScore || !friendshipReport.relationshipDynamic || 
+        !friendshipReport.signatureClash || !friendshipReport.finalVerdict || 
+        !friendshipReport.expandableSections) {
       return res.status(500).json({
         error: 'Incomplete friendship report received from Claude API',
       });
@@ -190,40 +220,104 @@ Create a humorous but believable friendship report focusing on specific ability 
   }
 }
 
-// Simplified compatibility calculation for API
-// (In production, this would import from the compatibility calculator)
+// Aggressive compatibility calculation for dramatic enemies
 function calculateBasicCompatibility(char1, char2) {
   const stats1 = char1.stats;
   const stats2 = char2.stats;
 
-  // Energy level matching
-  const energy1 = stats1.agility + stats1.boldness;
-  const energy2 = stats2.agility + stats2.boldness;
-  const energyDiff = Math.abs(energy1 - energy2);
-  const energyMatch = Math.max(0, 100 - energyDiff / 2);
-
-  // Social balance
-  const charismaDiff = Math.abs(stats1.charisma - stats2.charisma);
-  const socialBalance = charismaDiff <= 15 ? 85 : 
-                       charismaDiff <= 30 ? 70 : 
-                       charismaDiff <= 50 ? 45 : 25;
-
-  // Potential conflicts
+  let totalPenalty = 0;
   const conflicts = [];
-  if (stats1.boldness > 70 && stats2.boldness > 70) {
-    conflicts.push('Territory disputes');
-  }
-  if (stats1.charisma > 75 && stats2.charisma > 75) {
-    conflicts.push('Attention competition');
+
+  // MAJOR PERSONALITY CLASHES - lowered thresholds for more conflicts
+  
+  // Alpha battle: Both bold = WAR (lowered threshold)
+  if (stats1.boldness > 60 && stats2.boldness > 60) {
+    totalPenalty += 45;
+    conflicts.push('Alpha dominance war');
   }
 
-  // Overall score
-  const overallScore = Math.round((energyMatch + socialBalance) / 2);
+  // Diva clash: Both charismatic = competition hell (lowered threshold)
+  if (stats1.charisma > 65 && stats2.charisma > 65) {
+    totalPenalty += 40;
+    conflicts.push('Attention diva rivalry');
+  }
+
+  // Cunning schemes: Both manipulative = distrust (lowered threshold)
+  if (stats1.cunning > 70 && stats2.cunning > 70) {
+    totalPenalty += 35;
+    conflicts.push('Scheming distrust');
+  }
+
+  // Energy chaos: Big mismatch = incompatible (lowered threshold)
+  const energyDiff = Math.abs((stats1.agility + stats1.boldness) - (stats2.agility + stats2.boldness));
+  if (energyDiff > 60) {
+    totalPenalty += 30;
+    conflicts.push('Energy level chaos');
+  }
+
+  // Wisdom gap: Frustration (lowered threshold)  
+  if (Math.abs(stats1.wisdom - stats2.wisdom) > 45) {
+    totalPenalty += 25;
+    conflicts.push('Intelligence frustration');
+  }
+
+  // Stealth mismatch: Different styles (lowered threshold)
+  if (Math.abs(stats1.stealth - stats2.stealth) > 50) {
+    totalPenalty += 30;
+    conflicts.push('Stealth philosophy clash');
+  }
+
+  // Low resolve = unstable (raised threshold to catch more)
+  if (stats1.resolve < 50 || stats2.resolve < 50) {
+    totalPenalty += 20;
+    conflicts.push('Instability issues');
+  }
+
+  // NEW: Any stat over 85 = diva problems
+  const highStats1 = Object.values(stats1).filter(stat => stat > 85).length;
+  const highStats2 = Object.values(stats2).filter(stat => stat > 85).length;
+  if (highStats1 > 0 && highStats2 > 0) {
+    totalPenalty += 25;
+    conflicts.push('Dual perfectionist clash');
+  }
+
+  // BONUSES for rare good combinations
+  let bonuses = 0;
+  
+  // Perfect complement: high/low pairs that work
+  if ((stats1.wisdom > 80 && stats2.resolve > 80) || (stats2.wisdom > 80 && stats1.resolve > 80)) {
+    bonuses += 20;
+  }
+  
+  // Balanced energy (not too high, not too low, close together)
+  const avgEnergy = ((stats1.agility + stats1.boldness + stats2.agility + stats2.boldness) / 4);
+  if (avgEnergy > 40 && avgEnergy < 70 && energyDiff < 30) {
+    bonuses += 15;
+  }
+
+  // Calculate final score - start very pessimistic
+  let baseScore = 50; // Much lower starting point
+  baseScore -= totalPenalty;
+  baseScore += bonuses;
+
+  // Extra penalty for multiple conflicts (more aggressive)
+  if (conflicts.length >= 3) {
+    baseScore -= 25; // Multiple issues = total disaster
+  } else if (conflicts.length >= 2) {
+    baseScore -= 15; // Two conflicts = major problems
+  }
+
+  // Random chaos factor - sometimes pets just don't click
+  if (conflicts.length > 0 && Math.random() < 0.3) {
+    baseScore -= 10; // Sometimes it's just worse
+  }
+
+  const overallScore = Math.max(8, Math.min(95, Math.round(baseScore)));
 
   return {
     overallScore,
-    energyMatch: Math.round(energyMatch),
-    socialBalance: Math.round(socialBalance),
+    energyMatch: Math.max(10, 80 - Math.round(energyDiff * 0.8)),
+    socialBalance: Math.max(10, 80 - (conflicts.filter(c => c.includes('diva') || c.includes('Alpha')).length * 30)),
     conflicts,
   };
 }

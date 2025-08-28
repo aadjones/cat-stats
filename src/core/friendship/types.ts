@@ -37,15 +37,19 @@ export interface ScenarioCompatibility {
 export interface FriendshipReport {
   petNames: [string, string];
   overallScore: number; // 0-100
-  friendshipType: string; // "Partners in Crime", "Unlikely Duo", etc.
-  compatibility: CompatibilityMetrics;
-  sections: {
-    firstMeeting: string;
-    livingDynamics: string;
-    predictedShenanigans: string;
-    mutualSupport: string;
+  relationshipDynamic: string; // "Legendary Alliance", "Sworn Enemies", etc.
+  signatureClash: {
+    name: string; // "The Great Blanket Fort Siege"
+    description: string; // Brief description of the clash/cooperation
   };
-  chaosLevel: 'Zen' | 'Mild Mischief' | 'Moderate Mayhem' | 'Maximum Chaos';
+  finalVerdict: string; // One-liner outcome
+  compatibility: CompatibilityMetrics;
+  expandableSections: {
+    fullBattleReport: string;
+    livingDynamics: string;
+    signatureMoves: string;
+    chaosIncidents: string;
+  };
 }
 
 export interface FriendshipInput {
