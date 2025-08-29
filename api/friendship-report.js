@@ -237,9 +237,9 @@ Make it shareable and screenshot-worthy. Reference specific abilities by name. R
       console.error('Showdown save error details:', {
         showdownId,
         errorMessage: saveError.message,
-        errorStack: saveError.stack
+        errorStack: saveError.stack,
       });
-      
+
       // Don't redirect user to a broken showdown page - return the data without showdownId
       const { showdownId: _, ...reportWithoutId } = finalReport;
       return res.status(200).json(reportWithoutId);
