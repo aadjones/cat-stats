@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import type { PhaseComponentProps } from '../types';
 
-export function SocialPhase({ 
-  characterSheet, 
-  isActive, 
-  isVisible 
+export function SocialPhase({
+  characterSheet,
+  isActive,
+  isVisible,
 }: PhaseComponentProps) {
   const { characterData } = characterSheet;
   const [currentSkill, setCurrentSkill] = useState<number>(0);
@@ -20,7 +20,7 @@ export function SocialPhase({
 
     // Show first skill immediately
     setCurrentSkill(1);
-    
+
     // Show first skill modifiers after 2 seconds
     const modifier1Timer = setTimeout(() => {
       setShowModifiers(1);
@@ -50,7 +50,9 @@ export function SocialPhase({
   const socialSkills = characterData.socialSkills.slice(0, 2);
 
   return (
-    <div className={`social-section ${isActive ? 'animate-in' : 'visible'} mb-4`}>
+    <div
+      className={`social-section ${isActive ? 'animate-in' : 'visible'} mb-4`}
+    >
       <div className="text-center mb-6">
         <h3 className="text-white text-xl font-bold">Social Skills</h3>
       </div>
@@ -60,7 +62,7 @@ export function SocialPhase({
           const skillNumber = index + 1;
           const isVisible = currentSkill >= skillNumber;
           const isCurrentSkill = currentSkill === skillNumber;
-          
+
           return (
             <div
               key={skill.name}
@@ -78,10 +80,12 @@ export function SocialPhase({
               <div className="text-white/90 text-sm text-center leading-relaxed">
                 {skill.description}
               </div>
-              <div className={`
+              <div
+                className={`
                 text-yellow-400/60 text-xs text-center mt-2 transition-all duration-500
                 ${showModifiers >= skillNumber ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}
-              `}>
+              `}
+              >
                 {skill.stats}
               </div>
             </div>
@@ -91,12 +95,16 @@ export function SocialPhase({
 
       {/* Progress indicator */}
       <div className="flex justify-center mt-6 space-x-2">
-        <div className={`w-2 h-2 rounded-full transition-all duration-300 ${
-          currentSkill >= 1 ? 'bg-yellow-400' : 'bg-white/20'
-        }`} />
-        <div className={`w-2 h-2 rounded-full transition-all duration-300 ${
-          currentSkill >= 2 ? 'bg-yellow-400' : 'bg-white/20'
-        }`} />
+        <div
+          className={`w-2 h-2 rounded-full transition-all duration-300 ${
+            currentSkill >= 1 ? 'bg-yellow-400' : 'bg-white/20'
+          }`}
+        />
+        <div
+          className={`w-2 h-2 rounded-full transition-all duration-300 ${
+            currentSkill >= 2 ? 'bg-yellow-400' : 'bg-white/20'
+          }`}
+        />
       </div>
     </div>
   );

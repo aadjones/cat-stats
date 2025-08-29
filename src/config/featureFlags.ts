@@ -7,6 +7,7 @@ export const FEATURE_FLAGS = {
 
   // Debug features
   SHOW_DEBUG_BUTTON: true, // "See Example" button
+  SHOW_ANIMATION_DEBUG_CONTROLS: false, // Pause/restart/phase controls in animated share card
 
   // Future features (examples)
   ENABLE_PHOTO_UPLOAD: true,

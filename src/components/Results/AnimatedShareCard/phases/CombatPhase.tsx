@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import type { PhaseComponentProps } from '../types';
 
-export function CombatPhase({ 
-  characterSheet, 
-  isActive, 
-  isVisible 
+export function CombatPhase({
+  characterSheet,
+  isActive,
+  isVisible,
 }: PhaseComponentProps) {
   const { characterData } = characterSheet;
   const [currentMove, setCurrentMove] = useState<number>(0);
@@ -20,7 +20,7 @@ export function CombatPhase({
 
     // Show first move immediately
     setCurrentMove(1);
-    
+
     // Show first move modifiers after 2 seconds
     const modifier1Timer = setTimeout(() => {
       setShowModifiers(1);
@@ -50,7 +50,9 @@ export function CombatPhase({
   const combatMoves = characterData.combatMoves.slice(0, 2);
 
   return (
-    <div className={`combat-section ${isActive ? 'animate-in' : 'visible'} mb-4`}>
+    <div
+      className={`combat-section ${isActive ? 'animate-in' : 'visible'} mb-4`}
+    >
       <div className="text-center mb-6">
         <h3 className="text-white text-xl font-bold">Combat Arsenal</h3>
       </div>
@@ -60,7 +62,7 @@ export function CombatPhase({
           const moveNumber = index + 1;
           const isVisible = currentMove >= moveNumber;
           const isCurrentMove = currentMove === moveNumber;
-          
+
           return (
             <div
               key={move.name}
@@ -78,10 +80,12 @@ export function CombatPhase({
               <div className="text-white/90 text-sm text-center leading-relaxed">
                 {move.description}
               </div>
-              <div className={`
+              <div
+                className={`
                 text-red-400/60 text-xs text-center mt-2 transition-all duration-500
                 ${showModifiers >= moveNumber ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}
-              `}>
+              `}
+              >
                 {move.stats}
               </div>
             </div>
@@ -91,12 +95,16 @@ export function CombatPhase({
 
       {/* Progress indicator */}
       <div className="flex justify-center mt-6 space-x-2">
-        <div className={`w-2 h-2 rounded-full transition-all duration-300 ${
-          currentMove >= 1 ? 'bg-red-400' : 'bg-white/20'
-        }`} />
-        <div className={`w-2 h-2 rounded-full transition-all duration-300 ${
-          currentMove >= 2 ? 'bg-red-400' : 'bg-white/20'
-        }`} />
+        <div
+          className={`w-2 h-2 rounded-full transition-all duration-300 ${
+            currentMove >= 1 ? 'bg-red-400' : 'bg-white/20'
+          }`}
+        />
+        <div
+          className={`w-2 h-2 rounded-full transition-all duration-300 ${
+            currentMove >= 2 ? 'bg-red-400' : 'bg-white/20'
+          }`}
+        />
       </div>
     </div>
   );

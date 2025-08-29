@@ -12,7 +12,7 @@ export function SignoffPhase({ isActive, isVisible }: PhaseComponentProps) {
           Turn your pet into a legend at
         </div>
         <div className="text-white font-bold text-lg">
-          cat-stats-six.vercel.app/
+          cat-stats-six.vercel.app
         </div>
       </div>
     </div>

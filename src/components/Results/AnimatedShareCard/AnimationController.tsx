@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { AnimationPhase, AnimatedShareCardProps } from './types';
 import { ANIMATION_CONFIG, PHASE_ORDER } from './config';
+import { FEATURE_FLAGS } from '../../../config/featureFlags';
 import { IntroPhase } from './phases/IntroPhase';
 import { AnalyzingPhase } from './phases/AnalyzingPhase';
 import { StatsPhase } from './phases/StatsPhase';
@@ -52,9 +53,11 @@ export function AnimationController({
       {/* Persistent Pet Header */}
       <div className="text-center mb-8">
         {characterSheet.petPhoto && (
-          <div className={`pet-photo w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-4 border-white/40 bg-white/10 ${
-            currentPhase === 'intro' ? 'animate-scale-in' : ''
-          }`}>
+          <div
+            className={`pet-photo w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-4 border-white/40 bg-white/10 ${
+              currentPhase === 'intro' ? 'animate-scale-in' : ''
+            }`}
+          >
             <img
               src={characterSheet.petPhoto}
               alt={characterSheet.petName}
@@ -62,14 +65,22 @@ export function AnimationController({
             />
           </div>
         )}
-        <h1 className={`pet-name text-3xl font-bold text-white mb-2 ${
-          currentPhase === 'intro' ? 'animate-typewriter' : 'visible-permanent'
-        }`}>
+        <h1
+          className={`pet-name text-3xl font-bold text-white mb-2 ${
+            currentPhase === 'intro'
+              ? 'animate-typewriter'
+              : 'visible-permanent'
+          }`}
+        >
           {characterSheet.petName.toUpperCase()}
         </h1>
-        <p className={`archetype text-white/90 text-xl font-medium ${
-          currentPhase === 'intro' ? 'animate-fade-in-delayed' : 'visible-permanent'
-        }`}>
+        <p
+          className={`archetype text-white/90 text-xl font-medium ${
+            currentPhase === 'intro'
+              ? 'animate-fade-in-delayed'
+              : 'visible-permanent'
+          }`}
+        >
           {characterSheet.characterData.archetype}
         </p>
       </div>
@@ -132,23 +143,25 @@ export function AnimationController({
       </div>
 
       {/* Debug controls */}
-      <div className="absolute top-2 right-2 flex gap-1">
-        <button
-          onClick={() => setIsPlaying(!isPlaying)}
-          className="bg-black/50 text-white text-xs px-2 py-1 rounded"
-        >
-          {isPlaying ? '⏸️' : '▶️'}
-        </button>
-        <button
-          onClick={() => setCurrentPhase('intro')}
-          className="bg-black/50 text-white text-xs px-2 py-1 rounded"
-        >
-          🔄
-        </button>
-        <div className="bg-black/50 text-white text-xs px-2 py-1 rounded">
-          {currentPhase}
+      {FEATURE_FLAGS.SHOW_ANIMATION_DEBUG_CONTROLS && (
+        <div className="absolute top-2 right-2 flex gap-1">
+          <button
+            onClick={() => setIsPlaying(!isPlaying)}
+            className="bg-black/50 text-white text-xs px-2 py-1 rounded"
+          >
+            {isPlaying ? '⏸️' : '▶️'}
+          </button>
+          <button
+            onClick={() => setCurrentPhase('intro')}
+            className="bg-black/50 text-white text-xs px-2 py-1 rounded"
+          >
+            🔄
+          </button>
+          <div className="bg-black/50 text-white text-xs px-2 py-1 rounded">
+            {currentPhase}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
