@@ -12,7 +12,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "format": "prettier --write .",
-    "prepare": "node -e \"if (process.env.NODE_ENV !== 'production') require('husky').install()\""
+    "prepare": "node .husky/install.mjs"
   },
   "dependencies": {
     "@vercel/blob": "^1.1.1",
