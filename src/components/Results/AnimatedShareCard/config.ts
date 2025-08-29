@@ -2,21 +2,23 @@ import type { AnimationConfig } from './types';
 
 export const ANIMATION_CONFIG: AnimationConfig = {
   phases: {
-    intro: 3000, // 3s: Welcome + analyzing
+    intro: 4000, // 4s: Pet photo + name + archetype with typewriter
+    analyzing: 2000, // 2s: Analyzing legendary abilities message
     stats: 8000, // 8s: Radar chart animation (6s spokes + 2s polygon)
-    combat: 6000, // 6s: Combat moves (3s each for 2 moves)
-    environmental: 6000, // 6s: Environmental powers (3s each for 2 powers)
-    social: 6000, // 6s: Social skills (3s each for 2 skills)
-    passive: 6000, // 6s: Passive traits (3s each for 2 traits)
+    combat: 10000, // 10s: Combat moves (6s animation + 4s pause)
+    environmental: 10000, // 10s: Environmental powers (6s animation + 4s pause)  
+    social: 10000, // 10s: Social skills (6s animation + 4s pause)
+    passive: 10000, // 10s: Passive traits (6s animation + 4s pause)
     vulnerability: 3000, // 3s: Vulnerability reveal
     signoff: 3000, // 3s: Branding
     loop: 1000, // 1s: Brief pause before loop
   },
-  totalDuration: 42000, // Total cycle time
+  totalDuration: 58000, // Total cycle time (4+2+8+10+10+10+10+3+3+1 = 58s)
 };
 
 export const PHASE_ORDER: Array<keyof typeof ANIMATION_CONFIG.phases> = [
   'intro',
+  'analyzing',
   'stats',
   'combat',
   'environmental',

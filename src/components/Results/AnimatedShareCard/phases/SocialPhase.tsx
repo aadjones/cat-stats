@@ -21,21 +21,21 @@ export function SocialPhase({
     // Show first skill immediately
     setCurrentSkill(1);
     
-    // Show first skill modifiers after 1.5 seconds
+    // Show first skill modifiers after 2 seconds
     const modifier1Timer = setTimeout(() => {
       setShowModifiers(1);
-    }, 1500);
+    }, 2000);
 
-    // Show second skill after 3 seconds
+    // Show second skill after 4 seconds
     const skill2Timer = setTimeout(() => {
       setCurrentSkill(2);
       setShowModifiers(1); // Reset modifiers
-    }, 3000);
+    }, 4000);
 
-    // Show second skill modifiers after 4.5 seconds
+    // Show second skill modifiers after 6 seconds
     const modifier2Timer = setTimeout(() => {
       setShowModifiers(2);
-    }, 4500);
+    }, 6000);
 
     return () => {
       clearTimeout(modifier1Timer);

@@ -8,6 +8,7 @@ export interface Theme {
 
 export type AnimationPhase =
   | 'intro'
+  | 'analyzing'
   | 'stats'
   | 'combat'
   | 'environmental'

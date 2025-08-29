@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import type { AnimationPhase, AnimatedShareCardProps } from './types';
 import { ANIMATION_CONFIG, PHASE_ORDER } from './config';
 import { IntroPhase } from './phases/IntroPhase';
+import { AnalyzingPhase } from './phases/AnalyzingPhase';
 import { StatsPhase } from './phases/StatsPhase';
 import { CombatPhase } from './phases/CombatPhase';
 import { EnvironmentalPhase } from './phases/EnvironmentalPhase';
@@ -51,7 +52,9 @@ export function AnimationController({
       {/* Persistent Pet Header */}
       <div className="text-center mb-8">
         {characterSheet.petPhoto && (
-          <div className="pet-photo w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-4 border-white/40 bg-white/10">
+          <div className={`pet-photo w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-4 border-white/40 bg-white/10 ${
+            currentPhase === 'intro' ? 'animate-scale-in' : ''
+          }`}>
             <img
               src={characterSheet.petPhoto}
               alt={characterSheet.petName}
@@ -59,10 +62,14 @@ export function AnimationController({
             />
           </div>
         )}
-        <h1 className="pet-name text-3xl font-bold text-white mb-2">
+        <h1 className={`pet-name text-3xl font-bold text-white mb-2 ${
+          currentPhase === 'intro' ? 'animate-typewriter' : 'visible-permanent'
+        }`}>
           {characterSheet.petName.toUpperCase()}
         </h1>
-        <p className="archetype text-white/90 text-xl font-medium">
+        <p className={`archetype text-white/90 text-xl font-medium ${
+          currentPhase === 'intro' ? 'animate-fade-in-delayed' : 'visible-permanent'
+        }`}>
           {characterSheet.characterData.archetype}
         </p>
       </div>
@@ -73,6 +80,12 @@ export function AnimationController({
           characterSheet={characterSheet}
           theme={theme}
           {...getPhaseClass('intro')}
+        />
+
+        <AnalyzingPhase
+          characterSheet={characterSheet}
+          theme={theme}
+          {...getPhaseClass('analyzing')}
         />
 
         <StatsPhase

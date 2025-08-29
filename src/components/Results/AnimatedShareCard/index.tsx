@@ -57,14 +57,37 @@ export function AnimatedShareCard(props: AnimatedShareCardProps) {
           animation: scaleIn 1s ease-out 0.3s both;
         }
         
-        .pet-name {
-          animation: fadeInUp 0.8s ease-out 0.8s both;
+        .animate-scale-in {
+          animation: scaleIn 1s ease-out 0s forwards;
+        }
+        
+        .animate-typewriter {
+          overflow: hidden;
+          white-space: nowrap;
+          animation: typewriter 2s steps(20) 1s forwards;
+          width: 0;
+          opacity: 1;
+        }
+        
+        .animate-fade-in-delayed {
           opacity: 0;
+          animation: fadeInUp 0.8s ease-out 3.2s forwards;
+        }
+        
+        .pet-name {
+          opacity: 0; /* Start invisible, but typewriter animation will show it */
+        }
+        
+        .pet-name.animate-typewriter {
+          opacity: 1; /* Override to visible when typewriter is active */
         }
         
         .archetype {
-          animation: fadeInUp 0.8s ease-out 1.2s both;
-          opacity: 0;
+          opacity: 0; /* Start invisible */
+        }
+        
+        .visible-permanent {
+          opacity: 1 !important;
         }
         
         @keyframes fadeInUp {

@@ -21,21 +21,21 @@ export function PassivePhase({
     // Show first trait immediately
     setCurrentTrait(1);
     
-    // Show first trait modifiers after 1.5 seconds
+    // Show first trait modifiers after 2 seconds
     const modifier1Timer = setTimeout(() => {
       setShowModifiers(1);
-    }, 1500);
+    }, 2000);
 
-    // Show second trait after 3 seconds
+    // Show second trait after 4 seconds
     const trait2Timer = setTimeout(() => {
       setCurrentTrait(2);
       setShowModifiers(1); // Reset modifiers
-    }, 3000);
+    }, 4000);
 
-    // Show second trait modifiers after 4.5 seconds
+    // Show second trait modifiers after 6 seconds
     const modifier2Timer = setTimeout(() => {
       setShowModifiers(2);
-    }, 4500);
+    }, 6000);
 
     return () => {
       clearTimeout(modifier1Timer);

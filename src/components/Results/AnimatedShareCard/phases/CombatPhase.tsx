@@ -21,21 +21,21 @@ export function CombatPhase({
     // Show first move immediately
     setCurrentMove(1);
     
-    // Show first move modifiers after 1.5 seconds
+    // Show first move modifiers after 2 seconds
     const modifier1Timer = setTimeout(() => {
       setShowModifiers(1);
-    }, 1500);
+    }, 2000);
 
-    // Show second move after 3 seconds
+    // Show second move after 4 seconds
     const move2Timer = setTimeout(() => {
       setCurrentMove(2);
       setShowModifiers(1); // Reset modifiers
-    }, 3000);
+    }, 4000);
 
-    // Show second move modifiers after 4.5 seconds
+    // Show second move modifiers after 6 seconds
     const modifier2Timer = setTimeout(() => {
       setShowModifiers(2);
-    }, 4500);
+    }, 6000);
 
     return () => {
       clearTimeout(modifier1Timer);
