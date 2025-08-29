@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   console.log('Showdown API route hit with:', {
     method: req.method,
     query: req.query,
-    url: req.url
+    url: req.url,
   });
 
   if (req.method !== 'GET') {
@@ -31,7 +31,10 @@ export default async function handler(req, res) {
     // Load showdown from KV
     console.log(`Attempting to load showdown with key: showdown:${id}`);
     const showdownData = await kv.get(`showdown:${id}`);
-    console.log('KV lookup result:', showdownData ? 'Found data' : 'No data found');
+    console.log(
+      'KV lookup result:',
+      showdownData ? 'Found data' : 'No data found'
+    );
 
     if (!showdownData) {
       console.log(`Showdown not found for ID: ${id}`);

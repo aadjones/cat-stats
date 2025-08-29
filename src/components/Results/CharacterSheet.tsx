@@ -4,6 +4,7 @@ import { Button } from '../UI/Button';
 import { StatsRadarChart } from './StatsRadarChart';
 import { AbilityCard } from './AbilityCard';
 import { ShareableCard } from './ShareableCard';
+import { AnimatedShareCard } from './AnimatedShareCard/index';
 import { FriendshipModal } from './FriendshipModal';
 import {
   shareCharacterSheet,
@@ -38,6 +39,7 @@ export function CharacterSheet({
   const { characterData, stats, petName, petPhoto } = characterSheet;
   const [isSharing, setIsSharing] = useState(false);
   const [showFriendshipModal, setShowFriendshipModal] = useState(false);
+  const [showAnimatedCard, setShowAnimatedCard] = useState(false);
   const capabilities = getShareCapabilities();
 
   const handleShare = async () => {
@@ -179,6 +181,15 @@ export function CharacterSheet({
             size="sm"
           >
             ⚔️ Compare with Friends
+          </Button>
+
+          <Button
+            onClick={() => setShowAnimatedCard(true)}
+            variant="primary"
+            className="flex items-center justify-center gap-2"
+            size="sm"
+          >
+            🎬 Animated Preview
           </Button>
 
           {isFeatureEnabled('SHOW_SEPARATE_DOWNLOAD_BUTTON') && (
@@ -343,6 +354,28 @@ export function CharacterSheet({
           characterId={characterId}
           onClose={() => setShowFriendshipModal(false)}
         />
+      )}
+
+      {/* Animated Share Card Modal */}
+      {showAnimatedCard && (
+        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4">
+          <div className="relative">
+            <AnimatedShareCard
+              characterSheet={characterSheet}
+              theme={theme}
+              onAnimationComplete={() => {
+                // Could add loop counter here if needed
+              }}
+            />
+            <button
+              onClick={() => setShowAnimatedCard(false)}
+              className="absolute -top-4 -right-4 bg-white/20 hover:bg-white/30 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg"
+              aria-label="Close animated preview"
+            >
+              ×
+            </button>
+          </div>
+        </div>
       )}
     </>
   );
