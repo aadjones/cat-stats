@@ -8,23 +8,40 @@ export function CombatPhase({
 }: PhaseComponentProps) {
   const { characterData } = characterSheet;
   const [currentMove, setCurrentMove] = useState<number>(0);
+  const [showModifiers, setShowModifiers] = useState<number>(0);
 
   // Two-part animation: show each combat move for 3 seconds
   useEffect(() => {
     if (!isActive) {
       setCurrentMove(0);
+      setShowModifiers(0);
       return;
     }
 
     // Show first move immediately
     setCurrentMove(1);
+    
+    // Show first move modifiers after 1.5 seconds
+    const modifier1Timer = setTimeout(() => {
+      setShowModifiers(1);
+    }, 1500);
 
     // Show second move after 3 seconds
-    const timer = setTimeout(() => {
+    const move2Timer = setTimeout(() => {
       setCurrentMove(2);
+      setShowModifiers(1); // Reset modifiers
     }, 3000);
 
-    return () => clearTimeout(timer);
+    // Show second move modifiers after 4.5 seconds
+    const modifier2Timer = setTimeout(() => {
+      setShowModifiers(2);
+    }, 4500);
+
+    return () => {
+      clearTimeout(modifier1Timer);
+      clearTimeout(move2Timer);
+      clearTimeout(modifier2Timer);
+    };
   }, [isActive]);
 
   if (!isVisible) return null;
@@ -61,7 +78,10 @@ export function CombatPhase({
               <div className="text-white/90 text-sm text-center leading-relaxed">
                 {move.description}
               </div>
-              <div className="text-red-400/60 text-xs text-center mt-2">
+              <div className={`
+                text-red-400/60 text-xs text-center mt-2 transition-all duration-500
+                ${showModifiers >= moveNumber ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}
+              `}>
                 {move.stats}
               </div>
             </div>
