@@ -63,12 +63,14 @@ Transform your pet into a legendary RPG character! CatStats is a personality ana
 - `npm run lint` - Run ESLint
 - `npm run format` - Format code with Prettier
 - `npm test` - Run Jest tests
+- `npm run test:watch` - Run tests in watch mode
+- `npm run typecheck` - Run TypeScript type checking
 - `vercel dev` - Start with API functionality
 
 ### Architecture
 
-- **Frontend**: React 19 + TypeScript + Vite
-- **Styling**: Tailwind CSS v4
+- **Frontend**: React 18 + TypeScript + Vite
+- **Styling**: Tailwind CSS v3
 - **API**: Vercel Functions (serverless)
 - **AI Integration**: Anthropic Claude API
 - **Testing**: Jest + React Testing Library
@@ -83,4 +85,4 @@ Deploy to Vercel:
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) file for details.
+All Rights Reserved - see [LICENSE](LICENSE) file for details.
