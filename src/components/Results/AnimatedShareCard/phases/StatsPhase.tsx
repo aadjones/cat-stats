@@ -10,6 +10,7 @@ export function StatsPhase({
   const { stats } = characterSheet;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [animatedSpokes, setAnimatedSpokes] = useState<number>(0);
+  const [showPolygon, setShowPolygon] = useState<boolean>(false);
 
   const statLabels = useMemo(() => [
     'Wisdom',
@@ -32,14 +33,15 @@ export function StatsPhase({
   // Animated radar chart drawing function
   const drawAnimatedRadarChart = useCallback((
     canvas: HTMLCanvasElement,
-    spokesVisible: number
+    spokesVisible: number,
+    drawPolygon: boolean
   ) => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const radius = Math.min(canvas.width, canvas.height) * 0.35;
+    const radius = Math.min(canvas.width, canvas.height) * 0.30; // Smaller for more compact
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -66,21 +68,21 @@ export function StatsPhase({
       ctx.lineWidth = 2;
       ctx.stroke();
 
-      // Draw label
-      const labelDistance = radius + 25;
+      // Draw label - smaller and more compact
+      const labelDistance = radius + 18; // Closer to chart
       const labelX = centerX + Math.cos(angle) * labelDistance;
       const labelY = centerY + Math.sin(angle) * labelDistance;
 
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-      ctx.font = 'bold 12px system-ui';
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+      ctx.font = 'bold 10px system-ui'; // Smaller font
       const text = `${statLabels[i]}: ${statValues[i]}`;
       const textMetrics = ctx.measureText(text);
 
       ctx.fillRect(
-        labelX - textMetrics.width / 2 - 4,
-        labelY - 8,
-        textMetrics.width + 8,
-        16
+        labelX - textMetrics.width / 2 - 3,
+        labelY - 6,
+        textMetrics.width + 6,
+        12
       );
 
       ctx.fillStyle = 'white';
@@ -89,8 +91,8 @@ export function StatsPhase({
       ctx.fillText(text, labelX, labelY);
     }
 
-    // Draw data polygon if all spokes are visible
-    if (spokesVisible >= statLabels.length) {
+    // Draw data polygon if requested
+    if (drawPolygon && spokesVisible >= statLabels.length) {
       ctx.beginPath();
       for (let i = 0; i < statValues.length; i++) {
         const angle = (i * 2 * Math.PI) / statValues.length - Math.PI / 2;
@@ -139,21 +141,28 @@ export function StatsPhase({
   useEffect(() => {
     if (!isActive) {
       setAnimatedSpokes(0);
+      setShowPolygon(false);
       return;
     }
 
     const spokeTimers: NodeJS.Timeout[] = [];
 
-    // Animate each spoke with 800ms delay
+    // Animate each spoke with 1 second delay (6 seconds total)
     for (let i = 0; i < statLabels.length; i++) {
       const timer = setTimeout(() => {
         setAnimatedSpokes(i + 1);
-      }, i * 800);
+      }, i * 1000);
       spokeTimers.push(timer);
     }
 
+    // Show polygon at second 6 (after all spokes are drawn)
+    const polygonTimer = setTimeout(() => {
+      setShowPolygon(true);
+    }, 6000);
+
     return () => {
       spokeTimers.forEach((timer) => clearTimeout(timer));
+      clearTimeout(polygonTimer);
     };
   }, [isActive, statLabels.length]);
 
@@ -162,11 +171,11 @@ export function StatsPhase({
     if (!canvasRef.current || !isVisible) return;
 
     const canvas = canvasRef.current;
-    canvas.width = 280;
-    canvas.height = 280;
+    canvas.width = 260; // Smaller canvas for more compact layout
+    canvas.height = 260;
 
-    drawAnimatedRadarChart(canvas, animatedSpokes);
-  }, [animatedSpokes, isVisible, drawAnimatedRadarChart]);
+    drawAnimatedRadarChart(canvas, animatedSpokes, showPolygon);
+  }, [animatedSpokes, showPolygon, isVisible, drawAnimatedRadarChart]);
 
   if (!isVisible) return null;
 
@@ -181,7 +190,7 @@ export function StatsPhase({
         <canvas
           ref={canvasRef}
           className="rounded-lg bg-black/20 border border-white/20"
-          style={{ width: '280px', height: '280px' }}
+          style={{ width: '260px', height: '260px' }}
         />
       </div>
     </div>
