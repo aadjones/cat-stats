@@ -57,7 +57,10 @@ export function SocialPhase({
         <h3 className="text-white text-xl font-bold">Social Skills</h3>
       </div>
 
-      <div className="space-y-4 max-w-sm mx-auto">
+      <div
+        className="space-y-4 max-w-sm mx-auto"
+        style={{ display: 'flex', flexDirection: 'column' }}
+      >
         {socialSkills.map((skill, index) => {
           const skillNumber = index + 1;
           const isVisible = currentSkill >= skillNumber;

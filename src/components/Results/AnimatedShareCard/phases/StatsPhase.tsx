@@ -221,8 +221,11 @@ export function StatsPhase({
     if (!canvasRef.current || !isVisible) return;
 
     const canvas = canvasRef.current;
-    canvas.width = 260; // Smaller canvas for more compact layout
-    canvas.height = 260;
+    // Make canvas responsive to container size
+    const containerWidth = canvas.parentElement?.clientWidth || 260;
+    const size = Math.min(260, containerWidth - 40); // Leave some margin
+    canvas.width = size;
+    canvas.height = size;
 
     drawAnimatedRadarChart(canvas, animatedSpokes, spokeProgress, showPolygon);
   }, [
@@ -246,7 +249,11 @@ export function StatsPhase({
         <canvas
           ref={canvasRef}
           className="rounded-lg bg-black/20 border border-white/20"
-          style={{ width: '260px', height: '260px' }}
+          style={{
+            width: 'min(260px, calc(100% - 40px))',
+            height: 'min(260px, calc(100% - 40px))',
+            aspectRatio: '1/1',
+          }}
         />
       </div>
     </div>

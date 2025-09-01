@@ -57,7 +57,10 @@ export function CombatPhase({
         <h3 className="text-white text-xl font-bold">Combat Arsenal</h3>
       </div>
 
-      <div className="space-y-4 max-w-sm mx-auto">
+      <div
+        className="space-y-4 max-w-sm mx-auto"
+        style={{ display: 'flex', flexDirection: 'column' }}
+      >
         {combatMoves.map((move, index) => {
           const moveNumber = index + 1;
           const isVisible = currentMove >= moveNumber;

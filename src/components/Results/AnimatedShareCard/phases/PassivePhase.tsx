@@ -57,7 +57,10 @@ export function PassivePhase({
         <h3 className="text-white text-xl font-bold">Passive Traits</h3>
       </div>
 
-      <div className="space-y-4 max-w-sm mx-auto">
+      <div
+        className="space-y-4 max-w-sm mx-auto"
+        style={{ display: 'flex', flexDirection: 'column' }}
+      >
         {passiveTraits.map((trait, index) => {
           const traitNumber = index + 1;
           const isVisible = currentTrait >= traitNumber;

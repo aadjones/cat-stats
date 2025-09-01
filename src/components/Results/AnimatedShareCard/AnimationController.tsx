@@ -11,6 +11,7 @@ import { SocialPhase } from './phases/SocialPhase';
 import { PassivePhase } from './phases/PassivePhase';
 import { VulnerabilityPhase } from './phases/VulnerabilityPhase';
 import { SignoffPhase } from './phases/SignoffPhase';
+import { LoopPhase } from './phases/LoopPhase';
 
 export function AnimationController({
   characterSheet,
@@ -50,8 +51,12 @@ export function AnimationController({
 
   return (
     <div className="absolute inset-0 p-6 flex flex-col">
-      {/* Persistent Pet Header */}
-      <div className="text-center mb-8">
+      {/* Pet Header - fades out during loop phase */}
+      <div
+        className={`text-center mb-8 transition-opacity duration-1000 ${
+          currentPhase === 'loop' ? 'opacity-0' : 'opacity-100'
+        }`}
+      >
         {characterSheet.petPhoto && (
           <div
             className={`pet-photo w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-4 border-white/40 bg-white/10 ${
@@ -139,6 +144,12 @@ export function AnimationController({
           characterSheet={characterSheet}
           theme={theme}
           {...getPhaseClass('signoff')}
+        />
+
+        <LoopPhase
+          characterSheet={characterSheet}
+          theme={theme}
+          {...getPhaseClass('loop')}
         />
       </div>
 

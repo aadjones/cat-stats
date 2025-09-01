@@ -57,7 +57,10 @@ export function EnvironmentalPhase({
         <h3 className="text-white text-xl font-bold">Environmental Powers</h3>
       </div>
 
-      <div className="space-y-4 max-w-sm mx-auto">
+      <div
+        className="space-y-4 max-w-sm mx-auto"
+        style={{ display: 'flex', flexDirection: 'column' }}
+      >
         {environmentalPowers.map((power, index) => {
           const powerNumber = index + 1;
           const isVisible = currentPower >= powerNumber;
