@@ -21,21 +21,21 @@ export function EnvironmentalPhase({
     // Show first power immediately
     setCurrentPower(1);
 
-    // Show first power modifiers after 2 seconds
+    // Show first power modifiers after 3 seconds
     const modifier1Timer = setTimeout(() => {
       setShowModifiers(1);
-    }, 2000);
+    }, 3000);
 
-    // Show second power after 4 seconds
+    // Show second power after 6 seconds
     const power2Timer = setTimeout(() => {
       setCurrentPower(2);
       setShowModifiers(1); // Reset modifiers
-    }, 4000);
+    }, 6000);
 
-    // Show second power modifiers after 6 seconds
+    // Show second power modifiers after 9 seconds
     const modifier2Timer = setTimeout(() => {
       setShowModifiers(2);
-    }, 6000);
+    }, 9000);
 
     return () => {
       clearTimeout(modifier1Timer);

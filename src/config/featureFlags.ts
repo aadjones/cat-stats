@@ -9,6 +9,9 @@ export const FEATURE_FLAGS = {
   SHOW_DEBUG_BUTTON: true, // "See Example" button
   SHOW_ANIMATION_DEBUG_CONTROLS: false, // Pause/restart/phase controls in animated share card
 
+  // Animation features
+  SHOW_PASSIVE_TRAITS_PHASE: false, // Set to false to skip passive traits in animation
+
   // Future features (examples)
   ENABLE_PHOTO_UPLOAD: true,
   ENABLE_SOCIAL_SHARING: true,
