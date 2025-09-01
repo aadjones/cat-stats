@@ -1,6 +1,7 @@
 import type { UserAnswers, CharacterData } from '../../core/personality/types';
 import { openEndedQuestions } from '../../core/personality/questions';
 import { parseCharacterData } from '../../core/validation/jsonParsing';
+import { API_CONFIG } from '../../config/featureFlags';
 
 export const LOADING_MESSAGES = [
   "Analyzing your pet's personality... 🤔",
@@ -109,7 +110,7 @@ Create videogame-style abilities based on the pet's behaviors. Make ability name
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: API_CONFIG.CLAUDE_MODEL,
         max_tokens: 2000,
         messages: [
           {

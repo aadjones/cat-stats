@@ -35,3 +35,14 @@ export function getFeatureFlags() {
 
   return flags;
 }
+
+// API Configuration
+export const API_CONFIG = {
+  // Choose between Claude models by commenting/uncommenting:
+  // CLAUDE_MODEL: 'claude-3-5-haiku-20241022' as const, // Faster and cheaper
+  CLAUDE_MODEL: 'claude-sonnet-4-20250514' as const, // Best quality (~5-10s) and reasoning, slower and more expensive
+} as const;
+
+export type ClaudeModel =
+  | 'claude-3-5-haiku-20241022'
+  | 'claude-sonnet-4-20250514';
