@@ -3,21 +3,19 @@ import type {
   UserAnswers,
   CharacterSheet as CharacterSheetData,
 } from '../core/personality/types';
-import { calculatePetStats } from '../core/personality/statsCalculator';
 import {
-  generateCharacterData,
   getColorTheme,
   generateTextExport,
-  validateQuestionnaireForm,
-  LOADING_MESSAGES,
+  CharacterWorkflowService,
 } from '../services';
-import { loadCharacter, saveCharacter } from '../services/characterStorage';
 import { isFeatureEnabled } from '../config/featureFlags';
 import { QuestionnaireForm } from './Questionnaire/QuestionnaireForm';
 import { CharacterSheet } from './Results/CharacterSheet';
 import { ShowdownPage } from './Results/ShowdownPage';
 import { LoadingOverlay } from './UI/LoadingOverlay';
 import { Button } from './UI/Button';
+import { ErrorBoundary } from './ErrorBoundary/ErrorBoundary';
+import { CharacterGenerationErrorBoundary } from './ErrorBoundary/CharacterGenerationErrorBoundary';
 
 type AppStep = 'questionnaire' | 'result' | 'showdown';
 
@@ -35,39 +33,30 @@ export function PetPersonalityAnalyzer() {
   // Check for shared character or showdown URL on mount
   useEffect(() => {
     const checkForSharedContent = async () => {
-      const path = window.location.pathname;
-      const legendMatch = path.match(/^\/legend\/([a-z0-9]{6})$/);
-      const showdownMatch = path.match(/^\/showdown\/([a-z0-9]{6,10})$/);
+      const sharedContent =
+        CharacterWorkflowService.parseSharedContentFromUrl();
 
-      if (legendMatch) {
-        const characterId = legendMatch[1];
+      if (sharedContent.type === 'character' && sharedContent.id) {
         setLoading(true);
         setLoadingMessage('Loading shared character...');
 
-        try {
-          const sharedCharacter = await loadCharacter(characterId);
-          if (sharedCharacter) {
-            setCharacterSheet(sharedCharacter);
-            setCurrentCharacterId(characterId);
-            setCurrentStep('result');
-          } else {
-            alert(
-              'Character not found. It may have been removed or the link is invalid.'
-            );
-            // Clear the URL and return to questionnaire
-            window.history.replaceState({}, '', '/');
-          }
-        } catch (error) {
-          console.error('Error loading shared character:', error);
-          alert('Sorry, there was an error loading the shared character.');
-          window.history.replaceState({}, '', '/');
-        } finally {
-          setLoading(false);
-          setLoadingMessage('');
+        const result = await CharacterWorkflowService.loadSharedCharacter(
+          sharedContent.id
+        );
+
+        if (result.success && result.data) {
+          setCharacterSheet(result.data);
+          setCurrentCharacterId(sharedContent.id);
+          setCurrentStep('result');
+        } else {
+          alert(result.error || 'Failed to load character');
+          CharacterWorkflowService.clearSharedUrl();
         }
-      } else if (showdownMatch) {
-        const showdownId = showdownMatch[1];
-        setShowdownId(showdownId);
+
+        setLoading(false);
+        setLoadingMessage('');
+      } else if (sharedContent.type === 'showdown' && sharedContent.id) {
+        setShowdownId(sharedContent.id);
         setCurrentStep('showdown');
       }
     };
@@ -80,77 +69,39 @@ export function PetPersonalityAnalyzer() {
     answers: UserAnswers,
     petPhoto?: string | null
   ) => {
-    const validation = validateQuestionnaireForm(petName, answers);
-    if (!validation.isValid) {
-      alert(validation.errorMessage);
-      return;
-    }
-
     setLoading(true);
-    setLoadingMessage(LOADING_MESSAGES[0]);
 
-    // Cycle through loading messages
-    const messageInterval = setInterval(() => {
-      setLoadingMessage((prev) => {
-        const currentIndex = LOADING_MESSAGES.indexOf(prev);
-        const nextIndex = (currentIndex + 1) % LOADING_MESSAGES.length;
-        return LOADING_MESSAGES[nextIndex];
-      });
-    }, 3000);
-
-    try {
-      const stats = calculatePetStats(answers);
-      const result = await generateCharacterData(petName, answers);
-
-      if (result.success && result.characterData) {
-        const newCharacterSheet: CharacterSheetData = {
-          characterData: result.characterData,
-          stats,
-          petName,
-          petPhoto,
-        };
-
-        setCharacterSheet(newCharacterSheet);
-        setCurrentStep('result');
-
-        // Auto-save the character for sharing
-        try {
-          const characterId = await saveCharacter(newCharacterSheet);
-          setCurrentCharacterId(characterId);
-          console.log(`Character saved with ID: ${characterId}`);
-        } catch (saveError) {
-          console.error('Error saving character for sharing:', saveError);
-          // Don't block the user flow if saving fails
-        }
-      } else {
-        console.error('Character generation failed:', result);
-        alert(result.error || 'Failed to generate character sheet');
+    const result = await CharacterWorkflowService.generateCharacterSheet(
+      petName,
+      answers,
+      petPhoto || null,
+      {
+        onProgress: (message: string) => setLoadingMessage(message),
+        onComplete: (characterSheet: CharacterSheetData) => {
+          setCharacterSheet(characterSheet);
+          setCurrentStep('result');
+        },
+        onError: (error: string) => alert(error),
       }
-    } catch (error) {
-      console.error('Error generating character sheet:', error);
-      alert(
-        "Sorry, there was an error generating your pet's character sheet. Please try again."
-      );
-    } finally {
-      setLoading(false);
-      setLoadingMessage('');
-      clearInterval(messageInterval);
+    );
+
+    if (result.success && result.data) {
+      setCurrentCharacterId(result.data.characterId);
     }
+
+    setLoading(false);
+    setLoadingMessage('');
   };
 
   const handleDebugMode = () => {
-    // Redirect to the shared character URL
-    window.location.href = '/legend/sente1';
+    CharacterWorkflowService.navigateToDebugCharacter();
   };
 
   const handleReset = () => {
     setCurrentStep('questionnaire');
     setCharacterSheet(null);
     setCurrentCharacterId(null);
-    // Clear the URL if we're on a shared character page
-    if (window.location.pathname.includes('/legend/')) {
-      window.history.replaceState({}, '', '/');
-    }
+    CharacterWorkflowService.clearSharedUrl();
   };
 
   const handleDownload = () => {
@@ -163,22 +114,36 @@ export function PetPersonalityAnalyzer() {
     const theme = getColorTheme(characterSheet.stats);
 
     return (
-      <CharacterSheet
-        characterSheet={characterSheet}
-        theme={theme}
-        characterId={currentCharacterId}
-        onReset={handleReset}
-        onDownload={handleDownload}
-      />
+      <ErrorBoundary
+        onError={(error) => {
+          console.error('Character sheet display error:', error);
+        }}
+      >
+        <CharacterSheet
+          characterSheet={characterSheet}
+          theme={theme}
+          characterId={currentCharacterId}
+          onReset={handleReset}
+          onDownload={handleDownload}
+        />
+      </ErrorBoundary>
     );
   }
 
   if (currentStep === 'showdown' && showdownId) {
-    return <ShowdownPage showdownId={showdownId} onReset={handleReset} />;
+    return (
+      <ErrorBoundary
+        onError={(error) => {
+          console.error('Showdown page error:', error);
+        }}
+      >
+        <ShowdownPage showdownId={showdownId} onReset={handleReset} />
+      </ErrorBoundary>
+    );
   }
 
   return (
-    <>
+    <CharacterGenerationErrorBoundary onRetry={handleReset}>
       <LoadingOverlay message={loadingMessage} visible={loading} />
       <div
         className="min-h-screen p-2 sm:p-4"
@@ -212,6 +177,6 @@ export function PetPersonalityAnalyzer() {
           </div>
         </div>
       </div>
-    </>
+    </CharacterGenerationErrorBoundary>
   );
 }

@@ -21,7 +21,8 @@
       "Bash(npm run format:*)",
       "Bash(npx husky init:*)",
       "WebFetch(domain:docs.github.com)",
-      "WebFetch(domain:typedoc.org)"
+      "WebFetch(domain:typedoc.org)",
+      "mcp__ide__getDiagnostics"
     ],
     "deny": [],
     "ask": []

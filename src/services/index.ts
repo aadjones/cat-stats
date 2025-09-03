@@ -32,3 +32,10 @@ export type {
   CompatibilityMetrics,
   FriendshipInput,
 } from '../core/friendship/types';
+
+export { CharacterWorkflowService } from './characterWorkflowService';
+export type {
+  WorkflowResult,
+  SharedContentInfo,
+  CharacterGenerationProgress,
+} from './characterWorkflowService';
