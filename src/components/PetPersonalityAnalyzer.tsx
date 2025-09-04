@@ -137,7 +137,7 @@ export function PetPersonalityAnalyzer() {
             </div>
           </div>
           {/* Toggle between animated and static views */}
-          <div className="w-full max-w-4xl mx-auto mb-6 px-2 sm:px-0">
+          <div className="w-full max-w-4xl mx-auto mb-0 px-2 sm:px-0">
             <div className="flex justify-center">
               <div className="bg-gray-800 border border-gray-600 rounded-lg p-1 flex">
                 <button
@@ -166,7 +166,7 @@ export function PetPersonalityAnalyzer() {
 
           {/* Render the appropriate view */}
           {viewMode === 'animated' ? (
-            <div className="flex items-center justify-center min-h-[600px]">
+            <div className="flex items-center justify-center">
               <AnimatedShareCard
                 characterSheet={characterSheet}
                 theme={theme}
@@ -186,8 +186,8 @@ export function PetPersonalityAnalyzer() {
           )}
 
           {/* Shared actions at the bottom */}
-          <div className="w-full max-w-4xl mx-auto mt-8 px-2 sm:px-0">
-            <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+          <div className="w-full max-w-4xl mx-auto mt-2 px-2 sm:px-0">
+            <div className="flex flex-row gap-2 justify-center items-center">
               {currentCharacterId && (
                 <Button
                   onClick={async () => {
@@ -247,14 +247,14 @@ export function PetPersonalityAnalyzer() {
                     }
                   }}
                   variant="primary"
-                  size="lg"
+                  size="md"
                 >
-                  📤 Share {characterSheet.petName}
+                  📤 Share
                 </Button>
               )}
 
-              <Button onClick={handleReset} variant="secondary" size="lg">
-                ← Create Another Legend
+              <Button onClick={handleReset} variant="secondary" size="md">
+                ← Create Another
               </Button>
 
               {isFeatureEnabled('ENABLE_CHARACTER_COMPARISON') && (
@@ -298,12 +298,13 @@ export function PetPersonalityAnalyzer() {
       >
         <div className="w-full max-w-2xl mx-auto px-2 sm:px-0">
           <div className="bg-gray-800 border border-gray-600 rounded-xl sm:rounded-2xl p-4 sm:p-8 shadow-xl relative">
+            {/* Desktop: Absolute positioned button */}
             {isFeatureEnabled('SHOW_DEBUG_BUTTON') && (
               <Button
                 onClick={handleDebugMode}
-                variant="secondary"
+                variant="primary"
                 size="sm"
-                className="absolute top-2 right-2 sm:top-4 sm:right-4 text-xs"
+                className="hidden sm:block absolute top-4 right-4 text-xs"
               >
                 See Example
               </Button>
@@ -313,9 +314,21 @@ export function PetPersonalityAnalyzer() {
               <h1 className="text-2xl sm:text-4xl font-bold text-white mb-2">
                 CatStats
               </h1>
-              <p className="text-sm sm:text-base text-white/80">
+              <p className="text-sm sm:text-base text-white/80 mb-4 sm:mb-0">
                 Turn your pet into a legend!
               </p>
+
+              {/* Mobile: Button below title */}
+              {isFeatureEnabled('SHOW_DEBUG_BUTTON') && (
+                <Button
+                  onClick={handleDebugMode}
+                  variant="primary"
+                  size="sm"
+                  className="sm:hidden text-xs"
+                >
+                  See Example
+                </Button>
+              )}
             </div>
 
             <QuestionnaireForm onSubmit={handleFormSubmit} loading={loading} />

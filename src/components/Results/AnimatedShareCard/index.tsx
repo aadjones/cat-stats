@@ -145,6 +145,23 @@ export function AnimatedShareCard(props: AnimatedShareCardProps) {
         
         /* Mobile viewport optimizations */
         @media (max-height: 700px) {
+          /* Container padding reduction */
+          .p-6 {
+            padding: 1rem !important;
+          }
+          
+          /* Header optimizations - reduce spacing and font sizes */
+          .text-center.mb-8 {
+            margin-bottom: 1.5rem !important;
+          }
+          .pet-name.text-3xl {
+            font-size: 1.75rem !important;
+            margin-bottom: 0.25rem !important;
+          }
+          .archetype.text-xl {
+            font-size: 1rem !important;
+          }
+          
           .stats-section canvas {
             width: 220px !important;
             height: 220px !important;
@@ -199,6 +216,23 @@ export function AnimatedShareCard(props: AnimatedShareCardProps) {
         }
         
         @media (max-height: 600px) {
+          /* Tighter container padding */
+          .p-6 {
+            padding: 0.75rem !important;
+          }
+          
+          /* More aggressive header compression */
+          .text-center.mb-8 {
+            margin-bottom: 1rem !important;
+          }
+          .pet-name.text-3xl {
+            font-size: 1.5rem !important;
+            margin-bottom: 0.125rem !important;
+          }
+          .archetype.text-xl {
+            font-size: 0.875rem !important;
+          }
+          
           .stats-section canvas {
             width: 180px !important;
             height: 180px !important;
@@ -257,6 +291,23 @@ export function AnimatedShareCard(props: AnimatedShareCardProps) {
         }
         
         @media (max-height: 500px) {
+          /* Very tight container padding */
+          .p-6 {
+            padding: 0.5rem !important;
+          }
+          
+          /* Maximum header compression for tiny screens */
+          .text-center.mb-8 {
+            margin-bottom: 0.75rem !important;
+          }
+          .pet-name.text-3xl {
+            font-size: 1.25rem !important;
+            margin-bottom: 0.125rem !important;
+          }
+          .archetype.text-xl {
+            font-size: 0.75rem !important;
+          }
+          
           /* Extra small screens - very compact */
           .combat-section h3, .environmental-section h3, .passive-section h3, .social-section h3 {
             font-size: 0.875rem !important;
