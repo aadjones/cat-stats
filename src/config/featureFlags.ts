@@ -17,6 +17,7 @@ export const FEATURE_FLAGS = {
   ENABLE_SOCIAL_SHARING: true,
   ENABLE_ANALYTICS: false, // For when we add usage tracking
   SHOW_BETA_FEATURES: false, // For experimental features
+  ENABLE_CHARACTER_COMPARISON: false, // Compare with friends feature
 } as const;
 
 // Helper function to check if a feature is enabled
