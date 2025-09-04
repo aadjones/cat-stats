@@ -148,7 +148,7 @@ export function PetPersonalityAnalyzer() {
                       : 'text-white/70 hover:text-white hover:bg-white/10'
                   }`}
                 >
-                  🎬 Animated Story
+                  🎬 Video Highlights
                 </button>
                 <button
                   onClick={() => setViewMode('static')}
@@ -158,7 +158,7 @@ export function PetPersonalityAnalyzer() {
                       : 'text-white/70 hover:text-white hover:bg-white/10'
                   }`}
                 >
-                  📊 Character Sheet
+                  📊 Full Stats
                 </button>
               </div>
             </div>

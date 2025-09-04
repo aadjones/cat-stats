@@ -45,7 +45,7 @@ export function StatsPhase({
 
       const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
-      const radius = Math.min(canvas.width, canvas.height) * 0.3; // Smaller for more compact
+      const radius = Math.min(canvas.width, canvas.height) * 0.25; // Even smaller for 3:4 format
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -93,7 +93,7 @@ export function StatsPhase({
         const labelY = centerY + Math.sin(angle) * labelDistance;
 
         ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-        ctx.font = 'bold 10px system-ui'; // Smaller font
+        ctx.font = 'bold 8px system-ui'; // Even smaller font to prevent clipping
         const text = `${statLabels[i]}: ${Math.round(animatedValue)}`;
         const textMetrics = ctx.measureText(text);
 
@@ -170,16 +170,16 @@ export function StatsPhase({
     const spokeTimers: NodeJS.Timeout[] = [];
     const progressTimers: NodeJS.Timeout[] = [];
 
-    // Animate each spoke with 1 second delay (6 seconds total)
+    // Animate each spoke with 1 second timing (4 seconds total for spokes)
     for (let i = 0; i < statLabels.length; i++) {
       // Show the spoke (label appears)
       const spokeTimer = setTimeout(() => {
         setAnimatedSpokes(i + 1);
 
-        // Animate the spoke growing to its target value over 0.8 seconds
+        // Animate the spoke growing to its target value over 0.7 seconds
         let progress = 0;
         const targetValue = statValues[i];
-        const animationDuration = 800; // 0.8 seconds
+        const animationDuration = 700; // 0.7 seconds
         const frameRate = 60; // 60fps
         const totalFrames = (animationDuration / 1000) * frameRate;
         const progressIncrement = targetValue / totalFrames;
@@ -200,11 +200,11 @@ export function StatsPhase({
 
         // Store interval for cleanup
         progressTimers.push(progressInterval as unknown as NodeJS.Timeout);
-      }, i * 1000);
+      }, i * 1000); // 1s per spoke = 6s total
       spokeTimers.push(spokeTimer);
     }
 
-    // Show polygon at second 6 (after all spokes are drawn)
+    // Show polygon after all spokes finish (at 6s) for 2s appreciation
     const polygonTimer = setTimeout(() => {
       setShowPolygon(true);
     }, 6000);
@@ -222,8 +222,8 @@ export function StatsPhase({
 
     const canvas = canvasRef.current;
     // Make canvas responsive to container size
-    const containerWidth = canvas.parentElement?.clientWidth || 260;
-    const size = Math.min(260, containerWidth - 40); // Leave some margin
+    const containerWidth = canvas.parentElement?.clientWidth || 160;
+    const size = Math.min(Math.max(160, containerWidth * 0.35), 220); // Responsive sizing
     canvas.width = size;
     canvas.height = size;
 
@@ -240,9 +240,9 @@ export function StatsPhase({
 
   return (
     <div
-      className={`stats-section ${isActive ? 'animate-in' : 'visible'} mb-6`}
+      className={`stats-section ${isActive ? 'animate-in' : 'visible'} mb-3`}
     >
-      <h3 className="text-white text-center font-bold text-lg mb-4">
+      <h3 className="text-white text-center font-bold text-lg mb-3">
         Core Attributes
       </h3>
       <div className="flex justify-center">
@@ -250,8 +250,10 @@ export function StatsPhase({
           ref={canvasRef}
           className="rounded-lg bg-black/20 border border-white/20"
           style={{
-            width: 'min(260px, calc(100% - 40px))',
-            height: 'min(260px, calc(100% - 40px))',
+            width: 'min(max(160px, 35%), calc(100% - 20px))',
+            height: 'min(max(160px, 35%), calc(100% - 20px))',
+            maxWidth: '220px',
+            maxHeight: '220px',
             aspectRatio: '1/1',
           }}
         />

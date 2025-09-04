@@ -28,17 +28,22 @@ export function AnimatedShareCard(props: AnimatedShareCardProps) {
 
   return (
     <div
-      className="relative overflow-hidden rounded-2xl shadow-2xl mx-auto"
+      className="animated-card-container relative overflow-hidden rounded-2xl shadow-2xl mx-auto"
       style={{
         background: getGradientStyle(),
-        width: 'min(375px, calc(100vw - 40px))',
+        width: 'min(max(360px, 25vw), calc(100vw - 40px))',
         height:
-          'min(667px, calc(100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 120px))',
-        maxWidth: '375px',
-        maxHeight: '667px',
+          'min(max(480px, 33.33vw), calc(100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 160px))',
+        maxWidth: '450px',
+        maxHeight: '600px', // 450 * 4/3 = 600, so this maintains 3:4
+        aspectRatio: '3/4',
+        display: 'flex',
+        flexDirection: 'column',
       }}
     >
-      <AnimationController {...props} />
+      <div className="flex-1 min-h-0 overflow-hidden">
+        <AnimationController {...props} />
+      </div>
 
       {/* Global animation styles */}
       <style
@@ -389,12 +394,49 @@ export function AnimatedShareCard(props: AnimatedShareCardProps) {
           }
         }
         
-        @media (max-width: 400px) {
+        @media (max-width: 320px) {
           .stats-section canvas {
-            width: calc(100vw - 120px) !important;
-            height: calc(100vw - 120px) !important;
-            max-width: 220px !important;
-            max-height: 220px !important;
+            width: calc(100vw - 80px) !important;
+            height: calc(100vw - 80px) !important;
+            max-width: 180px !important;
+            max-height: 180px !important;
+          }
+        }
+        
+        /* Intelligent scaling for constrained containers */
+        .animated-card-container {
+          container-type: size;
+        }
+        
+        /* Scale everything down when container height is very constrained */
+        @container (max-height: 500px) {
+          .text-center.mb-8 { margin-bottom: 1rem !important; }
+          .pet-name.text-3xl { font-size: 1.5rem !important; }
+          .archetype.text-xl { font-size: 1rem !important; }
+          
+          .stats-section h3 { font-size: 1rem !important; margin-bottom: 0.5rem !important; }
+          .stats-section canvas { 
+            width: min(200px, 55%) !important; 
+            height: min(200px, 55%) !important; 
+          }
+          
+          .vulnerability-section .text-4xl { font-size: 1.75rem !important; margin-bottom: 0.5rem !important; }
+          .vulnerability-section .text-lg { font-size: 0.875rem !important; }
+          .vulnerability-section .bg-red-900\\/40 { padding: 0.5rem !important; margin: 0.5rem !important; }
+          .vulnerability-section .text-base { font-size: 0.75rem !important; margin-bottom: 0.25rem !important; }
+          .vulnerability-section .text-xs { font-size: 0.625rem !important; line-height: 1.1 !important; }
+          
+          .combat-section, .environmental-section, .social-section { margin-bottom: 0.5rem !important; }
+          .combat-section h3, .environmental-section h3, .social-section h3 { 
+            font-size: 0.875rem !important; 
+            margin-bottom: 0.5rem !important; 
+          }
+          .combat-move, .environmental-power, .social-skill { padding: 0.5rem !important; }
+          .combat-move .text-base, .environmental-power .text-base, .social-skill .text-base { 
+            font-size: 0.75rem !important; 
+          }
+          .combat-move .text-sm, .environmental-power .text-sm, .social-skill .text-sm { 
+            font-size: 0.625rem !important; 
           }
         }
       `,

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import type { PhaseComponentProps } from '../types';
 
 export function EnvironmentalPhase({
@@ -7,47 +7,40 @@ export function EnvironmentalPhase({
   isVisible,
 }: PhaseComponentProps) {
   const { characterData } = characterSheet;
-  const [currentPower, setCurrentPower] = useState<number>(0);
-  const [showModifiers, setShowModifiers] = useState<number>(0);
+  const [showPower, setShowPower] = useState<boolean>(false);
+  const [showModifiers, setShowModifiers] = useState<boolean>(false);
 
-  // Two-part animation: show each environmental power for 3 seconds
+  // Randomly select one environmental power
+  const selectedPower = useMemo(() => {
+    if (!characterData.environmentalPowers.length) return null;
+    const randomIndex = Math.floor(
+      Math.random() * characterData.environmentalPowers.length
+    );
+    return characterData.environmentalPowers[randomIndex];
+  }, [characterData.environmentalPowers]);
+
+  // Single power animation: 4s display + 2s pause
   useEffect(() => {
     if (!isActive) {
-      setCurrentPower(0);
-      setShowModifiers(0);
+      setShowPower(false);
+      setShowModifiers(false);
       return;
     }
 
-    // Show first power immediately
-    setCurrentPower(1);
+    // Show power immediately
+    setShowPower(true);
 
-    // Show first power modifiers after 3 seconds
-    const modifier1Timer = setTimeout(() => {
-      setShowModifiers(1);
-    }, 3000);
-
-    // Show second power after 6 seconds
-    const power2Timer = setTimeout(() => {
-      setCurrentPower(2);
-      setShowModifiers(1); // Reset modifiers
-    }, 6000);
-
-    // Show second power modifiers after 9 seconds
-    const modifier2Timer = setTimeout(() => {
-      setShowModifiers(2);
-    }, 9000);
+    // Show modifiers after 2 seconds
+    const modifierTimer = setTimeout(() => {
+      setShowModifiers(true);
+    }, 2000);
 
     return () => {
-      clearTimeout(modifier1Timer);
-      clearTimeout(power2Timer);
-      clearTimeout(modifier2Timer);
+      clearTimeout(modifierTimer);
     };
   }, [isActive]);
 
-  if (!isVisible) return null;
-
-  // Get the environmental powers (ensure we have at least 2)
-  const environmentalPowers = characterData.environmentalPowers.slice(0, 2);
+  if (!isVisible || !selectedPower) return null;
 
   return (
     <div
@@ -57,57 +50,30 @@ export function EnvironmentalPhase({
         <h3 className="text-white text-xl font-bold">Environmental Powers</h3>
       </div>
 
-      <div
-        className="space-y-4 max-w-sm mx-auto"
-        style={{ display: 'flex', flexDirection: 'column' }}
-      >
-        {environmentalPowers.map((power, index) => {
-          const powerNumber = index + 1;
-          const isVisible = currentPower >= powerNumber;
-          const isCurrentPower = currentPower === powerNumber;
-
-          return (
-            <div
-              key={power.name}
-              className={`
-                environmental-power 
-                ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'} 
-                ${isCurrentPower ? 'scale-105 ring-2 ring-cyan-400/50' : 'scale-100'}
-                transition-all duration-800 ease-out
-                bg-cyan-900/30 border border-cyan-600/40 rounded-lg p-4
-              `}
-            >
-              <div className="text-cyan-300 font-bold text-base mb-2 text-center">
-                🌿 {power.name}
-              </div>
-              <div className="text-white/90 text-sm text-center leading-relaxed">
-                {power.description}
-              </div>
-              <div
-                className={`
-                text-cyan-400/60 text-xs text-center mt-2 transition-all duration-500
-                ${showModifiers >= powerNumber ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}
-              `}
-              >
-                {power.stats}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Progress indicator */}
-      <div className="flex justify-center mt-6 space-x-2">
+      <div className="max-w-sm mx-auto">
         <div
-          className={`w-2 h-2 rounded-full transition-all duration-300 ${
-            currentPower >= 1 ? 'bg-cyan-400' : 'bg-white/20'
-          }`}
-        />
-        <div
-          className={`w-2 h-2 rounded-full transition-all duration-300 ${
-            currentPower >= 2 ? 'bg-cyan-400' : 'bg-white/20'
-          }`}
-        />
+          className={`
+            environmental-power 
+            ${showPower ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95'} 
+            transition-all duration-800 ease-out
+            bg-cyan-900/30 border border-cyan-600/40 rounded-lg p-4
+          `}
+        >
+          <div className="text-cyan-300 font-bold text-base mb-2 text-center">
+            🌿 {selectedPower.name}
+          </div>
+          <div className="text-white/90 text-sm text-center leading-relaxed">
+            {selectedPower.description}
+          </div>
+          <div
+            className={`
+            text-cyan-400/60 text-xs text-center mt-2 transition-all duration-500
+            ${showModifiers ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}
+          `}
+          >
+            {selectedPower.stats}
+          </div>
+        </div>
       </div>
     </div>
   );

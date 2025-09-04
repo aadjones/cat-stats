@@ -3,7 +3,6 @@ import type { AnimationPhase, AnimatedShareCardProps } from './types';
 import { ANIMATION_CONFIG, PHASE_ORDER } from './config';
 import { FEATURE_FLAGS } from '../../../config/featureFlags';
 import { IntroPhase } from './phases/IntroPhase';
-import { AnalyzingPhase } from './phases/AnalyzingPhase';
 import { StatsPhase } from './phases/StatsPhase';
 import { CombatPhase } from './phases/CombatPhase';
 import { EnvironmentalPhase } from './phases/EnvironmentalPhase';
@@ -41,6 +40,32 @@ export function AnimationController({
     return () => clearTimeout(timer);
   }, [currentPhase, isPlaying, onAnimationComplete]);
 
+  // Scroll-aware animation pausing to prevent timing glitches
+  useEffect(() => {
+    let scrollTimer: NodeJS.Timeout;
+
+    const handleScroll = () => {
+      // Pause animation during scroll
+      setIsPlaying(false);
+
+      // Clear any existing timer
+      clearTimeout(scrollTimer);
+
+      // Resume animation after scroll stops (300ms delay)
+      scrollTimer = setTimeout(() => {
+        setIsPlaying(true);
+      }, 300);
+    };
+
+    // Listen for scroll events on window
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimer);
+    };
+  }, []);
+
   // Helper to determine phase visibility - ONLY current phase is visible
   const getPhaseClass = (targetPhase: AnimationPhase) => {
     const isActive = currentPhase === targetPhase;
@@ -50,7 +75,10 @@ export function AnimationController({
   };
 
   return (
-    <div className="absolute inset-0 p-6 flex flex-col">
+    <div
+      className="h-full p-4 flex flex-col overflow-hidden"
+      style={{ minHeight: 0 }}
+    >
       {/* Pet Header - fades out during loop phase */}
       <div
         className={`text-center mb-8 transition-opacity duration-1000 ${
@@ -90,18 +118,12 @@ export function AnimationController({
         </p>
       </div>
 
-      {/* Phase Content Area */}
-      <div className="flex-1">
+      {/* Phase Content Area - intelligently sized to never overflow */}
+      <div className="flex-1 min-h-0 overflow-hidden flex flex-col justify-center">
         <IntroPhase
           characterSheet={characterSheet}
           theme={theme}
           {...getPhaseClass('intro')}
-        />
-
-        <AnalyzingPhase
-          characterSheet={characterSheet}
-          theme={theme}
-          {...getPhaseClass('analyzing')}
         />
 
         <StatsPhase

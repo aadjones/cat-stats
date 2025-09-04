@@ -3,21 +3,20 @@ import { FEATURE_FLAGS } from '../../../config/featureFlags';
 
 const phases = {
   intro: 4000, // 4s: Pet photo + name + archetype with typewriter
-  analyzing: 2000, // 2s: Analyzing legendary abilities message
+  analyzing: 2000, // 2s: Analyzing legendary abilities message (UNUSED)
   stats: 8000, // 8s: Radar chart animation (6s spokes + 2s polygon)
-  combat: 13000, // 13s: Combat moves (3s + 3s + 3s + 4s pause)
-  environmental: 13000, // 13s: Environmental powers (3s + 3s + 3s + 4s pause)
-  social: 13000, // 13s: Social skills (3s + 3s + 3s + 4s pause)
-  passive: 13000, // 13s: Passive traits (3s + 3s + 3s + 4s pause)
+  combat: 6000, // 6s: Single combat move (4s display + 2s pause)
+  environmental: 6000, // 6s: Single environmental power (4s display + 2s pause)
+  social: 6000, // 6s: Single social skill (4s display + 2s pause)
+  passive: 6000, // 6s: Single passive trait (4s display + 2s pause) (UNUSED)
   vulnerability: 6000, // 6s: Vulnerability reveal with pause
-  signoff: 5000, // 5s: Branding with longer linger
+  signoff: 4000, // 4s: Branding
   loop: 1000, // 1s: Brief pause before loop
 } as const;
 
-// Create base phase order
+// Create base phase order - removed analyzing phase
 const BASE_PHASE_ORDER: Array<keyof typeof phases> = [
   'intro',
-  'analyzing',
   'stats',
   'combat',
   'environmental',
