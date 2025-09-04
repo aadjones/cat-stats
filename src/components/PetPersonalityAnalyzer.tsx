@@ -11,6 +11,7 @@ import {
 import { isFeatureEnabled } from '../config/featureFlags';
 import { QuestionnaireForm } from './Questionnaire/QuestionnaireForm';
 import { CharacterSheet } from './Results/CharacterSheet';
+import { AnimatedShareCard } from './Results/AnimatedShareCard';
 import { ShowdownPage } from './Results/ShowdownPage';
 import { LoadingOverlay } from './UI/LoadingOverlay';
 import { Button } from './UI/Button';
@@ -18,9 +19,11 @@ import { ErrorBoundary } from './ErrorBoundary/ErrorBoundary';
 import { CharacterGenerationErrorBoundary } from './ErrorBoundary/CharacterGenerationErrorBoundary';
 
 type AppStep = 'questionnaire' | 'result' | 'showdown';
+type ViewMode = 'animated' | 'static';
 
 export function PetPersonalityAnalyzer() {
   const [currentStep, setCurrentStep] = useState<AppStep>('questionnaire');
+  const [viewMode, setViewMode] = useState<ViewMode>('animated');
   const [characterSheet, setCharacterSheet] =
     useState<CharacterSheetData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -116,16 +119,158 @@ export function PetPersonalityAnalyzer() {
     return (
       <ErrorBoundary
         onError={(error) => {
-          console.error('Character sheet display error:', error);
+          console.error('Character display error:', error);
         }}
       >
-        <CharacterSheet
-          characterSheet={characterSheet}
-          theme={theme}
-          characterId={currentCharacterId}
-          onReset={handleReset}
-          onDownload={handleDownload}
-        />
+        <div
+          className="min-h-screen p-2 sm:p-4"
+          style={{ backgroundColor: theme.accent }}
+        >
+          {/* Hidden shareable card for image generation */}
+          <div className="fixed -top-[9999px] -left-[9999px] pointer-events-none">
+            <div id="shareable-card">
+              <AnimatedShareCard
+                characterSheet={characterSheet}
+                theme={theme}
+                onAnimationComplete={() => {}}
+              />
+            </div>
+          </div>
+          {/* Toggle between animated and static views */}
+          <div className="w-full max-w-4xl mx-auto mb-6 px-2 sm:px-0">
+            <div className="flex justify-center">
+              <div className="bg-gray-800 border border-gray-600 rounded-lg p-1 flex">
+                <button
+                  onClick={() => setViewMode('animated')}
+                  className={`px-4 py-2 rounded text-sm font-medium transition-all ${
+                    viewMode === 'animated'
+                      ? 'bg-blue-600 text-white'
+                      : 'text-white/70 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  🎬 Animated Story
+                </button>
+                <button
+                  onClick={() => setViewMode('static')}
+                  className={`px-4 py-2 rounded text-sm font-medium transition-all ${
+                    viewMode === 'static'
+                      ? 'bg-blue-600 text-white'
+                      : 'text-white/70 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  📊 Character Sheet
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Render the appropriate view */}
+          {viewMode === 'animated' ? (
+            <div className="flex items-center justify-center min-h-[600px]">
+              <AnimatedShareCard
+                characterSheet={characterSheet}
+                theme={theme}
+                onAnimationComplete={() => {
+                  // Could add loop counter or other logic here
+                }}
+              />
+            </div>
+          ) : (
+            <CharacterSheet
+              characterSheet={characterSheet}
+              theme={theme}
+              characterId={currentCharacterId}
+              onReset={handleReset}
+              onDownload={handleDownload}
+            />
+          )}
+
+          {/* Shared actions at the bottom */}
+          <div className="w-full max-w-4xl mx-auto mt-8 px-2 sm:px-0">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+              {currentCharacterId && (
+                <Button
+                  onClick={async () => {
+                    // Reuse the sharing logic from CharacterSheet
+                    const { getCharacterShareUrl } = await import(
+                      '../services/characterStorage'
+                    );
+                    const { generateShareableImage } = await import(
+                      '../services'
+                    );
+
+                    const shareUrl = getCharacterShareUrl(currentCharacterId);
+                    const imageBlob =
+                      await generateShareableImage('shareable-card');
+
+                    try {
+                      if (
+                        navigator.share &&
+                        imageBlob &&
+                        'canShare' in navigator
+                      ) {
+                        const imageFile = new File(
+                          [imageBlob],
+                          `${characterSheet.petName}-CatStats.png`,
+                          {
+                            type: 'image/png',
+                          }
+                        );
+
+                        const shareData = {
+                          text: `Meet ${characterSheet.petName} - ${characterSheet.characterData.archetype}! 🐈‍⬛⚔️\n\nCheck out the full character sheet: ${shareUrl}`,
+                          files: [imageFile],
+                        };
+
+                        if (navigator.canShare(shareData)) {
+                          await navigator.share(shareData);
+                          return;
+                        }
+                      }
+
+                      if (navigator.share) {
+                        await navigator.share({
+                          title: `Meet ${characterSheet.petName} - ${characterSheet.characterData.archetype}`,
+                          text: `Check out ${characterSheet.petName}'s complete legendary character sheet! 🐈‍⬛⚔️`,
+                          url: shareUrl,
+                        });
+                      } else {
+                        await navigator.clipboard.writeText(shareUrl);
+                        alert(`✨ Character link copied! Share it anywhere.`);
+                      }
+                    } catch (error) {
+                      if ((error as Error).name === 'AbortError') return;
+                      console.error('Error sharing:', error);
+                      alert(
+                        'Sorry, there was an error sharing. Please try again.'
+                      );
+                    }
+                  }}
+                  variant="primary"
+                  size="lg"
+                >
+                  📤 Share {characterSheet.petName}
+                </Button>
+              )}
+
+              <Button onClick={handleReset} variant="secondary" size="lg">
+                ← Create Another Legend
+              </Button>
+
+              {isFeatureEnabled('ENABLE_CHARACTER_COMPARISON') && (
+                <Button
+                  onClick={() => {
+                    // TODO: Implement character comparison when feature is enabled
+                  }}
+                  variant="secondary"
+                  size="lg"
+                >
+                  ⚔️ Compare with Friends
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
       </ErrorBoundary>
     );
   }
