@@ -23,9 +23,10 @@ export async function generateShareableImage(
       scale: 2, // Higher resolution
       useCORS: true,
       allowTaint: true,
-      backgroundColor: null,
+      backgroundColor: '#000000', // Black background instead of null for better contrast
       width: 375,
       height: 600,
+      logging: false, // Disable logging for cleaner output
     });
 
     return new Promise((resolve) => {

@@ -90,15 +90,14 @@ export function ShareableCard({ characterSheet, theme }: ShareableCardProps) {
   };
 
   const subtitleStyle: React.CSSProperties = {
-    color: 'rgba(255, 255, 255, 0.9)',
+    color: 'rgba(255, 255, 255, 0.95)',
     fontSize: '18px',
     fontWeight: '500',
   };
 
   const sectionStyle: React.CSSProperties = {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    backdropFilter: 'blur(10px)',
-    border: '1px solid rgba(255, 255, 255, 0.25)',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    border: '2px solid rgba(255, 255, 255, 0.4)',
     borderRadius: '12px',
     padding: '16px',
     marginBottom: '16px',
@@ -118,7 +117,7 @@ export function ShareableCard({ characterSheet, theme }: ShareableCardProps) {
   };
 
   const statNameStyle: React.CSSProperties = {
-    color: 'rgba(255, 255, 255, 0.9)',
+    color: 'rgba(255, 255, 255, 0.95)',
     fontWeight: '500',
     width: '80px',
     flexShrink: 0,
@@ -133,7 +132,7 @@ export function ShareableCard({ characterSheet, theme }: ShareableCardProps) {
 
   const statBarStyle: React.CSSProperties = {
     width: '64px',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
     borderRadius: '10px',
     height: '12px',
     overflow: 'hidden',
@@ -162,15 +161,14 @@ export function ShareableCard({ characterSheet, theme }: ShareableCardProps) {
   };
 
   const abilityDescStyle: React.CSSProperties = {
-    color: 'rgba(255, 255, 255, 0.8)',
+    color: 'rgba(255, 255, 255, 0.9)',
     fontSize: '12px',
     lineHeight: '1.4',
   };
 
   const vulnerabilityStyle: React.CSSProperties = {
-    backgroundColor: 'rgba(239, 68, 68, 0.25)',
-    backdropFilter: 'blur(10px)',
-    border: '1px solid rgba(239, 68, 68, 0.3)',
+    backgroundColor: 'rgba(239, 68, 68, 0.7)',
+    border: '2px solid rgba(239, 68, 68, 0.8)',
     borderRadius: '12px',
     padding: '12px',
     marginBottom: '16px',
@@ -181,7 +179,7 @@ export function ShareableCard({ characterSheet, theme }: ShareableCardProps) {
   };
 
   const footerSmallStyle: React.CSSProperties = {
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: 'rgba(255, 255, 255, 0.85)',
     fontSize: '12px',
     marginBottom: '4px',
   };
@@ -192,7 +190,7 @@ export function ShareableCard({ characterSheet, theme }: ShareableCardProps) {
   };
 
   const footerTaglineStyle: React.CSSProperties = {
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: 'rgba(255, 255, 255, 0.85)',
     fontSize: '12px',
   };
 

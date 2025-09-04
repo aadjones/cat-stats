@@ -11,6 +11,7 @@ export const FEATURE_FLAGS = {
 
   // Animation features
   SHOW_PASSIVE_TRAITS_PHASE: false, // Set to false to skip passive traits in animation
+  ENABLE_SHAREABLE_CARD_IMAGE: false, // ShareableCard image generation broken as of 4 Sep 2025
 
   // Future features (examples)
   ENABLE_PHOTO_UPLOAD: true,

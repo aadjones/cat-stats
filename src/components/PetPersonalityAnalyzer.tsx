@@ -126,23 +126,25 @@ export function PetPersonalityAnalyzer() {
           className="min-h-screen p-2 sm:p-4"
           style={{ backgroundColor: theme.accent }}
         >
-          {/* Hidden shareable card for image generation */}
-          <div className="fixed -top-[9999px] -left-[9999px] pointer-events-none">
-            <div id="shareable-card">
-              <AnimatedShareCard
-                characterSheet={characterSheet}
-                theme={theme}
-                onAnimationComplete={() => {}}
-              />
+          {/* Hidden shareable card for image generation - BROKEN as of 4 Sep 2025 */}
+          {isFeatureEnabled('ENABLE_SHAREABLE_CARD_IMAGE') && (
+            <div className="fixed -top-[9999px] -left-[9999px] pointer-events-none">
+              <div id="shareable-card">
+                <AnimatedShareCard
+                  characterSheet={characterSheet}
+                  theme={theme}
+                  onAnimationComplete={() => {}}
+                />
+              </div>
             </div>
-          </div>
+          )}
           {/* Toggle between animated and static views */}
           <div className="w-full max-w-4xl mx-auto mb-0 px-2 sm:px-0">
             <div className="flex justify-center">
-              <div className="bg-gray-800 border border-gray-600 rounded-lg p-1 flex">
+              <div className="bg-gray-800 border border-gray-600 rounded-md p-0.5 flex">
                 <button
                   onClick={() => setViewMode('animated')}
-                  className={`px-4 py-2 rounded text-sm font-medium transition-all ${
+                  className={`px-2 py-1.5 rounded text-xs font-medium transition-all ${
                     viewMode === 'animated'
                       ? 'bg-blue-600 text-white'
                       : 'text-white/70 hover:text-white hover:bg-white/10'
@@ -152,7 +154,7 @@ export function PetPersonalityAnalyzer() {
                 </button>
                 <button
                   onClick={() => setViewMode('static')}
-                  className={`px-4 py-2 rounded text-sm font-medium transition-all ${
+                  className={`px-2 py-1.5 rounded text-xs font-medium transition-all ${
                     viewMode === 'static'
                       ? 'bg-blue-600 text-white'
                       : 'text-white/70 hover:text-white hover:bg-white/10'
@@ -186,8 +188,8 @@ export function PetPersonalityAnalyzer() {
           )}
 
           {/* Shared actions at the bottom */}
-          <div className="w-full max-w-4xl mx-auto mt-2 px-2 sm:px-0">
-            <div className="flex flex-row gap-2 justify-center items-center">
+          <div className="w-full max-w-4xl mx-auto mt-1 px-2 sm:px-0">
+            <div className="flex flex-row gap-1.5 justify-center items-center">
               {currentCharacterId && (
                 <Button
                   onClick={async () => {
@@ -200,8 +202,11 @@ export function PetPersonalityAnalyzer() {
                     );
 
                     const shareUrl = getCharacterShareUrl(currentCharacterId);
-                    const imageBlob =
-                      await generateShareableImage('shareable-card');
+                    const imageBlob = isFeatureEnabled(
+                      'ENABLE_SHAREABLE_CARD_IMAGE'
+                    )
+                      ? await generateShareableImage('shareable-card')
+                      : null;
 
                     try {
                       if (
@@ -247,13 +252,19 @@ export function PetPersonalityAnalyzer() {
                     }
                   }}
                   variant="primary"
-                  size="md"
+                  size="sm"
+                  className="!min-h-0 !py-1.5"
                 >
                   📤 Share
                 </Button>
               )}
 
-              <Button onClick={handleReset} variant="secondary" size="md">
+              <Button
+                onClick={handleReset}
+                variant="secondary"
+                size="sm"
+                className="!min-h-0 !py-1.5"
+              >
                 ← Create Another
               </Button>
 
@@ -263,9 +274,10 @@ export function PetPersonalityAnalyzer() {
                     // TODO: Implement character comparison when feature is enabled
                   }}
                   variant="secondary"
-                  size="lg"
+                  size="sm"
+                  className="!min-h-0 !py-1.5"
                 >
-                  ⚔️ Compare with Friends
+                  ⚔️ Compare
                 </Button>
               )}
             </div>
