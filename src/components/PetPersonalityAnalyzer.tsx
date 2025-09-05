@@ -6,6 +6,7 @@ import type {
 import {
   getColorTheme,
   generateTextExport,
+  generatePdfExport,
   CharacterWorkflowService,
 } from '../services';
 import { isFeatureEnabled } from '../config/featureFlags';
@@ -110,6 +111,17 @@ export function PetPersonalityAnalyzer() {
   const handleDownload = () => {
     if (characterSheet) {
       generateTextExport(characterSheet);
+    }
+  };
+
+  const handlePdfDownload = async () => {
+    if (characterSheet) {
+      try {
+        await generatePdfExport(characterSheet, currentCharacterId);
+      } catch (error) {
+        console.error('PDF generation failed:', error);
+        alert('Sorry, PDF generation failed. Please try again.');
+      }
     }
   };
 
@@ -258,6 +270,26 @@ export function PetPersonalityAnalyzer() {
                   📤 Share
                 </Button>
               )}
+
+              {isFeatureEnabled('ENABLE_TEXT_EXPORT') && (
+                <Button
+                  onClick={handleDownload}
+                  variant="secondary"
+                  size="sm"
+                  className="!min-h-0 !py-1.5"
+                >
+                  📄 Download TXT
+                </Button>
+              )}
+
+              <Button
+                onClick={handlePdfDownload}
+                variant="secondary"
+                size="sm"
+                className="!min-h-0 !py-1.5"
+              >
+                📑 Download PDF
+              </Button>
 
               <Button
                 onClick={handleReset}

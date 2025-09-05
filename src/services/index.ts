@@ -1,7 +1,7 @@
 export { getColorTheme } from './themeService';
 export type { Theme } from './themeService';
 
-export { generateTextExport } from './exportService';
+export { generateTextExport, generatePdfExport } from './exportService';
 
 export {
   shareCharacterSheet,
