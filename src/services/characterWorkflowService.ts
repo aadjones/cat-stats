@@ -10,7 +10,7 @@ export interface WorkflowResult<T = unknown> {
 }
 
 export interface SharedContentInfo {
-  type: 'character' | 'showdown' | null;
+  type: 'character' | 'showdown' | 'hall-of-fame' | null;
   id: string | null;
 }
 
@@ -37,12 +37,16 @@ export class CharacterWorkflowService {
     const path = window.location.pathname;
     const legendMatch = path.match(/^\/legend\/([a-z0-9]{6})$/);
     const showdownMatch = path.match(/^\/showdown\/([a-z0-9]{6,10})$/);
+    const hallOfFameMatch = path.match(/^\/hall-of-fame$/);
 
     if (legendMatch) {
       return { type: 'character', id: legendMatch[1] };
     }
     if (showdownMatch) {
       return { type: 'showdown', id: showdownMatch[1] };
+    }
+    if (hallOfFameMatch) {
+      return { type: 'hall-of-fame', id: null };
     }
     return { type: null, id: null };
   }
@@ -176,5 +180,12 @@ export class CharacterWorkflowService {
    */
   static navigateToDebugCharacter(): void {
     window.location.href = '/legend/sente1';
+  }
+
+  /**
+   * Navigate to hall of fame
+   */
+  static navigateToHallOfFame(): void {
+    window.location.href = '/hall-of-fame';
   }
 }

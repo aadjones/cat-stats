@@ -18,8 +18,9 @@ import { LoadingOverlay } from './UI/LoadingOverlay';
 import { Button } from './UI/Button';
 import { ErrorBoundary } from './ErrorBoundary/ErrorBoundary';
 import { CharacterGenerationErrorBoundary } from './ErrorBoundary/CharacterGenerationErrorBoundary';
+import { HallOfFame } from './HallOfFame/HallOfFame';
 
-type AppStep = 'questionnaire' | 'result' | 'showdown';
+type AppStep = 'questionnaire' | 'result' | 'showdown' | 'hall-of-fame';
 type ViewMode = 'animated' | 'static';
 
 export function PetPersonalityAnalyzer() {
@@ -62,6 +63,8 @@ export function PetPersonalityAnalyzer() {
       } else if (sharedContent.type === 'showdown' && sharedContent.id) {
         setShowdownId(sharedContent.id);
         setCurrentStep('showdown');
+      } else if (sharedContent.type === 'hall-of-fame') {
+        setCurrentStep('hall-of-fame');
       }
     };
 
@@ -97,8 +100,8 @@ export function PetPersonalityAnalyzer() {
     setLoadingMessage('');
   };
 
-  const handleDebugMode = () => {
-    CharacterWorkflowService.navigateToDebugCharacter();
+  const handleExamples = () => {
+    CharacterWorkflowService.navigateToHallOfFame();
   };
 
   const handleReset = () => {
@@ -319,6 +322,10 @@ export function PetPersonalityAnalyzer() {
     );
   }
 
+  if (currentStep === 'hall-of-fame') {
+    return <HallOfFame />;
+  }
+
   if (currentStep === 'showdown' && showdownId) {
     return (
       <ErrorBoundary
@@ -345,12 +352,12 @@ export function PetPersonalityAnalyzer() {
             {/* Desktop: Absolute positioned button */}
             {isFeatureEnabled('SHOW_DEBUG_BUTTON') && (
               <Button
-                onClick={handleDebugMode}
+                onClick={handleExamples}
                 variant="primary"
                 size="sm"
                 className="hidden sm:block absolute top-4 right-4 text-xs"
               >
-                See Example
+                Hall of Fame
               </Button>
             )}
 
@@ -365,12 +372,12 @@ export function PetPersonalityAnalyzer() {
               {/* Mobile: Button below title */}
               {isFeatureEnabled('SHOW_DEBUG_BUTTON') && (
                 <Button
-                  onClick={handleDebugMode}
+                  onClick={handleExamples}
                   variant="primary"
                   size="sm"
                   className="sm:hidden text-xs"
                 >
-                  See Example
+                  Hall of Fame
                 </Button>
               )}
             </div>

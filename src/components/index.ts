@@ -16,3 +16,7 @@ export { QuestionnaireForm } from './Questionnaire/QuestionnaireForm';
 export { AbilityCard } from './Results/AbilityCard';
 export { StatsRadarChart } from './Results/StatsRadarChart';
 export { CharacterSheet } from './Results/CharacterSheet';
+
+// Hall of Fame Components
+export { HallOfFame } from './HallOfFame/HallOfFame';
+export { CharacterModal } from './HallOfFame/CharacterModal';

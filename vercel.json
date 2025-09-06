@@ -11,6 +11,10 @@
     {
       "source": "/showdown/(.*)",
       "destination": "/index.html"
+    },
+    {
+      "source": "/hall-of-fame",
+      "destination": "/index.html"
     }
   ]
 }
