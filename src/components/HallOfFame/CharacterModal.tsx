@@ -20,36 +20,34 @@ export function CharacterModal({ characterId, onClose }: CharacterModalProps) {
       return;
     }
 
+    const loadCharacterData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const response = await fetch(`/api/character/${characterId}`);
+
+        if (response.status === 404) {
+          setError('Character not found');
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error(`Failed to load character: ${response.statusText}`);
+        }
+
+        const characterData = await response.json();
+        setCharacter(characterData);
+      } catch (err) {
+        setError('Failed to load character');
+        console.error('Character loading error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     loadCharacterData();
   }, [characterId]);
-
-  const loadCharacterData = async () => {
-    if (!characterId) return;
-
-    try {
-      setLoading(true);
-      setError(null);
-
-      const response = await fetch(`/api/character/${characterId}`);
-
-      if (response.status === 404) {
-        setError('Character not found');
-        return;
-      }
-
-      if (!response.ok) {
-        throw new Error(`Failed to load character: ${response.statusText}`);
-      }
-
-      const characterData = await response.json();
-      setCharacter(characterData);
-    } catch (err) {
-      setError('Failed to load character');
-      console.error('Character loading error:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
