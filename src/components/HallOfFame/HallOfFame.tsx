@@ -12,7 +12,7 @@ interface CharacterPreview {
 }
 
 const FEATURED_CHARACTER_IDS = [
-  'sente1', // The debug character
+  'us0suh', // Swapped from sente1 since it's used on main page
   'g2rq99',
   'oo035s',
   'ps8raj',

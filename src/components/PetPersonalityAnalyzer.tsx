@@ -19,6 +19,7 @@ import { Button } from './UI/Button';
 import { ErrorBoundary } from './ErrorBoundary/ErrorBoundary';
 import { CharacterGenerationErrorBoundary } from './ErrorBoundary/CharacterGenerationErrorBoundary';
 import { HallOfFame } from './HallOfFame/HallOfFame';
+import { CharacterSheetPreview } from './Landing/CharacterSheetPreview';
 
 type AppStep = 'questionnaire' | 'result' | 'showdown' | 'hall-of-fame';
 type ViewMode = 'animated' | 'static';
@@ -347,8 +348,8 @@ export function PetPersonalityAnalyzer() {
           background: 'linear-gradient(135deg, #581c87, #312e81, #1e3a8a)',
         }}
       >
-        <div className="w-full max-w-2xl mx-auto px-2 sm:px-0">
-          <div className="bg-gray-800 border border-gray-600 rounded-xl sm:rounded-2xl p-4 sm:p-8 shadow-xl relative">
+        <div className="w-full max-w-2xl mx-auto px-3 sm:px-0">
+          <div className="bg-gray-800 border border-gray-600 rounded-xl sm:rounded-2xl p-5 sm:p-8 shadow-xl relative">
             {/* Desktop: Absolute positioned button */}
             {isFeatureEnabled('SHOW_DEBUG_BUTTON') && (
               <Button
@@ -362,24 +363,47 @@ export function PetPersonalityAnalyzer() {
             )}
 
             <div className="text-center mb-6 sm:mb-8">
-              <h1 className="text-2xl sm:text-4xl font-bold text-white mb-2">
+              <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3 leading-tight">
                 CatStats
               </h1>
-              <p className="text-sm sm:text-base text-white/80 mb-4 sm:mb-0">
+              <p className="text-lg sm:text-xl text-white mb-3 font-medium px-1 leading-snug">
                 Turn your pet into a legend!
               </p>
+              <p className="text-sm sm:text-base text-white/70 mb-4 px-2 leading-relaxed">
+                Get your pet's personality breakdown with epic stats, unique
+                abilities, and a shareable character sheet.
+              </p>
+            </div>
 
-              {/* Mobile: Button below title */}
-              {isFeatureEnabled('SHOW_DEBUG_BUTTON') && (
+            {/* Character Sheet Preview */}
+            <div className="mb-4">
+              <CharacterSheetPreview />
+            </div>
+
+            {/* Hall of Fame call-to-action */}
+            {isFeatureEnabled('SHOW_DEBUG_BUTTON') && (
+              <div className="text-center mb-4">
                 <Button
                   onClick={handleExamples}
-                  variant="primary"
-                  size="sm"
-                  className="sm:hidden text-xs"
+                  variant="secondary"
+                  size="md"
+                  className="bg-white/10 hover:bg-white/20 border-white/20 w-full sm:w-auto"
                 >
-                  Hall of Fame
+                  🏆 Check out the Hall of Fame
                 </Button>
-              )}
+              </div>
+            )}
+
+            {/* Visual Separator */}
+            <div className="flex items-center my-6 sm:my-8">
+              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-purple-400/50 to-transparent"></div>
+              <div className="px-3 sm:px-4 text-white/70 text-sm font-medium text-center">
+                <div>Create Your Legend</div>
+                <div className="text-xs text-white/50 mt-1">
+                  10 quick questions
+                </div>
+              </div>
+              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-purple-400/50 to-transparent"></div>
             </div>
 
             <QuestionnaireForm onSubmit={handleFormSubmit} loading={loading} />
