@@ -5,6 +5,14 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // Emergency kill switch - can be enabled via environment variable
+  if (process.env.EMERGENCY_DISABLE === 'true') {
+    return res.status(503).json({
+      error:
+        "Character generation is temporarily unavailable due to high demand. We're working to restore service soon! Please try again in a few hours.",
+    });
+  }
+
   // Rate limiting: 5 requests per 10 minutes
   const rateLimit = checkRateLimit(req, 5, 600000);
   if (!rateLimit.allowed) {

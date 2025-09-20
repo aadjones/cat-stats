@@ -83,6 +83,38 @@ Deploy to Vercel:
 2. Set the `ANTHROPIC_API_KEY` environment variable
 3. Deploy automatically on push to main
 
+## Emergency Controls
+
+### Kill Switch
+
+If you need to quickly disable character generation (e.g., unexpected high costs or API abuse), you can use the emergency kill switch:
+
+**To Enable Kill Switch:**
+
+1. In Vercel dashboard, go to your project settings
+2. Add environment variable: `EMERGENCY_DISABLE=true`
+3. Redeploy or wait for automatic deployment
+
+**To Disable Kill Switch:**
+
+1. Remove the `EMERGENCY_DISABLE` environment variable
+2. Or set it to `false`
+3. Redeploy
+
+**What happens when enabled:**
+
+- All character generation requests return a 503 "Service Unavailable" error
+- Users see: "Character generation is temporarily unavailable due to high demand. We're working to restore service soon! Please try again in a few hours."
+- Existing functionality (viewing hall of fame, etc.) continues to work
+- No API costs are incurred for new character generation
+
+**Use cases:**
+
+- Unexpected viral traffic causing high API costs
+- API abuse or bot attacks
+- Need time to implement additional rate limiting
+- Temporary budget constraints
+
 ## License
 
 All Rights Reserved - see [LICENSE](LICENSE) file for details.
