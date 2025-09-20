@@ -19,10 +19,25 @@ export interface CharacterGenerationResult {
   error?: string;
 }
 
+// Simple in-memory cache for API responses (resets on page reload)
+const API_CACHE = new Map<string, CharacterGenerationResult>();
+
+// Generate cache key from inputs
+function generateCacheKey(petName: string, answers: UserAnswers): string {
+  const answerString = JSON.stringify(answers, Object.keys(answers).sort());
+  return `${petName.toLowerCase().trim()}-${btoa(answerString).slice(0, 20)}`;
+}
+
 export async function generateCharacterData(
   petName: string,
   answers: UserAnswers
 ): Promise<CharacterGenerationResult> {
+  // Check cache first
+  const cacheKey = generateCacheKey(petName, answers);
+  if (API_CACHE.has(cacheKey)) {
+    logger.info('Returning cached character data');
+    return API_CACHE.get(cacheKey)!;
+  }
   const behavioralInputs = openEndedQuestions
     .map((q) => {
       return `${q.question}: "${answers[q.id] || 'Not specified'}"`;
@@ -159,10 +174,15 @@ Create videogame-style abilities based on the pet's behaviors. Make ability name
       };
     }
 
-    return {
+    const result = {
       success: true,
       characterData: parseResult.data,
     };
+
+    // Cache successful result
+    API_CACHE.set(cacheKey, result);
+
+    return result;
   } catch (error) {
     logger.error('Error generating character sheet:', error);
     return {

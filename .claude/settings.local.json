@@ -24,7 +24,8 @@
       "WebFetch(domain:typedoc.org)",
       "mcp__ide__getDiagnostics",
       "mcp__ide__executeCode",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(npx vite-bundle-analyzer:*)"
     ],
     "deny": [],
     "ask": []

@@ -1,5 +1,10 @@
-import html2canvas from 'html2canvas';
 import type { CharacterSheet } from '../core/personality/types';
+
+// Lazy load heavy html2canvas library only when needed
+const loadHtml2Canvas = async () => {
+  const html2canvas = await import('html2canvas');
+  return html2canvas.default;
+};
 
 interface ShareData {
   title: string;
@@ -19,6 +24,7 @@ export async function generateShareableImage(
     }
 
     // Configure html2canvas for high quality output
+    const html2canvas = await loadHtml2Canvas();
     const canvas = await html2canvas(element, {
       scale: 2, // Higher resolution
       useCORS: true,

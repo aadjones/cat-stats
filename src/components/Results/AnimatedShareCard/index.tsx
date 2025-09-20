@@ -28,14 +28,13 @@ export function AnimatedShareCard(props: AnimatedShareCardProps) {
 
   return (
     <div
-      className="animated-card-container relative overflow-hidden rounded-2xl shadow-2xl mx-auto"
+      className="animated-card-container relative overflow-hidden rounded-2xl shadow-2xl"
       style={{
         background: getGradientStyle(),
-        width: 'min(max(360px, 25vw), calc(100vw - 40px))',
-        height:
-          'min(max(480px, 33.33vw), calc(100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 160px))',
-        maxWidth: '450px',
-        maxHeight: '600px', // 450 * 4/3 = 600, so this maintains 3:4
+        width: '100%',
+        height: 'auto',
+        maxWidth: '360px',
+        maxHeight: '480px',
         aspectRatio: '3/4',
         display: 'flex',
         flexDirection: 'column',

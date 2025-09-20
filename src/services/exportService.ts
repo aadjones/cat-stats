@@ -2,7 +2,12 @@ import type {
   CharacterSheet,
   CharacterAbility,
 } from '../core/personality/types';
-import { jsPDF } from 'jspdf';
+
+// Lazy load heavy PDF library only when needed
+const loadJsPDF = async () => {
+  const { jsPDF } = await import('jspdf');
+  return jsPDF;
+};
 
 export function generateTextExport(characterSheet: CharacterSheet): void {
   const { characterData, stats, petName } = characterSheet;
@@ -114,7 +119,8 @@ export async function generatePdfExport(
 ): Promise<void> {
   const { characterData, stats, petName, petPhoto } = characterSheet;
 
-  const pdf = new jsPDF();
+  const jsPDFClass = await loadJsPDF();
+  const pdf = new jsPDFClass();
   let yPosition = 20;
   const pageWidth = pdf.internal.pageSize.getWidth();
   const margin = 20;

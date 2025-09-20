@@ -62,7 +62,7 @@ export function CharacterModal({ characterId, onClose }: CharacterModalProps) {
       className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
       onClick={handleBackdropClick}
     >
-      <div className="bg-gray-900 rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto relative">
+      <div className="bg-gray-900 rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto relative flex flex-col">
         <Button
           onClick={onClose}
           variant="secondary"
@@ -86,11 +86,13 @@ export function CharacterModal({ characterId, onClose }: CharacterModalProps) {
         )}
 
         {character && (
-          <div className="p-6">
-            <AnimatedShareCard
-              characterSheet={character}
-              theme={getColorTheme(character.stats)}
-            />
+          <div className="p-6 flex flex-col items-center justify-center flex-1">
+            <div className="w-full max-w-sm flex justify-center">
+              <AnimatedShareCard
+                characterSheet={character}
+                theme={getColorTheme(character.stats)}
+              />
+            </div>
           </div>
         )}
       </div>
