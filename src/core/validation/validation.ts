@@ -58,20 +58,5 @@ export function validateQuestionnaireForm(
     }
   }
 
-  // Check stress/weakness question
-  const hasWeakness = answers.stress_weakness?.trim();
-  if (!hasWeakness) {
-    return {
-      isValid: false,
-      errorMessage: 'Please answer all open-ended questions.',
-    };
-  }
-  if (hasWeakness.length > MAX_ANSWER_LENGTH) {
-    return {
-      isValid: false,
-      errorMessage: `Please keep answers to ${MAX_ANSWER_LENGTH} characters or less.`,
-    };
-  }
-
   return { isValid: true };
 }

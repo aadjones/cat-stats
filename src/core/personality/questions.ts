@@ -159,4 +159,8 @@ export const openEndedQuestions: OpenEndedQuestion[] = [
     question:
       'If your pet were a superhero, what would their special power be?',
   },
+  {
+    id: 'stress_weakness',
+    question: "What's your pet's biggest fear or weakness?",
+  },
 ];

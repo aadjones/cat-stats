@@ -28,6 +28,34 @@ function generateCacheKey(petName: string, answers: UserAnswers): string {
   return `${petName.toLowerCase().trim()}-${btoa(answerString).slice(0, 20)}`;
 }
 
+// Retry configuration - conservative timing to avoid rate limits
+const RETRY_CONFIG = {
+  maxAttempts: 3,
+  delays: [0, 2000, 5000], // 0ms, 2s, 5s - conservative spacing
+  retryableErrors: [
+    'fetch', // Network errors
+    '503', // Service unavailable
+    '502', // Bad gateway
+    '504', // Gateway timeout
+    'timeout', // Request timeout
+  ],
+};
+
+// Check if error should trigger retry
+function shouldRetry(error: unknown, attempt: number): boolean {
+  if (attempt >= RETRY_CONFIG.maxAttempts) return false;
+
+  const errorString = String(error).toLowerCase();
+  return RETRY_CONFIG.retryableErrors.some((retryableError) =>
+    errorString.includes(retryableError)
+  );
+}
+
+// Sleep helper for retry delays
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export async function generateCharacterData(
   petName: string,
   answers: UserAnswers
@@ -119,76 +147,134 @@ Biggest fear/weakness: "${stressWeakness}"
 
 Create videogame-style abilities based on the pet's behaviors. Make ability names creative and memorable. Include game mechanics in the stats line. Return ONLY valid JSON with no other text.`;
 
-  try {
-    const response = await fetch('/api/character', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: API_CONFIG.CLAUDE_MODEL,
-        max_tokens: 2000,
-        messages: [
-          {
-            role: 'user',
-            content: prompt,
-          },
-        ],
-      }),
-    });
+  // Retry loop with conservative delays
+  for (let attempt = 1; attempt <= RETRY_CONFIG.maxAttempts; attempt++) {
+    try {
+      // Add delay before retry (except first attempt)
+      if (attempt > 1) {
+        logger.info(
+          `Retrying character generation, attempt ${attempt}/${RETRY_CONFIG.maxAttempts}`
+        );
+        await sleep(RETRY_CONFIG.delays[attempt - 1]);
+      }
 
-    const data = await response.json();
+      const response = await fetch('/api/character', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: API_CONFIG.CLAUDE_MODEL,
+          max_tokens: 2000,
+          messages: [
+            {
+              role: 'user',
+              content: prompt,
+            },
+          ],
+        }),
+      });
 
-    if (!response.ok) {
-      logger.error('API Error Response:', data);
+      const data = await response.json();
+
+      // Handle rate limiting (429) - don't retry, respect our own rate limiter
+      if (response.status === 429) {
+        logger.warn('Rate limited by API');
+        return {
+          success: false,
+          error: 'Too many requests. Please wait a moment before trying again.',
+        };
+      }
+
+      if (!response.ok) {
+        const error = data.error?.message || `API Error: ${response.status}`;
+        logger.error('API Error Response:', data);
+
+        // Check if we should retry this error
+        if (shouldRetry(response.status, attempt)) {
+          continue; // Try again
+        }
+
+        return {
+          success: false,
+          error,
+        };
+      }
+
+      if (!data.content || !data.content[0]) {
+        logger.error('Unexpected API Response:', data);
+
+        // Malformed response might be temporary, retry
+        if (shouldRetry('malformed response', attempt)) {
+          continue; // Try again
+        }
+
+        return {
+          success: false,
+          error: 'Invalid API response format',
+        };
+      }
+
+      let jsonContent = data.content[0].text;
+
+      // Clean up potential markdown formatting from API response
+      jsonContent = jsonContent
+        .replace(/```json\n?/g, '')
+        .replace(/```\n?/g, '')
+        .trim();
+
+      // Safely parse and validate the character data
+      const parseResult = parseCharacterData(jsonContent);
+
+      if (!parseResult.success) {
+        logger.error('Character data validation failed:', parseResult.error);
+
+        // Parsing errors might be due to incomplete response, retry
+        if (shouldRetry('parsing error', attempt)) {
+          continue; // Try again
+        }
+
+        return {
+          success: false,
+          error: 'Invalid character data format received from API',
+        };
+      }
+
+      const result = {
+        success: true,
+        characterData: parseResult.data,
+      };
+
+      // Cache successful result
+      API_CACHE.set(cacheKey, result);
+
+      // Log successful retry
+      if (attempt > 1) {
+        logger.info(`Character generation succeeded on attempt ${attempt}`);
+      }
+
+      return result;
+    } catch (error) {
+      logger.error(`Character generation attempt ${attempt} failed:`, error);
+
+      // Check if we should retry this error
+      if (shouldRetry(error, attempt)) {
+        continue; // Try again
+      }
+
+      // Final attempt or non-retryable error
       return {
         success: false,
-        error: data.error?.message || `API Error: ${response.status}`,
+        error:
+          "Sorry, there was an error generating your pet's character sheet. Please try again.",
       };
     }
-
-    if (!data.content || !data.content[0]) {
-      logger.error('Unexpected API Response:', data);
-      return {
-        success: false,
-        error: 'Invalid API response format',
-      };
-    }
-
-    let jsonContent = data.content[0].text;
-
-    // Clean up potential markdown formatting from API response
-    jsonContent = jsonContent
-      .replace(/```json\n?/g, '')
-      .replace(/```\n?/g, '')
-      .trim();
-
-    // Safely parse and validate the character data
-    const parseResult = parseCharacterData(jsonContent);
-
-    if (!parseResult.success) {
-      logger.error('Character data validation failed:', parseResult.error);
-      return {
-        success: false,
-        error: 'Invalid character data format received from API',
-      };
-    }
-
-    const result = {
-      success: true,
-      characterData: parseResult.data,
-    };
-
-    // Cache successful result
-    API_CACHE.set(cacheKey, result);
-
-    return result;
-  } catch (error) {
-    logger.error('Error generating character sheet:', error);
-    return {
-      success: false,
-      error:
-        "Sorry, there was an error generating your pet's character sheet. Please try again.",
-    };
   }
+
+  // This should never be reached, but just in case
+  return {
+    success: false,
+    error:
+      "Sorry, there was an error generating your pet's character sheet. Please try again.",
+  };
 }

@@ -91,20 +91,6 @@ export function QuestionnaireForm({
         />
       ))}
 
-      <div className="space-y-3">
-        <h3 className="text-white font-semibold text-base sm:text-lg">
-          What's your pet's biggest fear or weakness?
-        </h3>
-        <textarea
-          value={answers.stress_weakness || ''}
-          onChange={(e) =>
-            handleAnswerChange('stress_weakness', e.target.value)
-          }
-          className="w-full bg-white/10 border border-white/30 rounded-lg px-3 sm:px-4 py-3 sm:py-2 text-white placeholder-white/50 focus:bg-white/20 focus:border-white/50 transition-colors h-20 sm:h-16 text-base sm:text-sm resize-none"
-          placeholder="e.g., Thunder storms, vacuum cleaner, doorbell..."
-        />
-      </div>
-
       {openEndedQuestions.map((question, qIndex) => (
         <OpenEndedQuestion
           key={question.id}
@@ -112,6 +98,11 @@ export function QuestionnaireForm({
           value={answers[question.id]}
           onAnswerChange={handleAnswerChange}
           questionNumber={qIndex + 6}
+          placeholder={
+            question.id === 'stress_weakness'
+              ? 'e.g., Thunder storms, vacuum cleaner, doorbell...'
+              : undefined
+          }
         />
       ))}
 

@@ -400,7 +400,7 @@ export function PetPersonalityAnalyzer() {
               <div className="px-3 sm:px-4 text-white/70 text-sm font-medium text-center">
                 <div>Create Your Legend</div>
                 <div className="text-xs text-white/50 mt-1">
-                  10 quick questions
+                  11 quick questions
                 </div>
               </div>
               <div className="flex-1 h-px bg-gradient-to-r from-transparent via-purple-400/50 to-transparent"></div>
