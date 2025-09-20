@@ -1,6 +1,19 @@
+import { checkRateLimit } from './utils/rateLimiter.js';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  // Rate limiting: 5 requests per 10 minutes
+  const rateLimit = checkRateLimit(req, 5, 600000);
+  if (!rateLimit.allowed) {
+    res.setHeader('Retry-After', rateLimit.retryAfter);
+    return res.status(429).json({
+      error:
+        'Too many requests. Please wait before generating another character.',
+      retryAfter: rateLimit.retryAfter,
+    });
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
