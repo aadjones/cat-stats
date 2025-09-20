@@ -9,6 +9,10 @@ export interface ValidationResult {
   errorMessage?: string;
 }
 
+// Input length limits
+const MAX_PET_NAME_LENGTH = 50;
+const MAX_ANSWER_LENGTH = 500;
+
 export function validateQuestionnaireForm(
   petName: string,
   answers: UserAnswers
@@ -17,6 +21,13 @@ export function validateQuestionnaireForm(
     return {
       isValid: false,
       errorMessage: "Please fill in your pet's name.",
+    };
+  }
+
+  if (petName.length > MAX_PET_NAME_LENGTH) {
+    return {
+      isValid: false,
+      errorMessage: `Pet name must be ${MAX_PET_NAME_LENGTH} characters or less.`,
     };
   }
 
@@ -30,15 +41,35 @@ export function validateQuestionnaireForm(
     };
   }
 
-  const requiredOpenEnded = openEndedQuestions.every((q) =>
-    answers[q.id]?.trim()
-  );
-  const hasWeakness = answers.stress_weakness?.trim();
+  // Check open-ended questions exist and are within length limits
+  for (const q of openEndedQuestions) {
+    const answer = answers[q.id]?.trim();
+    if (!answer) {
+      return {
+        isValid: false,
+        errorMessage: 'Please answer all open-ended questions.',
+      };
+    }
+    if (answer.length > MAX_ANSWER_LENGTH) {
+      return {
+        isValid: false,
+        errorMessage: `Please keep answers to ${MAX_ANSWER_LENGTH} characters or less.`,
+      };
+    }
+  }
 
-  if (!requiredOpenEnded || !hasWeakness) {
+  // Check stress/weakness question
+  const hasWeakness = answers.stress_weakness?.trim();
+  if (!hasWeakness) {
     return {
       isValid: false,
       errorMessage: 'Please answer all open-ended questions.',
+    };
+  }
+  if (hasWeakness.length > MAX_ANSWER_LENGTH) {
+    return {
+      isValid: false,
+      errorMessage: `Please keep answers to ${MAX_ANSWER_LENGTH} characters or less.`,
     };
   }
 

@@ -45,7 +45,10 @@ export default async function handler(req, res) {
       .json({ error: 'Messages must be a non-empty array' });
   }
 
-  // Validate message structure
+  // Validate message structure and content length
+  const MAX_MESSAGE_LENGTH = 5000; // Total prompt should be reasonable
+  let totalContentLength = 0;
+
   for (const message of messages) {
     if (
       !message.role ||
@@ -55,6 +58,20 @@ export default async function handler(req, res) {
     ) {
       return res.status(400).json({ error: 'Invalid message format' });
     }
+
+    totalContentLength += message.content.length;
+
+    if (message.content.length > MAX_MESSAGE_LENGTH) {
+      return res.status(400).json({
+        error: 'Message content too long. Please shorten your answers.',
+      });
+    }
+  }
+
+  if (totalContentLength > MAX_MESSAGE_LENGTH * 2) {
+    return res.status(400).json({
+      error: 'Total request too large. Please shorten your answers.',
+    });
   }
 
   try {
