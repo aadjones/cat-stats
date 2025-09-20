@@ -2,6 +2,7 @@ import type { UserAnswers, CharacterData } from '../../core/personality/types';
 import { openEndedQuestions } from '../../core/personality/questions';
 import { parseCharacterData } from '../../core/validation/jsonParsing';
 import { API_CONFIG } from '../../config/featureFlags';
+import { logger } from '../../utils/logger';
 
 export const LOADING_MESSAGES = [
   "Analyzing your pet's personality... 🤔",
@@ -124,7 +125,7 @@ Create videogame-style abilities based on the pet's behaviors. Make ability name
     const data = await response.json();
 
     if (!response.ok) {
-      console.error('API Error Response:', data);
+      logger.error('API Error Response:', data);
       return {
         success: false,
         error: data.error?.message || `API Error: ${response.status}`,
@@ -132,7 +133,7 @@ Create videogame-style abilities based on the pet's behaviors. Make ability name
     }
 
     if (!data.content || !data.content[0]) {
-      console.error('Unexpected API Response:', data);
+      logger.error('Unexpected API Response:', data);
       return {
         success: false,
         error: 'Invalid API response format',
@@ -151,7 +152,7 @@ Create videogame-style abilities based on the pet's behaviors. Make ability name
     const parseResult = parseCharacterData(jsonContent);
 
     if (!parseResult.success) {
-      console.error('Character data validation failed:', parseResult.error);
+      logger.error('Character data validation failed:', parseResult.error);
       return {
         success: false,
         error: 'Invalid character data format received from API',
@@ -163,7 +164,7 @@ Create videogame-style abilities based on the pet's behaviors. Make ability name
       characterData: parseResult.data,
     };
   } catch (error) {
-    console.error('Error generating character sheet:', error);
+    logger.error('Error generating character sheet:', error);
     return {
       success: false,
       error:
