@@ -60,6 +60,19 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
         return;
       }
 
+      // Check for HEIC files
+      if (
+        file.type === 'image/heic' ||
+        file.type === 'image/heif' ||
+        file.name.toLowerCase().endsWith('.heic') ||
+        file.name.toLowerCase().endsWith('.heif')
+      ) {
+        alert(
+          "HEIC files aren't supported yet. Please convert your photo to JPG or PNG first."
+        );
+        return;
+      }
+
       if (file.size > 20 * 1024 * 1024) {
         // 20MB limit
         alert('Please select an image smaller than 20MB.');
@@ -204,7 +217,9 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
                 browse to upload
               </button>
             </div>
-            <p className="text-white/50 text-xs">PNG, JPG up to 20MB</p>
+            <p className="text-white/50 text-xs">
+              PNG, JPG up to 20MB (HEIC not supported)
+            </p>
           </div>
           <input
             ref={fileInputRef}
