@@ -1,6 +1,10 @@
 import type { StoredCharacter } from '../../services/characterStorage';
 import { AnimatedShareCard } from '../Results/AnimatedShareCard';
+import { AnimationComparison } from '../Results/AnimatedShareCard/AnimationComparison';
 import { getColorTheme } from '../../services';
+
+// Temporary flag to test both animation systems
+const ENABLE_ANIMATION_COMPARISON = false;
 
 // Pre-loaded character data to avoid API delay on landing page
 const PREVIEW_CHARACTER: StoredCharacter = {
@@ -94,6 +98,26 @@ const PREVIEW_CHARACTER: StoredCharacter = {
 
 export function CharacterSheetPreview() {
   const theme = getColorTheme(PREVIEW_CHARACTER.stats);
+
+  if (ENABLE_ANIMATION_COMPARISON) {
+    return (
+      <div className="mx-auto flex flex-col items-center max-w-6xl">
+        <div className="mb-4">
+          <h2 className="text-2xl font-bold text-white text-center mb-2">
+            Animation System Comparison
+          </h2>
+          <p className="text-white/80 text-center text-sm">
+            Testing new CSS timeline system vs old setTimeout system
+          </p>
+        </div>
+        <AnimationComparison
+          characterSheet={PREVIEW_CHARACTER}
+          theme={theme}
+          onAnimationComplete={() => {}}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto flex flex-col items-center">
