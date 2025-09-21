@@ -90,6 +90,48 @@ Based on evidence, either:
 
 **DON'T**: Over-commit to git during debugging. Test changes locally first.
 
+### ESLint React Hook Dependency Warnings - CRITICAL GUIDANCE
+
+**SYMPTOM**: ESLint warnings like "React Hook useEffect has missing dependencies"
+
+**⚠️ DO NOT BLINDLY FIX THESE WARNINGS ⚠️**
+
+**ROOT CAUSE**: ESLint cannot understand complex animation timing or intentional dependency omissions.
+
+**DANGEROUS PATTERN**: Adding `currentPhase` or other state variables to animation useEffect dependencies will cause infinite re-render loops and break timing-sensitive code.
+
+**WHEN TO IGNORE THE WARNING**:
+
+- Animation controllers that manage phase transitions
+- Effects that should only run once on mount
+- Timing-sensitive code where re-running would break functionality
+- Cases where the effect manages its own state via refs
+
+**SAFE APPROACH**:
+
+1. **Understand WHY the dependency is missing** before adding it
+2. **Test the behavior** - does adding the dependency break anything?
+3. **Use `// eslint-disable-next-line react-hooks/exhaustive-deps` comment** if the warning is intentionally ignored
+4. **Never add dependencies that would cause the effect to re-run on every state change**
+
+**EXAMPLE OF WHAT NOT TO DO**:
+
+```js
+// ❌ This will break animation timing by restarting on every phase change
+useEffect(() => {
+  // Animation logic that progresses through phases
+}, [currentPhase, isPlaying]); // currentPhase causes infinite loop!
+```
+
+**CORRECT APPROACH**:
+
+```js
+// ✅ Only restart when play/pause changes, not on phase transitions
+useEffect(() => {
+  // Animation logic that progresses through phases
+}, [isPlaying]); // eslint-disable-next-line react-hooks/exhaustive-deps
+```
+
 ### Default Questions to Ask
 
 - What is the absolute simplest version of this that could work?
