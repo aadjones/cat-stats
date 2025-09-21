@@ -49,7 +49,7 @@ export function AnimationController({
       'playing:',
       isPlaying
     );
-  }, [characterSheet.petName, currentPhase, isPlaying]);
+  }, []);
 
   // Phase progression logic
   useEffect(() => {
@@ -185,7 +185,7 @@ export function AnimationController({
         scrollTimerRef.current = null;
       }
     };
-  }, [currentPhase, isPlaying]);
+  }, []);
 
   // Helper to determine phase visibility - ONLY current phase is visible
   const getPhaseClass = (targetPhase: AnimationPhase) => {

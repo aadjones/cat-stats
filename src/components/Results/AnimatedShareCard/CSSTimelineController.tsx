@@ -136,7 +136,7 @@ export function CSSTimelineController({
         cancelAnimationFrame(animationId);
       }
     };
-  }, [isPlaying, currentPhase, onAnimationComplete]); // Only restart when play/pause changes
+  }, [isPlaying]); // Only restart when play/pause changes
 
   // Generate CSS timeline styles
   const timelineStyles = `
