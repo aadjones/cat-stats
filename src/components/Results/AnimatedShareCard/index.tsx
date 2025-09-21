@@ -1,5 +1,5 @@
 import type { AnimatedShareCardProps } from './types';
-import { AnimationController } from './AnimationController';
+import { CSSTimelineController } from './CSSTimelineController';
 
 export function AnimatedShareCard(props: AnimatedShareCardProps) {
   const { theme } = props;
@@ -41,7 +41,7 @@ export function AnimatedShareCard(props: AnimatedShareCardProps) {
       }}
     >
       <div className="flex-1 min-h-0 overflow-hidden">
-        <AnimationController {...props} />
+        <CSSTimelineController {...props} />
       </div>
 
       {/* Global animation styles */}

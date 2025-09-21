@@ -25,7 +25,10 @@
       "mcp__ide__getDiagnostics",
       "mcp__ide__executeCode",
       "Bash(python3:*)",
-      "Bash(npx vite-bundle-analyzer:*)"
+      "Bash(npx vite-bundle-analyzer:*)",
+      "WebFetch(domain:engineering.atspotify.com)",
+      "WebFetch(domain:codepen.io)",
+      "WebFetch(domain:github.com)"
     ],
     "deny": [],
     "ask": []

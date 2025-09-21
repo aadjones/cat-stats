@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { AnimationPhase, AnimatedShareCardProps } from './types';
 import { ANIMATION_CONFIG, PHASE_ORDER } from './config';
 import { FEATURE_FLAGS } from '../../../config/featureFlags';
+import { logger } from '../../../utils/logger';
 import { IntroPhase } from './phases/IntroPhase';
 import { StatsPhase } from './phases/StatsPhase';
 import { CombatPhase } from './phases/CombatPhase';
@@ -20,15 +21,78 @@ export function AnimationController({
   const [currentPhase, setCurrentPhase] = useState<AnimationPhase>('intro');
   const [isPlaying, setIsPlaying] = useState(true);
 
+  // Refs to track timer state for debugging
+  const phaseTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const scrollTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const phaseStartTimeRef = useRef<number>(Date.now());
+
+  // Log isPlaying state changes
+  useEffect(() => {
+    logger.debug('Animation playing state changed', {
+      isPlaying,
+      currentPhase,
+      timestamp: new Date().toISOString(),
+    });
+  }, [isPlaying, currentPhase]);
+
+  // Test log to verify logger is working
+  useEffect(() => {
+    logger.info('AnimationController mounted - logging system active', {
+      petName: characterSheet.petName,
+      initialPhase: currentPhase,
+    });
+    console.log(
+      '[MOUNT]',
+      characterSheet.petName,
+      'phase:',
+      currentPhase,
+      'playing:',
+      isPlaying
+    );
+  }, [characterSheet.petName, currentPhase, isPlaying]);
+
   // Phase progression logic
   useEffect(() => {
-    if (!isPlaying) return;
+    if (!isPlaying) {
+      logger.debug('Animation paused, skipping phase timer setup', {
+        currentPhase,
+        isPlaying,
+        elapsedSincePhaseStart: Date.now() - phaseStartTimeRef.current,
+      });
+      return;
+    }
 
     const duration = ANIMATION_CONFIG.phases[currentPhase];
+    phaseStartTimeRef.current = Date.now();
+
+    logger.debug('Setting up phase timer', {
+      currentPhase,
+      duration,
+      isPlaying,
+      timestamp: new Date().toISOString(),
+    });
+
     const timer = setTimeout(() => {
       const currentIndex = PHASE_ORDER.indexOf(currentPhase);
       const nextIndex = (currentIndex + 1) % PHASE_ORDER.length;
       const nextPhase = PHASE_ORDER[nextIndex];
+
+      const actualDuration = Date.now() - phaseStartTimeRef.current;
+      console.log(
+        '[PHASE]',
+        currentPhase,
+        '→',
+        nextPhase,
+        actualDuration + 'ms (expected ' + duration + 'ms)'
+      );
+
+      logger.debug('Phase timer fired, transitioning', {
+        from: currentPhase,
+        to: nextPhase,
+        actualDuration,
+        expectedDuration: duration,
+        isPlaying,
+      });
 
       setCurrentPhase(nextPhase);
 
@@ -37,7 +101,17 @@ export function AnimationController({
       }
     }, duration);
 
-    return () => clearTimeout(timer);
+    phaseTimerRef.current = timer;
+
+    return () => {
+      logger.debug('Cleaning up phase timer', {
+        currentPhase,
+        elapsedTime: Date.now() - phaseStartTimeRef.current,
+        isPlaying,
+      });
+      clearTimeout(timer);
+      phaseTimerRef.current = null;
+    };
   }, [currentPhase, isPlaying, onAnimationComplete]);
 
   // Scroll-aware animation pausing to prevent timing glitches
@@ -45,26 +119,73 @@ export function AnimationController({
     let scrollTimer: NodeJS.Timeout;
 
     const handleScroll = () => {
+      const scrollTime = Date.now();
+      const phaseElapsed = scrollTime - phaseStartTimeRef.current;
+
+      console.log(
+        '[SCROLL]',
+        currentPhase,
+        'paused at',
+        phaseElapsed + 'ms',
+        'scrollY:',
+        window.scrollY
+      );
+
+      logger.debug('Scroll event detected - pausing animation', {
+        currentPhase,
+        phaseElapsed,
+        isPlaying,
+        hasActivePhaseTimer: phaseTimerRef.current !== null,
+        hasActiveScrollTimer: scrollTimerRef.current !== null,
+        scrollY: window.scrollY,
+      });
+
       // Pause animation during scroll
       setIsPlaying(false);
 
       // Clear any existing timer
-      clearTimeout(scrollTimer);
+      if (scrollTimerRef.current) {
+        logger.debug('Clearing existing scroll resume timer');
+        clearTimeout(scrollTimerRef.current);
+      }
 
       // Resume animation after scroll stops (300ms delay)
       scrollTimer = setTimeout(() => {
+        const totalPause = Date.now() - scrollTime;
+        console.log(
+          '[SCROLL-RESUME]',
+          currentPhase,
+          'resumed after',
+          totalPause + 'ms pause'
+        );
+
+        logger.debug('Scroll timer fired - resuming animation', {
+          currentPhase,
+          totalPauseDuration: totalPause,
+          phaseElapsedWhenPaused: phaseElapsed,
+          scrollY: window.scrollY,
+        });
         setIsPlaying(true);
+        scrollTimerRef.current = null;
       }, 300);
+
+      scrollTimerRef.current = scrollTimer;
     };
+
+    logger.debug('Setting up scroll listener');
 
     // Listen for scroll events on window
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
+      logger.debug('Cleaning up scroll listener');
       window.removeEventListener('scroll', handleScroll);
-      clearTimeout(scrollTimer);
+      if (scrollTimerRef.current) {
+        clearTimeout(scrollTimerRef.current);
+        scrollTimerRef.current = null;
+      }
     };
-  }, []);
+  }, [currentPhase, isPlaying]);
 
   // Helper to determine phase visibility - ONLY current phase is visible
   const getPhaseClass = (targetPhase: AnimationPhase) => {
