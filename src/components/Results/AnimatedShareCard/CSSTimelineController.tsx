@@ -1,5 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import type { AnimationPhase, AnimatedShareCardProps } from './types';
+import type {
+  AnimationPhase,
+  AnimatedShareCardProps,
+  PhaseComponentProps,
+} from './types';
 import { ANIMATION_CONFIG, PHASE_ORDER } from './config';
 import { IntroPhase } from './phases/IntroPhase';
 import { StatsPhase } from './phases/StatsPhase';
