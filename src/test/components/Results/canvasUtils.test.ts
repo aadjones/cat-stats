@@ -63,7 +63,6 @@ describe('Canvas Utils', () => {
     stealth: 65,
     charisma: 78,
     resolve: 88,
-    boldness: 70, // Should be excluded from radar chart
   };
 
   describe('calculateRadarChartData', () => {
@@ -81,12 +80,19 @@ describe('Canvas Utils', () => {
       expect(statValues).toEqual([85, 72, 90, 65, 78, 88]);
     });
 
-    test('excludes boldness from radar chart data', () => {
+    test('includes all 6 stats in radar chart data', () => {
       const { statLabels, statValues } = calculateRadarChartData(mockStats);
 
-      expect(statLabels).not.toContain('Boldness');
-      expect(statValues).not.toContain(70); // boldness value
-      expect(statValues).toHaveLength(6); // Only 6 stats, not 7
+      expect(statLabels).toHaveLength(6);
+      expect(statValues).toHaveLength(6);
+      expect(statLabels).toEqual([
+        'Wisdom',
+        'Cunning',
+        'Agility',
+        'Stealth',
+        'Charisma',
+        'Resolve',
+      ]);
     });
 
     test('handles edge case stats correctly', () => {
@@ -97,7 +103,6 @@ describe('Canvas Utils', () => {
         stealth: 1,
         charisma: 99,
         resolve: 0,
-        boldness: 50,
       };
 
       const { statValues } = calculateRadarChartData(edgeStats);
@@ -237,7 +242,6 @@ describe('Canvas Utils', () => {
         stealth: 80,
         charisma: 80,
         resolve: 80,
-        boldness: 50,
       };
 
       const { statValues } = calculateRadarChartData(perfectStats);
@@ -258,7 +262,6 @@ describe('Canvas Utils', () => {
         stealth: 0,
         charisma: 100,
         resolve: 0,
-        boldness: 50,
       };
 
       const { statValues } = calculateRadarChartData(extremeStats);

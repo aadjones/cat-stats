@@ -5,7 +5,6 @@ export interface PetStats {
   stealth: number;
   charisma: number;
   resolve: number;
-  boldness: number;
 }
 
 export interface QuestionOption {

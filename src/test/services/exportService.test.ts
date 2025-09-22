@@ -82,7 +82,6 @@ describe('Export Service', () => {
       stealth: 65,
       charisma: 78,
       resolve: 88,
-      boldness: 70,
     },
     characterData: {
       archetype: 'The Swift Hunter',

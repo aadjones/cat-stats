@@ -48,9 +48,9 @@ function calculateStatCompatibility(
   stats1: PetStats,
   stats2: PetStats
 ): StatCompatibility {
-  // Energy level matching (agility + boldness as activity indicator)
-  const energy1 = stats1.agility + stats1.boldness;
-  const energy2 = stats2.agility + stats2.boldness;
+  // Energy level matching (agility as activity indicator)
+  const energy1 = stats1.agility + stats1.agility; // Double weight on agility
+  const energy2 = stats2.agility + stats2.agility;
   const energyDiff = Math.abs(energy1 - energy2);
   const energyMatch = Math.max(0, 100 - energyDiff / 2);
 
@@ -132,8 +132,8 @@ function findComplementaryStats(stats1: PetStats, stats2: PetStats): string[] {
 function calculatePersonalityClash(stats1: PetStats, stats2: PetStats): number {
   let clashScore = 0;
 
-  // Both very high boldness = territory conflicts
-  if (stats1.boldness > 80 && stats2.boldness > 80) {
+  // Both very high stealth = territory conflicts
+  if (stats1.stealth > 80 && stats2.stealth > 80) {
     clashScore += 30;
   }
 
@@ -263,12 +263,12 @@ function identifyConflictAreas(
   const conflicts: ConflictArea[] = [];
 
   // Territory conflicts based on stats
-  if (char1.stats.boldness > 70 && char2.stats.boldness > 70) {
+  if (char1.stats.stealth > 70 && char2.stats.stealth > 70) {
     conflicts.push({
       area: 'Territory',
       severity: 'High',
       description:
-        'Both pets have high boldness - likely to compete for prime spots',
+        'Both pets have high stealth - likely to compete for prime spots',
     });
   }
 
@@ -283,8 +283,8 @@ function identifyConflictAreas(
   }
 
   // Activity level mismatches
-  const energy1 = char1.stats.agility + char1.stats.boldness;
-  const energy2 = char2.stats.agility + char2.stats.boldness;
+  const energy1 = char1.stats.agility + char1.stats.agility;
+  const energy2 = char2.stats.agility + char2.stats.agility;
   if (Math.abs(energy1 - energy2) > 80) {
     conflicts.push({
       area: 'Activity Level',
@@ -307,8 +307,7 @@ function analyzeScenarioCompatibility(
   const stats2 = char2.stats;
 
   // Living space compatibility
-  const territorialClash =
-    stats1.boldness > 70 && stats2.boldness > 70 ? -30 : 0;
+  const territorialClash = stats1.stealth > 70 && stats2.stealth > 70 ? -30 : 0;
   const stealthBalance =
     Math.abs(stats1.stealth - stats2.stealth) < 30 ? 20 : 0;
   const livingSpace = Math.max(0, 70 + stealthBalance + territorialClash);
@@ -329,8 +328,8 @@ function analyzeScenarioCompatibility(
   }
 
   // Activity compatibility
-  const energy1 = stats1.agility + stats1.boldness;
-  const energy2 = stats2.agility + stats2.boldness;
+  const energy1 = stats1.agility + stats1.agility;
+  const energy2 = stats2.agility + stats2.agility;
   const energyDiff = Math.abs(energy1 - energy2);
   const activityMatch = Math.max(0, 100 - energyDiff / 2);
 

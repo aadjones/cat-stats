@@ -36,7 +36,6 @@ describe('Compatibility Calculator', () => {
     stealth: 50,
     charisma: 80,
     resolve: 70,
-    boldness: 85,
   };
 
   const lowEnergyStats: PetStats = {
@@ -46,7 +45,6 @@ describe('Compatibility Calculator', () => {
     stealth: 90,
     charisma: 40,
     resolve: 85,
-    boldness: 25,
   };
 
   const balancedStats: PetStats = {
@@ -56,7 +54,6 @@ describe('Compatibility Calculator', () => {
     stealth: 65,
     charisma: 70,
     resolve: 75,
-    boldness: 55,
   };
 
   describe('calculateCompatibility', () => {
@@ -141,14 +138,14 @@ describe('Compatibility Calculator', () => {
       ).toBe(true);
     });
 
-    test('identifies personality clashes from high boldness', () => {
-      const char1 = createTestCharacter('Bold1', {
+    test('identifies personality clashes from high stealth', () => {
+      const char1 = createTestCharacter('Stealthy1', {
         ...balancedStats,
-        boldness: 90,
+        stealth: 90,
       });
-      const char2 = createTestCharacter('Bold2', {
+      const char2 = createTestCharacter('Stealthy2', {
         ...balancedStats,
-        boldness: 85,
+        stealth: 85,
       });
 
       const result = calculateCompatibility(char1, char2);
@@ -194,14 +191,14 @@ describe('Compatibility Calculator', () => {
       expect(result.abilitySync.conflicts.length).toBeGreaterThan(0);
     });
 
-    test('identifies territory conflicts for high boldness pets', () => {
+    test('identifies territory conflicts for high stealth pets', () => {
       const char1 = createTestCharacter('Territorial1', {
         ...balancedStats,
-        boldness: 85,
+        stealth: 85,
       });
       const char2 = createTestCharacter('Territorial2', {
         ...balancedStats,
-        boldness: 80,
+        stealth: 80,
       });
 
       const result = calculateCompatibility(char1, char2);
@@ -265,11 +262,9 @@ describe('Compatibility Calculator', () => {
     test('calculates living space compatibility', () => {
       const char1 = createTestCharacter('Peaceful1', {
         ...balancedStats,
-        boldness: 40,
       });
       const char2 = createTestCharacter('Peaceful2', {
         ...balancedStats,
-        boldness: 35,
       });
 
       const result = calculateCompatibility(char1, char2);

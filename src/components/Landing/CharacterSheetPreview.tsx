@@ -88,7 +88,6 @@ const PREVIEW_CHARACTER: StoredCharacter = {
     stealth: 95,
     charisma: 60,
     resolve: 90,
-    boldness: 75,
   },
   petName: 'Sente',
   petPhoto: 'https://a45xo5hsimefevky.public.blob.vercel-storage.com/sente.jpg',

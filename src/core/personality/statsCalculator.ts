@@ -8,7 +8,6 @@ const BASE_STATS: PetStats = {
   stealth: 50,
   charisma: 50,
   resolve: 50,
-  boldness: 50,
 };
 
 export function calculatePetStats(answers: UserAnswers): PetStats {

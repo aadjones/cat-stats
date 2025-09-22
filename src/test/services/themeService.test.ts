@@ -11,7 +11,6 @@ describe('Theme Service', () => {
         stealth: 65,
         charisma: 55,
         resolve: 75,
-        boldness: 50,
       };
 
       const theme = getColorTheme(stats);
@@ -28,7 +27,6 @@ describe('Theme Service', () => {
         stealth: 98,
         charisma: 55,
         resolve: 75,
-        boldness: 50,
       };
 
       const theme = getColorTheme(stats);
@@ -45,7 +43,6 @@ describe('Theme Service', () => {
         stealth: 65,
         charisma: 55,
         resolve: 75,
-        boldness: 50,
       };
 
       const theme = getColorTheme(stats);
@@ -54,20 +51,19 @@ describe('Theme Service', () => {
       expect(theme.accent).toBe('#4F46E5');
     });
 
-    test('ignores boldness in theme calculation', () => {
+    test('uses highest stat for theme calculation', () => {
       const stats: PetStats = {
         wisdom: 60,
         cunning: 70,
         agility: 65,
         stealth: 55,
         charisma: 50,
-        resolve: 75,
-        boldness: 99, // Highest stat but should be ignored
+        resolve: 75, // Highest stat
       };
 
       const theme = getColorTheme(stats);
 
-      // Should return resolve theme (75), not boldness
+      // Should return resolve theme (75)
       expect(theme.accent).toBe('#F59E0B');
       expect(theme.gradient).toBe(
         'from-yellow-900 via-amber-900 to-orange-900'
@@ -92,7 +88,6 @@ describe('Theme Service', () => {
           stealth: stat === 'stealth' ? 100 : 50,
           charisma: stat === 'charisma' ? 100 : 50,
           resolve: stat === 'resolve' ? 100 : 50,
-          boldness: 50,
         };
 
         const theme = getColorTheme(stats);

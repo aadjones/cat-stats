@@ -12,11 +12,10 @@ describe('calculatePetStats', () => {
       stealth: 50,
       charisma: 50,
       resolve: 50,
-      boldness: 50,
     });
   });
 
-  it('should increase charisma and boldness for social pet behavior', () => {
+  it('should increase charisma for social pet behavior', () => {
     const answers: UserAnswers = {
       meeting_people: 'A', // "Immediately runs up with a toy"
     };
@@ -24,7 +23,6 @@ describe('calculatePetStats', () => {
     const stats = calculatePetStats(answers);
 
     expect(stats.charisma).toBe(75); // 50 + 25
-    expect(stats.boldness).toBe(60); // 50 + 10
     expect(stats.wisdom).toBe(50); // unchanged
   });
 
@@ -68,7 +66,7 @@ describe('calculatePetStats', () => {
   it('should cap stats at 0 minimum', () => {
     const answers: UserAnswers = {
       meeting_people: 'D', // charisma: -10, stealth: +25
-      stress_response: 'A', // resolve: -15, boldness: +10
+      stress_response: 'A', // resolve: -15
       problem_solving: 'C', // charisma: +20, resolve: -10
     };
 
@@ -104,7 +102,6 @@ describe('calculatePetStats', () => {
       stealth: 50,
       charisma: 50,
       resolve: 50,
-      boldness: 50,
     });
   });
 });

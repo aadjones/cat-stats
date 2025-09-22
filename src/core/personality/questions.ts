@@ -8,7 +8,7 @@ export const multipleChoiceQuestions: Question[] = [
       {
         value: 'A',
         text: 'Runs up with a toy or starts showing off',
-        stats: { charisma: 25, boldness: 10 },
+        stats: { charisma: 25 },
       },
       {
         value: 'B',
@@ -34,7 +34,7 @@ export const multipleChoiceQuestions: Question[] = [
       {
         value: 'A',
         text: 'Find the most acrobatic route - climb, jump, or parkour their way there',
-        stats: { agility: 20, boldness: 15 },
+        stats: { agility: 20 },
       },
       {
         value: 'B',
@@ -61,7 +61,7 @@ export const multipleChoiceQuestions: Question[] = [
       {
         value: 'A',
         text: 'Gets agitated and protests - this is an outrage!',
-        stats: { resolve: -15, boldness: 10 },
+        stats: { resolve: -15 },
       },
       {
         value: 'B',
@@ -76,7 +76,7 @@ export const multipleChoiceQuestions: Question[] = [
       {
         value: 'D',
         text: "Completely shuts down or hides until it's over",
-        stats: { stealth: 15, boldness: -10 },
+        stats: { stealth: 15 },
       },
     ],
   },
