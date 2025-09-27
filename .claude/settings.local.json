@@ -29,7 +29,8 @@
       "WebFetch(domain:engineering.atspotify.com)",
       "WebFetch(domain:codepen.io)",
       "WebFetch(domain:github.com)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(vercel:*)"
     ],
     "deny": [],
     "ask": []
