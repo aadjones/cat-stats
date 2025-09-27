@@ -28,7 +28,8 @@
       "Bash(npx vite-bundle-analyzer:*)",
       "WebFetch(domain:engineering.atspotify.com)",
       "WebFetch(domain:codepen.io)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []
