@@ -22,10 +22,33 @@ export interface CharacterGenerationResult {
 // Simple in-memory cache for API responses (resets on page reload)
 const API_CACHE = new Map<string, CharacterGenerationResult>();
 
-// Generate cache key from inputs
+// Generate cache key from inputs (Unicode-safe)
 function generateCacheKey(petName: string, answers: UserAnswers): string {
   const answerString = JSON.stringify(answers, Object.keys(answers).sort());
-  return `${petName.toLowerCase().trim()}-${btoa(answerString).slice(0, 20)}`;
+
+  try {
+    // Try original btoa first for backward compatibility with existing ASCII cache keys
+    const encoded = btoa(answerString);
+    return `${petName.toLowerCase().trim()}-${encoded.slice(0, 20)}`;
+  } catch {
+    // Fallback for Unicode characters: escape non-Latin1 chars then encode
+    const latin1Safe = answerString.replace(/[^\x20-\xFF]/g, function (match) {
+      return '\\u' + ('0000' + match.charCodeAt(0).toString(16)).slice(-4);
+    });
+
+    try {
+      const encoded = btoa(latin1Safe);
+      return `${petName.toLowerCase().trim()}-u${encoded.slice(0, 19)}`; // 'u' prefix indicates Unicode fallback
+    } catch {
+      // Final fallback: use hash-based approach for very long escaped strings
+      let hash = 5381;
+      for (let i = 0; i < answerString.length; i++) {
+        hash = (hash << 5) + hash + answerString.charCodeAt(i);
+        hash = hash & hash; // Convert to 32-bit integer
+      }
+      return `${petName.toLowerCase().trim()}-h${Math.abs(hash).toString(36).slice(0, 11)}`; // 'h' prefix indicates hash fallback
+    }
+  }
 }
 
 // Retry configuration - conservative timing to avoid rate limits
