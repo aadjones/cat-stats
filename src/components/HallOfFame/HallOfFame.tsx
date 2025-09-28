@@ -23,6 +23,7 @@ const FEATURED_CHARACTER_IDS = [
   '6appoh',
   '9oug8t',
   'sq56qj',
+  '7pyi5t',
 ];
 
 export function HallOfFame() {
