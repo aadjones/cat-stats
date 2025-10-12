@@ -30,3 +30,12 @@ jobs:
           KV_REST_API_URL: ${{ secrets.KV_REST_API_URL }}
           KV_REST_API_TOKEN: ${{ secrets.KV_REST_API_TOKEN }}
         run: node tools/heartbeat.js
+
+      - name: Keep repo active (prevent workflow auto-disable)
+        if: github.event.schedule # Only on scheduled runs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          echo "Last heartbeat: $(date)" > .github/last-heartbeat.txt
+          git add .github/last-heartbeat.txt || true
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: update heartbeat timestamp [skip ci]" && git push)
