@@ -12,10 +12,14 @@ on:
 jobs:
   heartbeat:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Allow bot to push commits
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
