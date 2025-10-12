@@ -30,7 +30,8 @@
       "WebFetch(domain:codepen.io)",
       "WebFetch(domain:github.com)",
       "Bash(git add:*)",
-      "Bash(vercel:*)"
+      "Bash(vercel:*)",
+      "Bash(chmod:*)"
     ],
     "deny": [],
     "ask": []

@@ -30,3 +30,6 @@ coverage
 .env.local
 .vercel
 .env*.local
+
+# Database backups (may contain user data)
+backups/
