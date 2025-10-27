@@ -15,6 +15,7 @@
     "prepare": "node .husky/install.mjs"
   },
   "dependencies": {
+    "@vercel/analytics": "^1.5.0",
     "@vercel/blob": "^1.1.1",
     "@vercel/kv": "^3.0.0",
     "html2canvas": "^1.4.1",
