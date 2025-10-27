@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import type { StoredCharacter } from '../../services/characterStorage';
 import { loadCharacter } from '../../services/characterStorage';
 import { Button } from '../UI/Button';
 import { CharacterModal } from './CharacterModal';
@@ -27,11 +26,27 @@ const FEATURED_CHARACTER_IDS = [
   'kspziz',
   'svetnf',
   '92rkx5',
+  'urs10a',
+  'pva4fp',
+  'jwio68',
+  'd9p9rt',
+  '597m90',
+  '9fb3p8',
+];
+
+const LOADING_MESSAGES = [
+  'Summoning legendary felines...',
+  'Polishing hall of fame trophies...',
+  'Consulting the ancient scrolls...',
+  'Gathering tales of heroic cats...',
+  'Awakening the champions...',
+  'Reading the chronicles of greatness...',
 ];
 
 export function HallOfFame() {
   const [characters, setCharacters] = useState<CharacterPreview[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMessage, setLoadingMessage] = useState(LOADING_MESSAGES[0]);
   const [error, setError] = useState<string | null>(null);
   const [selectedCharacterId, setSelectedCharacterId] = useState<string | null>(
     null
@@ -44,13 +59,27 @@ export function HallOfFame() {
   const loadFeaturedCharacters = async () => {
     try {
       setLoading(true);
+
+      // Rotate loading messages every 800ms
+      const messageInterval = setInterval(() => {
+        setLoadingMessage(
+          (prev) =>
+            LOADING_MESSAGES[
+              (LOADING_MESSAGES.indexOf(prev) + 1) % LOADING_MESSAGES.length
+            ]
+        );
+      }, 800);
+
       const characterPromises = FEATURED_CHARACTER_IDS.map(loadCharacter);
       const results = await Promise.allSettled(characterPromises);
 
       const loadedCharacters: CharacterPreview[] = results
         .filter(
-          (result): result is PromiseFulfilledResult<StoredCharacter | null> =>
-            result.status === 'fulfilled' && result.value !== null
+          (
+            result
+          ): result is PromiseFulfilledResult<
+            Awaited<ReturnType<typeof loadCharacter>>
+          > => result.status === 'fulfilled' && result.value !== null
         )
         .map((result) => ({
           id: result.value!.id,
@@ -59,6 +88,7 @@ export function HallOfFame() {
           photoUrl: result.value!.petPhoto,
         }));
 
+      clearInterval(messageInterval);
       setCharacters(loadedCharacters);
     } catch (err) {
       setError('Failed to load featured characters');
@@ -89,8 +119,8 @@ export function HallOfFame() {
         }}
       >
         <div className="text-white text-center">
-          <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p>Loading featured characters...</p>
+          <div className="animate-spin w-12 h-12 border-4 border-white border-t-transparent rounded-full mx-auto mb-6"></div>
+          <p className="text-xl font-semibold">{loadingMessage}</p>
         </div>
       </div>
     );
