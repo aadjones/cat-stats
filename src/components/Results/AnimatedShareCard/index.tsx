@@ -1,8 +1,35 @@
 import type { AnimatedShareCardProps } from './types';
 import { CSSTimelineController } from './CSSTimelineController';
+import { isRpgCharacterData } from '../../../core/personality/types';
 
 export function AnimatedShareCard(props: AnimatedShareCardProps) {
-  const { theme } = props;
+  const { theme, characterSheet } = props;
+
+  // Type guard: AnimatedShareCard only supports RPG data
+  if (!isRpgCharacterData(characterSheet.characterData)) {
+    // Fallback: Show static preview for non-RPG data
+    return (
+      <div
+        className="animated-card-container relative overflow-hidden rounded-2xl shadow-2xl flex items-center justify-center"
+        style={{
+          background: `linear-gradient(135deg, #312e81, #581c87, #7c2d12)`,
+          width: '100%',
+          height: 'auto',
+          maxWidth: '360px',
+          maxHeight: '480px',
+          aspectRatio: '3/4',
+        }}
+      >
+        <div className="p-6 text-center text-white">
+          <h2 className="text-2xl font-bold mb-2">{characterSheet.petName}</h2>
+          <p className="text-lg">{characterSheet.characterData.archetype}</p>
+          <p className="text-sm opacity-70 mt-4">
+            Video highlights only available for RPG mode
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   // Convert theme gradient to CSS
   const getGradientStyle = () => {

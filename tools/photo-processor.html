@@ -1,220 +1,247 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Photo Processor for CatStats</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            background: #1a1a1a;
-            color: white;
-        }
-        .upload-area {
-            border: 2px dashed #666;
-            border-radius: 10px;
-            padding: 40px;
-            text-align: center;
-            margin: 20px 0;
-            background: #2a2a2a;
-        }
-        .upload-area:hover {
-            border-color: #888;
-            background: #333;
-        }
-        .preview {
-            margin: 20px 0;
-            text-align: center;
-        }
-        .preview img {
-            max-width: 200px;
-            max-height: 200px;
-            border-radius: 50%;
-            border: 3px solid #666;
-        }
-        .output {
-            margin: 20px 0;
-            padding: 15px;
-            background: #333;
-            border-radius: 8px;
-            word-break: break-all;
-            font-family: monospace;
-            font-size: 12px;
-        }
-        button {
-            background: #007acc;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 5px;
-        }
-        button:hover {
-            background: #005a9e;
-        }
-        input[type="file"] {
-            margin: 10px 0;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        background: #1a1a1a;
+        color: white;
+      }
+      .upload-area {
+        border: 2px dashed #666;
+        border-radius: 10px;
+        padding: 40px;
+        text-align: center;
+        margin: 20px 0;
+        background: #2a2a2a;
+      }
+      .upload-area:hover {
+        border-color: #888;
+        background: #333;
+      }
+      .preview {
+        margin: 20px 0;
+        text-align: center;
+      }
+      .preview img {
+        max-width: 200px;
+        max-height: 200px;
+        border-radius: 50%;
+        border: 3px solid #666;
+      }
+      .output {
+        margin: 20px 0;
+        padding: 15px;
+        background: #333;
+        border-radius: 8px;
+        word-break: break-all;
+        font-family: monospace;
+        font-size: 12px;
+      }
+      button {
+        background: #007acc;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 5px;
+      }
+      button:hover {
+        background: #005a9e;
+      }
+      input[type='file'] {
+        margin: 10px 0;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>CatStats Photo Processor</h1>
-    <p>This tool will process your photo exactly like the CatStats app does: resize to max 800x800, maintain aspect ratio, and compress to JPEG at 85% quality.</p>
+    <p>
+      This tool will process your photo exactly like the CatStats app does:
+      resize to max 800x800, maintain aspect ratio, and compress to JPEG at 85%
+      quality.
+    </p>
 
-    <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-        <p>Click here to select your pet photo</p>
-        <input type="file" id="fileInput" accept="image/*" style="display: none;">
+    <div
+      class="upload-area"
+      onclick="document.getElementById('fileInput').click()"
+    >
+      <p>Click here to select your pet photo</p>
+      <input
+        type="file"
+        id="fileInput"
+        accept="image/*"
+        style="display: none"
+      />
     </div>
 
-    <div id="preview" class="preview" style="display: none;">
-        <h3>Preview:</h3>
-        <img id="previewImg" alt="Preview">
+    <div id="preview" class="preview" style="display: none">
+      <h3>Preview:</h3>
+      <img id="previewImg" alt="Preview" />
     </div>
 
-    <div id="output" class="output" style="display: none;">
-        <h3>Update Database:</h3>
-        <div style="margin: 15px 0;">
-            <label for="characterId">Character ID:</label>
-            <input type="text" id="characterId" placeholder="e.g. umwqpi" style="margin-left: 10px; padding: 5px; width: 200px;">
-            <button onclick="updateCharacter()" style="margin-left: 10px;">Update Database</button>
-        </div>
-        <div id="updateResult" style="margin-top: 10px;"></div>
+    <div id="output" class="output" style="display: none">
+      <h3>Update Database:</h3>
+      <div style="margin: 15px 0">
+        <label for="characterId">Character ID:</label>
+        <input
+          type="text"
+          id="characterId"
+          placeholder="e.g. umwqpi"
+          style="margin-left: 10px; padding: 5px; width: 200px"
+        />
+        <button onclick="updateCharacter()" style="margin-left: 10px">
+          Update Database
+        </button>
+      </div>
+      <div id="updateResult" style="margin-top: 10px"></div>
     </div>
 
     <script>
-        let processedDataUrl = '';
+      let processedDataUrl = '';
 
-        function processImage(file) {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const img = new Image();
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        const ctx = canvas.getContext('2d');
-                        if (!ctx) {
-                            resolve(e.target?.result);
-                            return;
-                        }
-
-                        // Calculate new dimensions (max 800x800, maintain aspect ratio)
-                        const maxSize = 800;
-                        let { width, height } = img;
-
-                        if (width > maxSize || height > maxSize) {
-                            if (width > height) {
-                                height = (height * maxSize) / width;
-                                width = maxSize;
-                            } else {
-                                width = (width * maxSize) / height;
-                                height = maxSize;
-                            }
-                        }
-
-                        canvas.width = width;
-                        canvas.height = height;
-
-                        // Draw and compress to JPEG at 85% quality
-                        ctx.drawImage(img, 0, 0, width, height);
-                        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
-                        resolve(compressedDataUrl);
-                    };
-                    img.src = e.target?.result;
-                };
-                reader.readAsDataURL(file);
-            });
-        }
-
-        document.getElementById('fileInput').addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            if (!file.type.startsWith('image/')) {
-                alert('Please select an image file.');
+      function processImage(file) {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              const ctx = canvas.getContext('2d');
+              if (!ctx) {
+                resolve(e.target?.result);
                 return;
-            }
+              }
 
-            try {
-                processedDataUrl = await processImage(file);
+              // Calculate new dimensions (max 800x800, maintain aspect ratio)
+              const maxSize = 800;
+              let { width, height } = img;
 
-                // Show preview
-                const previewImg = document.getElementById('previewImg');
-                previewImg.src = processedDataUrl;
-                document.getElementById('preview').style.display = 'block';
-
-                // Show output
-                document.getElementById('output').style.display = 'block';
-
-                const sizeKB = Math.round(processedDataUrl.length * 0.75 / 1024);
-                console.log('Processed image size:', sizeKB, 'KB');
-
-                // Show size warning if too large
-                if (sizeKB > 500) {
-                    alert(`Warning: Processed image is ${sizeKB}KB. This might be too large for database storage. Consider using a smaller source image.`);
+              if (width > maxSize || height > maxSize) {
+                if (width > height) {
+                  height = (height * maxSize) / width;
+                  width = maxSize;
+                } else {
+                  width = (width * maxSize) / height;
+                  height = maxSize;
                 }
-            } catch (error) {
-                console.error('Error processing image:', error);
-                alert('Error processing image. Please try a different photo.');
+              }
+
+              canvas.width = width;
+              canvas.height = height;
+
+              // Draw and compress to JPEG at 85% quality
+              ctx.drawImage(img, 0, 0, width, height);
+              const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+              resolve(compressedDataUrl);
+            };
+            img.src = e.target?.result;
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      document
+        .getElementById('fileInput')
+        .addEventListener('change', async (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          if (!file.type.startsWith('image/')) {
+            alert('Please select an image file.');
+            return;
+          }
+
+          try {
+            processedDataUrl = await processImage(file);
+
+            // Show preview
+            const previewImg = document.getElementById('previewImg');
+            previewImg.src = processedDataUrl;
+            document.getElementById('preview').style.display = 'block';
+
+            // Show output
+            document.getElementById('output').style.display = 'block';
+
+            const sizeKB = Math.round((processedDataUrl.length * 0.75) / 1024);
+            console.log('Processed image size:', sizeKB, 'KB');
+
+            // Show size warning if too large
+            if (sizeKB > 500) {
+              alert(
+                `Warning: Processed image is ${sizeKB}KB. This might be too large for database storage. Consider using a smaller source image.`
+              );
             }
+          } catch (error) {
+            console.error('Error processing image:', error);
+            alert('Error processing image. Please try a different photo.');
+          }
         });
 
+      async function updateCharacter() {
+        const characterId = document.getElementById('characterId').value.trim();
+        const resultDiv = document.getElementById('updateResult');
 
-        async function updateCharacter() {
-            const characterId = document.getElementById('characterId').value.trim();
-            const resultDiv = document.getElementById('updateResult');
+        if (!characterId) {
+          resultDiv.innerHTML =
+            '<p style="color: red;">Please enter a character ID</p>';
+          return;
+        }
 
-            if (!characterId) {
-                resultDiv.innerHTML = '<p style="color: red;">Please enter a character ID</p>';
-                return;
-            }
+        if (!processedDataUrl) {
+          resultDiv.innerHTML =
+            '<p style="color: red;">Please process an image first</p>';
+          return;
+        }
 
-            if (!processedDataUrl) {
-                resultDiv.innerHTML = '<p style="color: red;">Please process an image first</p>';
-                return;
-            }
+        resultDiv.innerHTML = '<p style="color: yellow;">Uploading...</p>';
 
-            resultDiv.innerHTML = '<p style="color: yellow;">Uploading...</p>';
+        try {
+          console.log('Making request to:', '/api/update-character');
+          console.log(
+            'Request body size:',
+            JSON.stringify({
+              id: characterId,
+              petPhoto: processedDataUrl,
+            }).length
+          );
 
-            try {
-                console.log('Making request to:', '/api/update-character');
-                console.log('Request body size:', JSON.stringify({
-                    id: characterId,
-                    petPhoto: processedDataUrl
-                }).length);
+          const response = await fetch('/api/update-character', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: characterId,
+              petPhoto: processedDataUrl,
+            }),
+          });
 
-                const response = await fetch('/api/update-character', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        id: characterId,
-                        petPhoto: processedDataUrl
-                    })
-                });
+          console.log('Response status:', response.status);
+          console.log('Response headers:', response.headers);
 
-                console.log('Response status:', response.status);
-                console.log('Response headers:', response.headers);
+          const result = await response.json();
 
-                const result = await response.json();
-
-                if (response.ok) {
-                    resultDiv.innerHTML = `
+          if (response.ok) {
+            resultDiv.innerHTML = `
                         <p style="color: green;">✅ Success! ${result.message}</p>
                         <p style="font-size: 12px;">Photo URL: <a href="${result.photoUrl}" target="_blank">${result.photoUrl}</a></p>
                     `;
-                } else {
-                    resultDiv.innerHTML = `<p style="color: red;">❌ Error: ${result.error}</p>`;
-                }
-            } catch (error) {
-                console.error('Update failed:', error);
-                resultDiv.innerHTML = `<p style="color: red;">❌ Network error: ${error.message}</p>`;
-            }
+          } else {
+            resultDiv.innerHTML = `<p style="color: red;">❌ Error: ${result.error}</p>`;
+          }
+        } catch (error) {
+          console.error('Update failed:', error);
+          resultDiv.innerHTML = `<p style="color: red;">❌ Network error: ${error.message}</p>`;
         }
+      }
     </script>
-</body>
+  </body>
 </html>

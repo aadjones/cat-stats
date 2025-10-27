@@ -13,7 +13,7 @@ jobs:
   heartbeat:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Allow bot to push commits
+      contents: write # Allow bot to push commits
 
     steps:
       - name: Checkout code

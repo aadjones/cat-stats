@@ -3,6 +3,7 @@ import type {
   UserAnswers,
   CharacterSheet as CharacterSheetData,
 } from '../core/personality/types';
+import { isRpgCharacterData } from '../core/personality/types';
 import {
   getColorTheme,
   generateTextExport,
@@ -12,6 +13,7 @@ import {
 import { isFeatureEnabled } from '../config/featureFlags';
 import { QuestionnaireForm } from './Questionnaire/QuestionnaireForm';
 import { CharacterSheet } from './Results/CharacterSheet';
+import { YearbookCharacterSheet } from './Results/YearbookCharacterSheet';
 import { AnimatedShareCard } from './Results/AnimatedShareCard';
 import { ShowdownPage } from './Results/ShowdownPage';
 import { LoadingOverlay } from './UI/LoadingOverlay';
@@ -20,21 +22,32 @@ import { ErrorBoundary } from './ErrorBoundary/ErrorBoundary';
 import { CharacterGenerationErrorBoundary } from './ErrorBoundary/CharacterGenerationErrorBoundary';
 import { HallOfFame } from './HallOfFame/HallOfFame';
 import { CharacterSheetPreview } from './Landing/CharacterSheetPreview';
+import { generateCharacterData } from '../services/api/characterApi';
+import { calculatePetStats } from '../core/personality/statsCalculator';
 
 type AppStep = 'questionnaire' | 'result' | 'showdown' | 'hall-of-fame';
-type ViewMode = 'animated' | 'static';
+type ViewMode = 'animated' | 'static' | 'yearbook';
 
 export function PetPersonalityAnalyzer() {
   const [currentStep, setCurrentStep] = useState<AppStep>('questionnaire');
   const [viewMode, setViewMode] = useState<ViewMode>('animated');
   const [characterSheet, setCharacterSheet] =
     useState<CharacterSheetData | null>(null);
+  const [yearbookSheet, setYearbookSheet] = useState<CharacterSheetData | null>(
+    null
+  );
   const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('');
   const [currentCharacterId, setCurrentCharacterId] = useState<string | null>(
     null
   );
   const [showdownId, setShowdownId] = useState<string | null>(null);
+  // Store original answers for yearbook generation
+  const [lastAnswers, setLastAnswers] = useState<{
+    petName: string;
+    answers: UserAnswers;
+    petPhoto?: string | null;
+  } | null>(null);
 
   // Check for shared character or showdown URL on mount
   useEffect(() => {
@@ -79,6 +92,9 @@ export function PetPersonalityAnalyzer() {
   ) => {
     setLoading(true);
 
+    // Store answers for yearbook generation later
+    setLastAnswers({ petName, answers, petPhoto });
+
     const result = await CharacterWorkflowService.generateCharacterSheet(
       petName,
       answers,
@@ -99,6 +115,44 @@ export function PetPersonalityAnalyzer() {
 
     setLoading(false);
     setLoadingMessage('');
+  };
+
+  const handleGenerateYearbook = async () => {
+    if (!lastAnswers) {
+      alert('Unable to generate yearbook - missing original data');
+      return;
+    }
+
+    setLoading(true);
+    setLoadingMessage('Generating yearbook profile...');
+
+    try {
+      const result = await generateCharacterData(
+        lastAnswers.petName,
+        lastAnswers.answers,
+        'yearbook'
+      );
+
+      if (result.success && result.characterData) {
+        const stats = calculatePetStats(lastAnswers.answers);
+        const yearbookCharacterSheet: CharacterSheetData = {
+          characterData: result.characterData,
+          stats,
+          petName: lastAnswers.petName,
+          petPhoto: lastAnswers.petPhoto || null,
+        };
+        setYearbookSheet(yearbookCharacterSheet);
+        setViewMode('yearbook');
+      } else {
+        alert(result.error || 'Failed to generate yearbook profile');
+      }
+    } catch (error) {
+      console.error('Yearbook generation error:', error);
+      alert('Failed to generate yearbook profile. Please try again.');
+    } finally {
+      setLoading(false);
+      setLoadingMessage('');
+    }
   };
 
   const handleExamples = () => {
@@ -138,6 +192,7 @@ export function PetPersonalityAnalyzer() {
           console.error('Character display error:', error);
         }}
       >
+        <LoadingOverlay message={loadingMessage} visible={loading} />
         <div
           className="min-h-screen p-2 sm:p-4"
           style={{ backgroundColor: theme.accent }}
@@ -158,16 +213,20 @@ export function PetPersonalityAnalyzer() {
           <div className="w-full max-w-4xl mx-auto mb-0 px-2 sm:px-0">
             <div className="flex justify-center">
               <div className="bg-gray-800 border border-gray-600 rounded-md p-0.5 flex">
-                <button
-                  onClick={() => setViewMode('animated')}
-                  className={`px-2 py-1.5 rounded text-xs font-medium transition-all ${
-                    viewMode === 'animated'
-                      ? 'bg-blue-600 text-white'
-                      : 'text-white/70 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  🎬 Video Highlights
-                </button>
+                {/* Only show Video Highlights button for RPG mode */}
+                {characterSheet &&
+                  isRpgCharacterData(characterSheet.characterData) && (
+                    <button
+                      onClick={() => setViewMode('animated')}
+                      className={`px-2 py-1.5 rounded text-xs font-medium transition-all ${
+                        viewMode === 'animated'
+                          ? 'bg-blue-600 text-white'
+                          : 'text-white/70 hover:text-white hover:bg-white/10'
+                      }`}
+                    >
+                      🎬 Video Highlights
+                    </button>
+                  )}
                 <button
                   onClick={() => setViewMode('static')}
                   className={`px-2 py-1.5 rounded text-xs font-medium transition-all ${
@@ -183,7 +242,9 @@ export function PetPersonalityAnalyzer() {
           </div>
 
           {/* Render the appropriate view */}
-          {viewMode === 'animated' ? (
+          {viewMode === 'animated' &&
+          characterSheet &&
+          isRpgCharacterData(characterSheet.characterData) ? (
             <div className="flex items-center justify-center">
               <AnimatedShareCard
                 characterSheet={characterSheet}
@@ -193,6 +254,11 @@ export function PetPersonalityAnalyzer() {
                 }}
               />
             </div>
+          ) : viewMode === 'yearbook' && yearbookSheet ? (
+            <YearbookCharacterSheet
+              characterSheet={yearbookSheet}
+              theme={theme}
+            />
           ) : (
             <CharacterSheet
               characterSheet={characterSheet}
@@ -205,7 +271,31 @@ export function PetPersonalityAnalyzer() {
 
           {/* Shared actions at the bottom */}
           <div className="w-full max-w-4xl mx-auto mt-1 px-2 sm:px-0">
-            <div className="flex flex-row gap-1.5 justify-center items-center">
+            <div className="flex flex-row gap-1.5 justify-center items-center flex-wrap">
+              {/* Only show yearbook button if we have original answers */}
+              {viewMode !== 'yearbook' && lastAnswers && (
+                <Button
+                  onClick={handleGenerateYearbook}
+                  variant="secondary"
+                  size="sm"
+                  className="!min-h-0 !py-1.5"
+                  disabled={loading}
+                >
+                  📚 View as Yearbook
+                </Button>
+              )}
+
+              {viewMode === 'yearbook' && (
+                <Button
+                  onClick={() => setViewMode('static')}
+                  variant="secondary"
+                  size="sm"
+                  className="!min-h-0 !py-1.5"
+                >
+                  ⚔️ Back to RPG
+                </Button>
+              )}
+
               {currentCharacterId && (
                 <Button
                   onClick={async () => {

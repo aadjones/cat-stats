@@ -1,4 +1,7 @@
-import type { CharacterSheet } from '../../../core/personality/types';
+import type {
+  CharacterSheet,
+  RpgCharacterData,
+} from '../../../core/personality/types';
 
 export interface Theme {
   gradient: string;
@@ -23,8 +26,14 @@ export interface AnimationConfig {
   totalDuration: number;
 }
 
+// Specialized CharacterSheet type that guarantees RPG data
+export interface RpgCharacterSheet
+  extends Omit<CharacterSheet, 'characterData'> {
+  characterData: RpgCharacterData;
+}
+
 export interface PhaseComponentProps {
-  characterSheet: CharacterSheet;
+  characterSheet: RpgCharacterSheet;
   theme: Theme;
   isActive: boolean;
   isVisible: boolean;

@@ -1,7 +1,17 @@
-import type { CharacterSheet as CharacterSheetData } from '../../core/personality/types';
+import type {
+  CharacterSheet as CharacterSheetData,
+  RpgCharacterData,
+} from '../../core/personality/types';
+import { isRpgCharacterData } from '../../core/personality/types';
 import { StatsRadarChart } from './StatsRadarChart';
 import { AbilityCard } from './AbilityCard';
 import { ShareableCard } from './ShareableCard';
+import { YearbookCharacterSheet } from './YearbookCharacterSheet';
+
+// Specialized CharacterSheet type that guarantees RPG data
+interface RpgCharacterSheet extends Omit<CharacterSheetData, 'characterData'> {
+  characterData: RpgCharacterData;
+}
 
 interface Theme {
   gradient: string;
@@ -20,11 +30,23 @@ interface CharacterSheetProps {
 export function CharacterSheet({ characterSheet, theme }: CharacterSheetProps) {
   const { characterData, stats, petName, petPhoto } = characterSheet;
 
+  // If this is yearbook data, delegate to YearbookCharacterSheet
+  if (!isRpgCharacterData(characterData)) {
+    return (
+      <YearbookCharacterSheet characterSheet={characterSheet} theme={theme} />
+    );
+  }
+
+  // After type guard, characterData is guaranteed to be RpgCharacterData
+
   return (
     <>
       {/* Hidden shareable card for image generation */}
       <div className="fixed -top-[9999px] -left-[9999px] pointer-events-none">
-        <ShareableCard characterSheet={characterSheet} theme={theme} />
+        <ShareableCard
+          characterSheet={characterSheet as RpgCharacterSheet}
+          theme={theme}
+        />
       </div>
 
       <div className="w-full max-w-4xl mx-auto px-2 sm:px-0">

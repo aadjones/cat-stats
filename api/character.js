@@ -33,7 +33,17 @@ export default async function handler(req, res) {
   }
 
   // Validate request body structure
-  const { model, max_tokens, messages } = req.body;
+  const { model, max_tokens, messages, flavor } = req.body;
+
+  // Validate flavor parameter (optional, defaults to 'rpg')
+  const validFlavors = ['rpg', 'yearbook'];
+  const selectedFlavor = flavor || 'rpg';
+
+  if (!validFlavors.includes(selectedFlavor)) {
+    return res.status(400).json({
+      error: `Invalid flavor parameter. Must be one of: ${validFlavors.join(', ')}`,
+    });
+  }
 
   if (!model || typeof model !== 'string') {
     return res

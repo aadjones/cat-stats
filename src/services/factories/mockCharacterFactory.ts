@@ -2,6 +2,7 @@ import type { CharacterData } from '../../core/personality/types';
 
 export function createDebugCharacterData(): CharacterData {
   return {
+    type: 'rpg',
     archetype: 'The Contemplative Defender',
     combatMoves: [
       {

@@ -1,5 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import type { AnimationPhase, AnimatedShareCardProps } from './types';
+import type {
+  AnimationPhase,
+  AnimatedShareCardProps,
+  RpgCharacterSheet,
+} from './types';
 import { ANIMATION_CONFIG, PHASE_ORDER } from './config';
 import { FEATURE_FLAGS } from '../../../config/featureFlags';
 import { logger } from '../../../utils/logger';
@@ -242,55 +246,55 @@ export function AnimationController({
       {/* Phase Content Area - intelligently sized to never overflow */}
       <div className="flex-1 min-h-0 overflow-hidden flex flex-col justify-center">
         <IntroPhase
-          characterSheet={characterSheet}
+          characterSheet={characterSheet as RpgCharacterSheet}
           theme={theme}
           {...getPhaseClass('intro')}
         />
 
         <StatsPhase
-          characterSheet={characterSheet}
+          characterSheet={characterSheet as RpgCharacterSheet}
           theme={theme}
           {...getPhaseClass('stats')}
         />
 
         <CombatPhase
-          characterSheet={characterSheet}
+          characterSheet={characterSheet as RpgCharacterSheet}
           theme={theme}
           {...getPhaseClass('combat')}
         />
 
         <EnvironmentalPhase
-          characterSheet={characterSheet}
+          characterSheet={characterSheet as RpgCharacterSheet}
           theme={theme}
           {...getPhaseClass('environmental')}
         />
 
         <SocialPhase
-          characterSheet={characterSheet}
+          characterSheet={characterSheet as RpgCharacterSheet}
           theme={theme}
           {...getPhaseClass('social')}
         />
 
         <PassivePhase
-          characterSheet={characterSheet}
+          characterSheet={characterSheet as RpgCharacterSheet}
           theme={theme}
           {...getPhaseClass('passive')}
         />
 
         <VulnerabilityPhase
-          characterSheet={characterSheet}
+          characterSheet={characterSheet as RpgCharacterSheet}
           theme={theme}
           {...getPhaseClass('vulnerability')}
         />
 
         <SignoffPhase
-          characterSheet={characterSheet}
+          characterSheet={characterSheet as RpgCharacterSheet}
           theme={theme}
           {...getPhaseClass('signoff')}
         />
 
         <LoopPhase
-          characterSheet={characterSheet}
+          characterSheet={characterSheet as RpgCharacterSheet}
           theme={theme}
           {...getPhaseClass('loop')}
         />

@@ -1,4 +1,8 @@
-import type { CharacterSheet, PetStats } from '../personality/types';
+import type {
+  CharacterSheet,
+  PetStats,
+  RpgCharacterData,
+} from '../personality/types';
 import type {
   CompatibilityMetrics,
   StatCompatibility,
@@ -7,12 +11,18 @@ import type {
   ScenarioCompatibility,
 } from './types';
 
+// Specialized CharacterSheet type that guarantees RPG data
+interface RpgCharacterSheet extends Omit<CharacterSheet, 'characterData'> {
+  characterData: RpgCharacterData;
+}
+
 /**
  * Calculate overall compatibility between two pet characters
+ * Note: This function only works with RPG character data
  */
 export function calculateCompatibility(
-  char1: CharacterSheet,
-  char2: CharacterSheet
+  char1: RpgCharacterSheet,
+  char2: RpgCharacterSheet
 ): CompatibilityMetrics {
   const statCompatibility = calculateStatCompatibility(
     char1.stats,
@@ -159,8 +169,8 @@ function calculatePersonalityClash(stats1: PetStats, stats2: PetStats): number {
  * Analyze ability synergies and conflicts
  */
 function analyzeAbilitySync(
-  char1: CharacterSheet,
-  char2: CharacterSheet
+  char1: RpgCharacterSheet,
+  char2: RpgCharacterSheet
 ): AbilitySync {
   const synergies: string[] = [];
   const conflicts: string[] = [];

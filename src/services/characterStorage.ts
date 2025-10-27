@@ -1,8 +1,45 @@
-import type { CharacterSheet } from '../core/personality/types';
+import type { CharacterSheet, CharacterData } from '../core/personality/types';
 
 export interface StoredCharacter extends CharacterSheet {
   id: string;
   created: string;
+}
+
+/**
+ * Migrate legacy character data to include type discriminator
+ * Old characters don't have 'type' field, so we infer it from structure
+ */
+function migrateLegacyCharacterData(data: unknown): CharacterData {
+  // Ensure data is an object
+  if (typeof data !== 'object' || data === null) {
+    return data as CharacterData;
+  }
+
+  const obj = data as Record<string, unknown>;
+
+  // If it already has a type field, no migration needed
+  if (obj.type === 'rpg' || obj.type === 'yearbook') {
+    return data as CharacterData;
+  }
+
+  // Detect legacy RPG data: has combatMoves but no type
+  if ('combatMoves' in obj && Array.isArray(obj.combatMoves)) {
+    return {
+      ...obj,
+      type: 'rpg',
+    } as CharacterData;
+  }
+
+  // Detect legacy yearbook data: has superlatives but no type
+  if ('superlatives' in obj && Array.isArray(obj.superlatives)) {
+    return {
+      ...obj,
+      type: 'yearbook',
+    } as CharacterData;
+  }
+
+  // Return as-is if we can't detect type (will be validated later)
+  return data as CharacterData;
 }
 
 export function generateCharacterId(): string {
@@ -74,7 +111,16 @@ export async function loadCharacter(
       throw new Error(`Failed to load character: ${response.statusText}`);
     }
 
-    return await response.json();
+    const character = await response.json();
+
+    // Migrate legacy character data that doesn't have type field
+    if (character && character.characterData) {
+      character.characterData = migrateLegacyCharacterData(
+        character.characterData
+      );
+    }
+
+    return character;
   } catch (error) {
     console.error('Error loading character:', error);
     return null;

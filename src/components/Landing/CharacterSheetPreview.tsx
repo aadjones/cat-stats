@@ -9,6 +9,7 @@ const ENABLE_ANIMATION_COMPARISON = false;
 // Pre-loaded character data to avoid API delay on landing page
 const PREVIEW_CHARACTER: StoredCharacter = {
   characterData: {
+    type: 'rpg',
     archetype: 'The Contemplative Defender',
     combatMoves: [
       {

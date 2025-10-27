@@ -1,4 +1,7 @@
-import type { CharacterSheet as CharacterSheetData } from '../../core/personality/types';
+import type {
+  CharacterSheet as CharacterSheetData,
+  RpgCharacterData,
+} from '../../core/personality/types';
 
 interface Theme {
   gradient: string;
@@ -6,8 +9,13 @@ interface Theme {
   accent: string;
 }
 
+// Specialized CharacterSheet type that guarantees RPG data
+interface RpgCharacterSheet extends Omit<CharacterSheetData, 'characterData'> {
+  characterData: RpgCharacterData;
+}
+
 interface ShareableCardProps {
-  characterSheet: CharacterSheetData;
+  characterSheet: RpgCharacterSheet;
   theme: Theme;
 }
 

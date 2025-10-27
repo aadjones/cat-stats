@@ -2,6 +2,7 @@ import type {
   CharacterSheet,
   CharacterAbility,
 } from '../core/personality/types';
+import { isRpgCharacterData } from '../core/personality/types';
 
 // Lazy load heavy PDF library only when needed
 const loadJsPDF = async () => {
@@ -11,6 +12,12 @@ const loadJsPDF = async () => {
 
 export function generateTextExport(characterSheet: CharacterSheet): void {
   const { characterData, stats, petName } = characterSheet;
+
+  // Type guard: Text export only supports RPG data
+  if (!isRpgCharacterData(characterData)) {
+    alert('Text export is currently only available for RPG character sheets.');
+    return;
+  }
 
   const textContent = `
 ╔═══════════════════════════════════════════════════════════════╗
@@ -118,6 +125,12 @@ export async function generatePdfExport(
   characterId?: string | null
 ): Promise<void> {
   const { characterData, stats, petName, petPhoto } = characterSheet;
+
+  // Type guard: PDF export only supports RPG data
+  if (!isRpgCharacterData(characterData)) {
+    alert('PDF export is currently only available for RPG character sheets.');
+    return;
+  }
 
   const jsPDFClass = await loadJsPDF();
   const pdf = new jsPDFClass();

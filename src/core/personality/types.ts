@@ -49,14 +49,52 @@ export interface CharacterModifier {
   effect: string;
 }
 
-export interface CharacterData {
+// Yearbook-specific data structures
+export interface YearbookSuperlative {
+  category: string;
+  title: string;
+}
+
+// Base character data
+interface BaseCharacterData {
   archetype: string;
+}
+
+// RPG-specific character data
+export interface RpgCharacterData extends BaseCharacterData {
+  type: 'rpg';
   combatMoves: CharacterAbility[];
   environmentalPowers: CharacterAbility[];
   socialSkills: CharacterAbility[];
   passiveTraits: CharacterAbility[];
   weakness: CharacterWeakness;
   timeModifiers: CharacterModifier[];
+}
+
+// Yearbook-specific character data
+export interface YearbookCharacterData extends BaseCharacterData {
+  type: 'yearbook';
+  superlatives: YearbookSuperlative[];
+  seniorQuote: string;
+  favoriteMoments: string[];
+  clubs: string[];
+  futureGoals: string;
+}
+
+// Discriminated union - TypeScript will enforce proper type checking
+export type CharacterData = RpgCharacterData | YearbookCharacterData;
+
+// Type guards for runtime checking
+export function isRpgCharacterData(
+  data: CharacterData
+): data is RpgCharacterData {
+  return data.type === 'rpg';
+}
+
+export function isYearbookCharacterData(
+  data: CharacterData
+): data is YearbookCharacterData {
+  return data.type === 'yearbook';
 }
 
 export interface CharacterSheet {

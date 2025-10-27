@@ -3,6 +3,7 @@ import type {
   AnimationPhase,
   AnimatedShareCardProps,
   PhaseComponentProps,
+  RpgCharacterSheet,
 } from './types';
 import { ANIMATION_CONFIG, PHASE_ORDER } from './config';
 import { IntroPhase } from './phases/IntroPhase';
@@ -252,7 +253,7 @@ export function CSSTimelineController({
               data-phase={config.name}
             >
               <Component
-                characterSheet={characterSheet}
+                characterSheet={characterSheet as RpgCharacterSheet}
                 theme={theme}
                 isActive={isActive}
                 isVisible={isVisible}
