@@ -168,6 +168,25 @@ Write **focused unit tests for core analysis logic only**. Follow these principl
 - **All tests go in `src/test/`**: Mirror the source structure (e.g., `src/test/core/personality/`)
 - **Test files use `.test.ts` or `.spec.ts` suffix**
 
+## Git Workflow
+
+This project uses automated CI commits to keep the repository active (periodic heartbeat commits). This means you'll often need to rebase before pushing.
+
+**Standard workflow for pushing changes:**
+
+```bash
+git pull --rebase origin main
+git push
+```
+
+The `--rebase` flag ensures your commits are replayed on top of the automated CI commits, keeping history linear and clean.
+
+**If you hit rebase conflicts:**
+
+1. Fix conflicts in the affected files
+2. `git add <fixed-files>`
+3. `git rebase --continue`
+
 ## Pre-commit Requirements
 
 Before committing to git, ensure:
