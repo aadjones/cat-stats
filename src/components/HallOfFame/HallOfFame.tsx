@@ -32,6 +32,7 @@ const FEATURED_CHARACTER_IDS = [
   'd9p9rt',
   '597m90',
   '9fb3p8',
+  'qaqbm2',
 ];
 
 const LOADING_MESSAGES = [
