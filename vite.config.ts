@@ -9,7 +9,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           // Split heavy PDF/image libraries into separate chunks
-          'pdf-export': ['jspdf'],
+          'pdf-export': ['@react-pdf/renderer'],
           'image-processing': ['html2canvas'],
 
           // Animation system (only loaded when needed)
