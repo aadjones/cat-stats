@@ -14,18 +14,18 @@ import { useEffect, useState } from 'react';
 import { useTheme } from './useTheme';
 import { statAccents, type ThemeColors } from './themes';
 
-// Editable color tokens with their labels and CSS variable mappings
+// Primary color tokens - the most impactful ones for theming
 const EDITABLE_COLORS: {
   key: keyof ThemeColors;
   label: string;
   shortLabel: string;
 }[] = [
-  { key: 'background', label: 'Background', shortLabel: 'BG' },
-  { key: 'surface', label: 'Surface', shortLabel: 'Srf' },
+  { key: 'gradientStart', label: 'Gradient Start', shortLabel: 'Grd1' },
+  { key: 'gradientMiddle', label: 'Gradient Middle', shortLabel: 'Grd2' },
+  { key: 'gradientEnd', label: 'Gradient End', shortLabel: 'Grd3' },
+  { key: 'surface', label: 'Card Surface', shortLabel: 'Card' },
   { key: 'accent', label: 'Accent', shortLabel: 'Acc' },
-  { key: 'textPrimary', label: 'Text Primary', shortLabel: 'Txt' },
-  { key: 'gold', label: 'Gold', shortLabel: 'Gld' },
-  { key: 'danger', label: 'Danger', shortLabel: 'Dng' },
+  { key: 'textPrimary', label: 'Text', shortLabel: 'Txt' },
 ];
 
 // Extended set of editable colors (shown in expanded mode)
@@ -33,7 +33,6 @@ const EXTENDED_COLORS: {
   key: keyof ThemeColors;
   label: string;
 }[] = [
-  { key: 'backgroundAlt', label: 'Background Alt' },
   { key: 'surfaceAlt', label: 'Surface Alt' },
   { key: 'border', label: 'Border' },
   { key: 'borderSubtle', label: 'Border Subtle' },
@@ -42,14 +41,11 @@ const EXTENDED_COLORS: {
   { key: 'textAccent', label: 'Text Accent' },
   { key: 'textOnGradient', label: 'Text On Gradient' },
   { key: 'accentHover', label: 'Accent Hover' },
-  { key: 'gradientStart', label: 'Gradient Start' },
-  { key: 'gradientMiddle', label: 'Gradient Middle' },
-  { key: 'gradientEnd', label: 'Gradient End' },
   { key: 'success', label: 'Success' },
   { key: 'warning', label: 'Warning' },
+  { key: 'danger', label: 'Danger' },
   { key: 'info', label: 'Info' },
-  { key: 'parchment', label: 'Parchment' },
-  { key: 'sepia', label: 'Sepia' },
+  { key: 'gold', label: 'Gold' },
 ];
 
 export function DevThemePanel() {
