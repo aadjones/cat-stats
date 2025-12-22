@@ -11,9 +11,10 @@ import {
   defaultTheme,
   statAccents,
   type Theme,
+  type ThemeColors,
   type StatAccent,
 } from './themes';
-import { ThemeContext } from './themeContext';
+import { ThemeContext, type ColorOverrides } from './themeContext';
 
 const THEME_STORAGE_KEY = 'catstats-theme';
 const DEV_PANEL_KEY = 'catstats-dev-panel';
@@ -21,9 +22,14 @@ const DEV_PANEL_KEY = 'catstats-dev-panel';
 /**
  * Apply theme colors as CSS custom properties
  */
-function applyThemeToDOM(theme: Theme, statAccent?: StatAccent) {
+function applyThemeToDOM(
+  theme: Theme,
+  statAccent?: StatAccent,
+  colorOverrides?: ColorOverrides
+) {
   const root = document.documentElement;
-  const colors = theme.colors;
+  // Merge theme colors with any custom overrides
+  const colors: ThemeColors = { ...theme.colors, ...colorOverrides };
 
   // Core colors
   root.style.setProperty('--color-background', colors.background);
@@ -107,13 +113,16 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     return localStorage.getItem(DEV_PANEL_KEY) === 'true';
   });
 
+  // Custom color overrides for live editing
+  const [colorOverrides, setColorOverrides] = useState<ColorOverrides>({});
+
   // Apply theme on mount and when it changes
   useEffect(() => {
     const statAccent = currentStatAccent
       ? statAccents[currentStatAccent]
       : undefined;
-    applyThemeToDOM(theme, statAccent);
-  }, [theme, currentStatAccent]);
+    applyThemeToDOM(theme, statAccent, colorOverrides);
+  }, [theme, currentStatAccent, colorOverrides]);
 
   // Persist dev panel state
   useEffect(() => {
@@ -138,6 +147,24 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     setCurrentStatAccent(null);
   }, []);
 
+  // Set a single color override
+  const setColorOverride = useCallback(
+    (key: keyof ThemeColors, value: string) => {
+      setColorOverrides((prev) => ({ ...prev, [key]: value }));
+    },
+    []
+  );
+
+  // Clear all custom overrides
+  const clearColorOverrides = useCallback(() => {
+    setColorOverrides({});
+  }, []);
+
+  // Get effective colors (theme + overrides)
+  const getEffectiveColors = useCallback((): ThemeColors => {
+    return { ...theme.colors, ...colorOverrides };
+  }, [theme.colors, colorOverrides]);
+
   return (
     <ThemeContext.Provider
       value={{
@@ -149,6 +176,10 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
         currentStatAccent,
         showDevPanel,
         setShowDevPanel,
+        colorOverrides,
+        setColorOverride,
+        clearColorOverrides,
+        getEffectiveColors,
       }}
     >
       {children}
