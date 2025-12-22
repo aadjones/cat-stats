@@ -64,14 +64,14 @@ export function QuestionnaireForm({
     <div className="space-y-4 sm:space-y-6">
       <div className="mb-6 sm:mb-8">
         <div>
-          <label className="block text-white font-semibold mb-2 text-sm sm:text-base">
+          <label className="block text-text-primary font-semibold font-body mb-2 text-sm sm:text-base">
             Pet Name
           </label>
           <input
             type="text"
             value={petName}
             onChange={(e) => setPetName(e.target.value)}
-            className="w-full bg-white/10 border border-white/30 rounded-lg px-3 sm:px-4 py-3 sm:py-2 text-white placeholder-white/50 focus:bg-white/20 focus:border-white/50 transition-colors text-base sm:text-sm min-h-[44px] sm:min-h-0"
+            className="w-full bg-glass border border-glass-border rounded-lg px-3 sm:px-4 py-3 sm:py-2 text-text-primary placeholder-text-muted focus:bg-glass-hover focus:border-theme-accent transition-colors text-base sm:text-sm min-h-[44px] sm:min-h-0 font-body"
             placeholder="e.g., Dr. Mittens"
           />
         </div>

@@ -116,12 +116,13 @@ export function HallOfFame() {
       <div
         className="min-h-screen flex items-center justify-center"
         style={{
-          background: 'linear-gradient(135deg, #581c87, #312e81, #1e3a8a)',
+          background:
+            'linear-gradient(135deg, var(--gradient-start), var(--gradient-middle), var(--gradient-end))',
         }}
       >
-        <div className="text-white text-center">
-          <div className="animate-spin w-12 h-12 border-4 border-white border-t-transparent rounded-full mx-auto mb-6"></div>
-          <p className="text-xl font-semibold">{loadingMessage}</p>
+        <div className="text-text-on-gradient text-center">
+          <div className="animate-spin w-12 h-12 border-4 border-text-on-gradient border-t-transparent rounded-full mx-auto mb-6"></div>
+          <p className="text-xl font-semibold font-body">{loadingMessage}</p>
         </div>
       </div>
     );
@@ -132,11 +133,12 @@ export function HallOfFame() {
       <div
         className="min-h-screen flex items-center justify-center"
         style={{
-          background: 'linear-gradient(135deg, #581c87, #312e81, #1e3a8a)',
+          background:
+            'linear-gradient(135deg, var(--gradient-start), var(--gradient-middle), var(--gradient-end))',
         }}
       >
-        <div className="text-white text-center">
-          <p className="mb-4">{error}</p>
+        <div className="text-text-on-gradient text-center">
+          <p className="mb-4 font-body">{error}</p>
           <Button onClick={handleBackToHome} variant="primary">
             Back to Home
           </Button>
@@ -149,7 +151,8 @@ export function HallOfFame() {
     <div
       className="min-h-screen py-8"
       style={{
-        background: 'linear-gradient(135deg, #581c87, #312e81, #1e3a8a)',
+        background:
+          'linear-gradient(135deg, var(--gradient-start), var(--gradient-middle), var(--gradient-end))',
       }}
     >
       <div className="max-w-6xl mx-auto px-4">
@@ -162,14 +165,16 @@ export function HallOfFame() {
           >
             ← Back to Home
           </Button>
-          <h1 className="text-4xl font-bold text-white mb-2">Hall of Fame</h1>
-          <p className="text-white/80">
+          <h1 className="text-4xl font-bold font-display text-text-on-gradient mb-2">
+            Hall of Fame
+          </h1>
+          <p className="text-text-on-gradient/80 font-body">
             Featured legendary pets from our community
           </p>
         </div>
 
         {characters.length === 0 ? (
-          <div className="text-center text-white">
+          <div className="text-center text-text-on-gradient font-body">
             <p>No featured characters available yet.</p>
           </div>
         ) : (
@@ -178,25 +183,21 @@ export function HallOfFame() {
               <div
                 key={character.id}
                 onClick={() => handleCharacterClick(character.id)}
-                className="bg-gray-800 border border-gray-600 rounded-xl p-6 cursor-pointer hover:bg-gray-700 transition-colors"
-                style={{
-                  boxShadow:
-                    '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                }}
+                className="bg-theme-surface border border-theme-border rounded-xl p-6 cursor-pointer hover:bg-theme-surface-alt transition-colors shadow-lg"
               >
                 {character.photoUrl && (
                   <div className="mb-4 flex justify-center">
                     <img
                       src={character.photoUrl}
                       alt={character.petName}
-                      className="w-24 h-24 rounded-full object-cover border-2 border-gray-600"
+                      className="w-24 h-24 rounded-full object-cover border-2 border-theme-border"
                     />
                   </div>
                 )}
-                <h3 className="text-xl font-bold text-white text-center mb-2">
+                <h3 className="text-xl font-bold font-display text-text-primary text-center mb-2">
                   {character.petName}
                 </h3>
-                <p className="text-gray-300 text-center">
+                <p className="text-text-secondary font-body text-center">
                   {character.archetype}
                 </p>
               </div>

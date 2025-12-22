@@ -22,28 +22,28 @@ export function OpenEndedQuestion({
 
   return (
     <div className="space-y-3">
-      <h3 className="text-white font-semibold text-base sm:text-lg">
+      <h3 className="text-text-primary font-semibold font-body text-base sm:text-lg">
         {questionNumber}. {question.question}
       </h3>
       <div className="relative">
         <textarea
           value={value}
           onChange={(e) => onAnswerChange(question.id, e.target.value)}
-          className={`w-full bg-white/10 border rounded-lg px-3 sm:px-4 py-3 sm:py-2 text-white placeholder-white/50 focus:bg-white/20 transition-colors h-20 sm:h-16 text-base sm:text-sm resize-none ${
+          className={`w-full bg-glass border rounded-lg px-3 sm:px-4 py-3 sm:py-2 text-text-primary placeholder-text-muted focus:bg-glass-hover transition-colors h-20 sm:h-16 text-base sm:text-sm resize-none font-body ${
             isOverLimit
-              ? 'border-red-400 focus:border-red-400'
-              : 'border-white/30 focus:border-white/50'
+              ? 'border-danger focus:border-danger'
+              : 'border-glass-border focus:border-theme-accent'
           }`}
           placeholder={placeholder}
           maxLength={MAX_ANSWER_LENGTH}
         />
         <div
-          className={`text-right text-xs mt-1 ${
+          className={`text-right text-xs mt-1 font-body ${
             isOverLimit
-              ? 'text-red-300'
+              ? 'text-danger'
               : isNearLimit
-                ? 'text-yellow-300'
-                : 'text-white/50'
+                ? 'text-warning'
+                : 'text-text-muted'
           }`}
         >
           {value.length}/{MAX_ANSWER_LENGTH}

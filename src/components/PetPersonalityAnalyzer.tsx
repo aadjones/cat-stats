@@ -157,23 +157,23 @@ export function PetPersonalityAnalyzer() {
           {/* Toggle between animated and static views */}
           <div className="w-full max-w-4xl mx-auto mb-0 px-2 sm:px-0">
             <div className="flex justify-center">
-              <div className="bg-gray-800 border border-gray-600 rounded-md p-0.5 flex">
+              <div className="bg-theme-surface border border-theme-border rounded-md p-0.5 flex">
                 <button
                   onClick={() => setViewMode('animated')}
-                  className={`px-2 py-1.5 rounded text-xs font-medium transition-all ${
+                  className={`px-2 py-1.5 rounded text-xs font-medium font-body transition-all ${
                     viewMode === 'animated'
-                      ? 'bg-blue-600 text-white'
-                      : 'text-white/70 hover:text-white hover:bg-white/10'
+                      ? 'bg-theme-accent text-text-primary'
+                      : 'text-text-secondary hover:text-text-primary hover:bg-glass'
                   }`}
                 >
                   🎬 Video Highlights
                 </button>
                 <button
                   onClick={() => setViewMode('static')}
-                  className={`px-2 py-1.5 rounded text-xs font-medium transition-all ${
+                  className={`px-2 py-1.5 rounded text-xs font-medium font-body transition-all ${
                     viewMode === 'static'
-                      ? 'bg-blue-600 text-white'
-                      : 'text-white/70 hover:text-white hover:bg-white/10'
+                      ? 'bg-theme-accent text-text-primary'
+                      : 'text-text-secondary hover:text-text-primary hover:bg-glass'
                   }`}
                 >
                   📊 Full Stats
@@ -345,11 +345,12 @@ export function PetPersonalityAnalyzer() {
       <div
         className="min-h-screen p-2 sm:p-4"
         style={{
-          background: 'linear-gradient(135deg, #581c87, #312e81, #1e3a8a)',
+          background:
+            'linear-gradient(135deg, var(--gradient-start), var(--gradient-middle), var(--gradient-end))',
         }}
       >
         <div className="w-full max-w-2xl mx-auto px-3 sm:px-0">
-          <div className="bg-gray-800 border border-gray-600 rounded-xl sm:rounded-2xl p-5 sm:p-8 shadow-xl relative">
+          <div className="bg-theme-surface border border-theme-border rounded-xl sm:rounded-2xl p-5 sm:p-8 shadow-xl relative">
             {/* Desktop: Absolute positioned button */}
             {isFeatureEnabled('SHOW_DEBUG_BUTTON') && (
               <Button
@@ -363,13 +364,13 @@ export function PetPersonalityAnalyzer() {
             )}
 
             <div className="text-center mb-6 sm:mb-8">
-              <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3 leading-tight">
+              <h1 className="text-3xl sm:text-4xl font-bold font-display text-text-primary mb-3 leading-tight">
                 CatStats
               </h1>
-              <p className="text-lg sm:text-xl text-white mb-3 font-medium px-1 leading-snug">
+              <p className="text-lg sm:text-xl text-text-primary mb-3 font-medium font-body px-1 leading-snug">
                 Turn your pet into a legend!
               </p>
-              <p className="text-sm sm:text-base text-white/70 mb-4 px-2 leading-relaxed">
+              <p className="text-sm sm:text-base text-text-secondary mb-4 px-2 leading-relaxed font-body">
                 Get your pet's personality breakdown with epic stats, unique
                 abilities, and a shareable character sheet.
               </p>
@@ -396,14 +397,14 @@ export function PetPersonalityAnalyzer() {
 
             {/* Visual Separator */}
             <div className="flex items-center my-6 sm:my-8">
-              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-purple-400/50 to-transparent"></div>
-              <div className="px-3 sm:px-4 text-white/70 text-sm font-medium text-center">
+              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-theme-accent/50 to-transparent"></div>
+              <div className="px-3 sm:px-4 text-text-secondary text-sm font-medium text-center font-body">
                 <div>Create Your Legend</div>
-                <div className="text-xs text-white/50 mt-1">
+                <div className="text-xs text-text-muted mt-1">
                   11 quick questions
                 </div>
               </div>
-              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-purple-400/50 to-transparent"></div>
+              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-theme-accent/50 to-transparent"></div>
             </div>
 
             <QuestionnaireForm onSubmit={handleFormSubmit} loading={loading} />

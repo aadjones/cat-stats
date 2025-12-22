@@ -14,12 +14,12 @@ export function Button({
   ...props
 }: ButtonProps) {
   const baseClasses =
-    'font-bold rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed';
+    'font-bold font-body rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed';
 
   const variantClasses = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700',
+    primary: 'bg-theme-accent text-text-primary hover:bg-theme-accent-hover',
     secondary:
-      'bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white/30',
+      'bg-glass backdrop-blur-md border border-glass-border text-text-primary hover:bg-glass-hover',
   };
 
   const sizeClasses = {

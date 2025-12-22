@@ -2,6 +2,65 @@
 @tailwind components;
 @tailwind utilities;
 
+/* =============================================================================
+   DESIGN SYSTEM: CSS Custom Properties
+   These defaults are overridden by ThemeContext at runtime.
+   ============================================================================= */
+
+:root {
+  /* Core palette - Original theme (matches current deployed site) */
+  --color-background: #581c87;
+  --color-background-alt: #312e81;
+  --color-surface: #1f2937;
+  --color-surface-alt: #374151;
+  --color-border: #4b5563;
+  --color-border-subtle: #374151;
+
+  /* Text colors */
+  --color-text-primary: #ffffff;
+  --color-text-secondary: rgba(255, 255, 255, 0.8);
+  --color-text-muted: rgba(255, 255, 255, 0.5);
+  --color-text-accent: #60a5fa;
+  --color-text-on-gradient: #ffffff;
+
+  /* Accent colors */
+  --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+  --color-accent-rgb: 37, 99, 235;
+  --accent-color-alpha: rgba(37, 99, 235, 0.3);
+
+  /* Gradients */
+  --gradient-start: #581c87;
+  --gradient-middle: #312e81;
+  --gradient-end: #1e3a8a;
+
+  /* Semantic colors */
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #3b82f6;
+
+  /* RPG-specific */
+  --color-gold: #fbbf24;
+  --color-parchment: #fef3c7;
+  --color-sepia: #78716c;
+
+  /* Typography */
+  --font-display:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Effects */
+  --effect-card-glow: 0 0 30px rgba(37, 99, 235, 0.3);
+  --effect-text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+
+  /* Glass morphism */
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-bg-hover: rgba(255, 255, 255, 0.2);
+}
+
 /* Ensure dark themes work consistently across all browsers/devices */
 html {
   color-scheme: dark;

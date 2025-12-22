@@ -129,12 +129,12 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
   if (currentPhoto) {
     return (
       <div className="space-y-2">
-        <label className="block text-white font-semibold mb-2">
+        <label className="block text-text-primary font-semibold font-body mb-2">
           Pet Photo (Optional)
         </label>
         <div className="flex items-center gap-4">
           <div
-            className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/30 cursor-pointer hover:border-white/50 transition-colors"
+            className="w-16 h-16 rounded-full overflow-hidden border-2 border-glass-border cursor-pointer hover:border-theme-accent transition-colors"
             onClick={() => fileInputRef.current?.click()}
           >
             <img
@@ -147,14 +147,14 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="bg-gray-700 border border-gray-500 rounded-lg px-4 py-2 text-white hover:bg-gray-600 transition-colors text-sm cursor-pointer"
+              className="bg-theme-surface-alt border border-theme-border rounded-lg px-4 py-2 text-text-primary hover:bg-glass-hover transition-colors text-sm cursor-pointer font-body"
             >
               Change Photo
             </button>
             <button
               type="button"
               onClick={removePicture}
-              className="bg-red-800 border border-red-600 rounded-lg px-4 py-2 text-red-300 hover:bg-red-700 transition-colors text-sm cursor-pointer"
+              className="bg-danger/20 border border-danger rounded-lg px-4 py-2 text-danger hover:bg-danger/30 transition-colors text-sm cursor-pointer font-body"
             >
               Remove
             </button>
@@ -176,14 +176,14 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
   return (
     <>
       <div className="space-y-2">
-        <label className="block text-white font-semibold mb-2">
+        <label className="block text-text-primary font-semibold font-body mb-2">
           Pet Photo (Optional)
         </label>
         <div
           className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${
             isDragging
-              ? 'border-blue-400 bg-blue-500/20'
-              : 'border-white/30 bg-white/5 hover:bg-white/10'
+              ? 'border-theme-accent bg-theme-accent/20'
+              : 'border-glass-border bg-glass hover:bg-glass-hover'
           }`}
           onDrop={handleDrop}
           onDragOver={handleDragOver}
@@ -192,9 +192,9 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
           onClick={() => fileInputRef.current?.click()}
         >
           <div className="space-y-2">
-            <div className="w-12 h-12 mx-auto bg-white/10 rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 mx-auto bg-glass rounded-full flex items-center justify-center">
               <svg
-                className="w-6 h-6 text-white/60"
+                className="w-6 h-6 text-text-muted"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -207,17 +207,17 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
                 />
               </svg>
             </div>
-            <div className="text-white/80">
+            <div className="text-text-secondary font-body">
               <p className="text-sm">Drop your pet's photo here, or</p>
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="text-blue-300 hover:text-blue-200 underline text-sm cursor-pointer"
+                className="text-text-accent hover:text-theme-accent underline text-sm cursor-pointer"
               >
                 browse to upload
               </button>
             </div>
-            <p className="text-white/50 text-xs">
+            <p className="text-text-muted text-xs font-body">
               PNG, JPG up to 20MB (HEIC not supported)
             </p>
           </div>
