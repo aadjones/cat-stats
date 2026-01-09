@@ -99,7 +99,7 @@ export default async function handler(req, res) {
       return res.status(response.status).json(data);
     }
 
-    // Log analytics (fire and forget - don't block response)
+    // Log analytics (await to ensure completion before function exits)
     if (data.usage) {
       const { input_tokens, output_tokens } = data.usage;
 
@@ -124,34 +124,27 @@ export default async function handler(req, res) {
         (input_tokens / 1000000) * inputCostPerMillion +
         (output_tokens / 1000000) * outputCostPerMillion;
 
-      // Log to analytics (don't await - fire and forget)
-      // Use global fetch or import it if needed
-      const logAnalytics = async () => {
-        try {
-          const fetchFn =
-            typeof fetch !== 'undefined'
-              ? fetch
-              : (await import('node-fetch')).default;
-          await fetchFn(
-            `${req.headers.origin || 'http://localhost:3000'}/api/analytics`,
-            {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                model,
-                inputTokens: input_tokens,
-                outputTokens: output_tokens,
-                totalCost,
-                endpoint: 'character',
-              }),
-            }
-          );
-          console.log('Analytics logged successfully');
-        } catch (err) {
-          console.error('Failed to log analytics:', err);
-        }
-      };
-      logAnalytics();
+      // Log to analytics - use VERCEL_URL for production, localhost for dev
+      const baseUrl = process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : 'http://localhost:3000';
+
+      try {
+        await fetch(`${baseUrl}/api/analytics`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model,
+            inputTokens: input_tokens,
+            outputTokens: output_tokens,
+            totalCost,
+            endpoint: 'character',
+          }),
+        });
+        console.log('Analytics logged successfully');
+      } catch (err) {
+        console.error('Failed to log analytics:', err);
+      }
     }
 
     // Prevent caching of API responses
