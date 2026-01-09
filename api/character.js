@@ -125,17 +125,33 @@ export default async function handler(req, res) {
         (output_tokens / 1000000) * outputCostPerMillion;
 
       // Log to analytics (don't await - fire and forget)
-      fetch(`${req.headers.origin || 'http://localhost:3000'}/api/analytics`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model,
-          inputTokens: input_tokens,
-          outputTokens: output_tokens,
-          totalCost,
-          endpoint: 'character',
-        }),
-      }).catch((err) => console.error('Failed to log analytics:', err));
+      // Use global fetch or import it if needed
+      const logAnalytics = async () => {
+        try {
+          const fetchFn =
+            typeof fetch !== 'undefined'
+              ? fetch
+              : (await import('node-fetch')).default;
+          await fetchFn(
+            `${req.headers.origin || 'http://localhost:3000'}/api/analytics`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                model,
+                inputTokens: input_tokens,
+                outputTokens: output_tokens,
+                totalCost,
+                endpoint: 'character',
+              }),
+            }
+          );
+          console.log('Analytics logged successfully');
+        } catch (err) {
+          console.error('Failed to log analytics:', err);
+        }
+      };
+      logAnalytics();
     }
 
     // Prevent caching of API responses
