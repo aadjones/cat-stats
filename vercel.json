@@ -44,6 +44,10 @@
     {
       "source": "/hall-of-fame",
       "destination": "/index.html"
+    },
+    {
+      "source": "/analytics",
+      "destination": "/index.html"
     }
   ]
 }

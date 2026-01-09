@@ -10,7 +10,7 @@ export interface WorkflowResult<T = unknown> {
 }
 
 export interface SharedContentInfo {
-  type: 'character' | 'showdown' | 'hall-of-fame' | null;
+  type: 'character' | 'showdown' | 'hall-of-fame' | 'analytics' | null;
   id: string | null;
 }
 
@@ -38,6 +38,7 @@ export class CharacterWorkflowService {
     const legendMatch = path.match(/^\/legend\/([a-z0-9]{6})$/);
     const showdownMatch = path.match(/^\/showdown\/([a-z0-9]{6,10})$/);
     const hallOfFameMatch = path.match(/^\/hall-of-fame$/);
+    const analyticsMatch = path.match(/^\/analytics$/);
 
     if (legendMatch) {
       return { type: 'character', id: legendMatch[1] };
@@ -47,6 +48,9 @@ export class CharacterWorkflowService {
     }
     if (hallOfFameMatch) {
       return { type: 'hall-of-fame', id: null };
+    }
+    if (analyticsMatch) {
+      return { type: 'analytics', id: null };
     }
     return { type: null, id: null };
   }

@@ -99,6 +99,45 @@ export default async function handler(req, res) {
       return res.status(response.status).json(data);
     }
 
+    // Log analytics (fire and forget - don't block response)
+    if (data.usage) {
+      const { input_tokens, output_tokens } = data.usage;
+
+      // Calculate cost based on Claude model pricing (as of 2025)
+      // Sonnet 4.5: $3/M input, $15/M output
+      // Haiku: $0.25/M input, $1.25/M output
+      let inputCostPerMillion, outputCostPerMillion;
+
+      if (model.includes('haiku')) {
+        inputCostPerMillion = 0.25;
+        outputCostPerMillion = 1.25;
+      } else if (model.includes('sonnet')) {
+        inputCostPerMillion = 3.0;
+        outputCostPerMillion = 15.0;
+      } else {
+        // Default to sonnet pricing
+        inputCostPerMillion = 3.0;
+        outputCostPerMillion = 15.0;
+      }
+
+      const totalCost =
+        (input_tokens / 1000000) * inputCostPerMillion +
+        (output_tokens / 1000000) * outputCostPerMillion;
+
+      // Log to analytics (don't await - fire and forget)
+      fetch(`${req.headers.origin || 'http://localhost:3000'}/api/analytics`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model,
+          inputTokens: input_tokens,
+          outputTokens: output_tokens,
+          totalCost,
+          endpoint: 'character',
+        }),
+      }).catch((err) => console.error('Failed to log analytics:', err));
+    }
+
     // Prevent caching of API responses
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.setHeader('Pragma', 'no-cache');

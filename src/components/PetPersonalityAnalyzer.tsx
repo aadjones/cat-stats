@@ -20,8 +20,14 @@ import { ErrorBoundary } from './ErrorBoundary/ErrorBoundary';
 import { CharacterGenerationErrorBoundary } from './ErrorBoundary/CharacterGenerationErrorBoundary';
 import { HallOfFame } from './HallOfFame/HallOfFame';
 import { CharacterSheetPreview } from './Landing/CharacterSheetPreview';
+import { AnalyticsPage } from './Analytics/AnalyticsPage';
 
-type AppStep = 'questionnaire' | 'result' | 'showdown' | 'hall-of-fame';
+type AppStep =
+  | 'questionnaire'
+  | 'result'
+  | 'showdown'
+  | 'hall-of-fame'
+  | 'analytics';
 type ViewMode = 'animated' | 'static';
 
 export function PetPersonalityAnalyzer() {
@@ -66,6 +72,8 @@ export function PetPersonalityAnalyzer() {
         setCurrentStep('showdown');
       } else if (sharedContent.type === 'hall-of-fame') {
         setCurrentStep('hall-of-fame');
+      } else if (sharedContent.type === 'analytics') {
+        setCurrentStep('analytics');
       }
     };
 
@@ -325,6 +333,10 @@ export function PetPersonalityAnalyzer() {
 
   if (currentStep === 'hall-of-fame') {
     return <HallOfFame />;
+  }
+
+  if (currentStep === 'analytics') {
+    return <AnalyticsPage onBack={handleReset} />;
   }
 
   if (currentStep === 'showdown' && showdownId) {
