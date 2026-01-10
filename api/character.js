@@ -108,12 +108,18 @@ export default async function handler(req, res) {
       const { input_tokens, output_tokens } = data.usage;
       console.log('[CHARACTER] Token usage:', { input_tokens, output_tokens });
 
-      // Calculate cost based on Claude model pricing (as of 2025)
+      // Calculate cost based on Claude model pricing (as of January 2026)
       // Sonnet 4.5: $3/M input, $15/M output
-      // Haiku: $0.25/M input, $1.25/M output
+      // Haiku 4.5: $1/M input, $5/M output
+      // Haiku 3: $0.25/M input, $1.25/M output (legacy)
       let inputCostPerMillion, outputCostPerMillion;
 
-      if (model.includes('haiku')) {
+      if (model.includes('haiku-4')) {
+        // Haiku 4.5 pricing
+        inputCostPerMillion = 1.0;
+        outputCostPerMillion = 5.0;
+      } else if (model.includes('haiku')) {
+        // Legacy Haiku 3 pricing
         inputCostPerMillion = 0.25;
         outputCostPerMillion = 1.25;
       } else if (model.includes('sonnet')) {

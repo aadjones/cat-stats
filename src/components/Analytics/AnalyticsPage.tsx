@@ -214,6 +214,63 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
         </Button>
       </div>
 
+      {/* Pricing Info Banner */}
+      <div
+        style={{
+          background: '#eff6ff',
+          border: '1px solid #bfdbfe',
+          borderRadius: '8px',
+          padding: '1rem',
+          marginBottom: '2rem',
+        }}
+      >
+        <div
+          style={{
+            fontSize: '0.875rem',
+            color: '#1e40af',
+            fontWeight: '600',
+            marginBottom: '0.5rem',
+          }}
+        >
+          💰 Pricing Assumptions (as of January 2026)
+        </div>
+        <div
+          style={{
+            fontSize: '0.875rem',
+            color: '#1f2937',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gap: '1rem',
+          }}
+        >
+          <div>
+            <strong>Claude Sonnet 4.5</strong> (currently in use)
+            <br />
+            Input: $3.00/M tokens
+            <br />
+            Output: $15.00/M tokens
+          </div>
+          <div>
+            <strong>Claude Haiku 4.5</strong> (for comparison)
+            <br />
+            Input: $1.00/M tokens
+            <br />
+            Output: $5.00/M tokens
+          </div>
+          <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>
+            Verify current pricing at{' '}
+            <a
+              href="https://www.anthropic.com/pricing"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: '#2563eb', textDecoration: 'underline' }}
+            >
+              anthropic.com/pricing
+            </a>
+          </div>
+        </div>
+      </div>
+
       {/* Time Range Selector */}
       <div style={{ marginBottom: '2rem' }}>
         <label style={{ marginRight: '1rem', fontWeight: '600' }}>
