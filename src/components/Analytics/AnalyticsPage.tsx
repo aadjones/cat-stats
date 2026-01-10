@@ -276,7 +276,9 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
           <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
             Daily Average
           </div>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>
+          <div
+            style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1f2937' }}
+          >
             {formatCurrency(dailyAverage)}
           </div>
         </div>
@@ -292,7 +294,9 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
           <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
             Total API Calls
           </div>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>
+          <div
+            style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1f2937' }}
+          >
             {formatNumber(data.totals.totalCalls)}
           </div>
         </div>
@@ -308,7 +312,13 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
           <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
             Most Expensive Day
           </div>
-          <div style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>
+          <div
+            style={{
+              fontSize: '1.25rem',
+              fontWeight: 'bold',
+              color: '#1f2937',
+            }}
+          >
             {formatCurrency(mostExpensiveDay.totalCost)}
           </div>
           <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>
@@ -347,7 +357,13 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
             <div style={{ color: '#6b7280', fontSize: '0.875rem' }}>
               Input Tokens
             </div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
+            <div
+              style={{
+                fontSize: '1.5rem',
+                fontWeight: 'bold',
+                color: '#1f2937',
+              }}
+            >
               {formatNumber(data.totals.totalInputTokens)}
             </div>
           </div>
@@ -355,7 +371,13 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
             <div style={{ color: '#6b7280', fontSize: '0.875rem' }}>
               Output Tokens
             </div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
+            <div
+              style={{
+                fontSize: '1.5rem',
+                fontWeight: 'bold',
+                color: '#1f2937',
+              }}
+            >
               {formatNumber(data.totals.totalOutputTokens)}
             </div>
           </div>
@@ -406,14 +428,34 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
                     key={day.date}
                     style={{ borderBottom: '1px solid #f3f4f6' }}
                   >
-                    <td style={{ padding: '0.75rem' }}>{day.date}</td>
-                    <td style={{ padding: '0.75rem', textAlign: 'right' }}>
+                    <td style={{ padding: '0.75rem', color: '#1f2937' }}>
+                      {day.date}
+                    </td>
+                    <td
+                      style={{
+                        padding: '0.75rem',
+                        textAlign: 'right',
+                        color: '#1f2937',
+                      }}
+                    >
                       {day.totalCalls}
                     </td>
-                    <td style={{ padding: '0.75rem', textAlign: 'right' }}>
+                    <td
+                      style={{
+                        padding: '0.75rem',
+                        textAlign: 'right',
+                        color: '#1f2937',
+                      }}
+                    >
                       {formatNumber(day.totalInputTokens)}
                     </td>
-                    <td style={{ padding: '0.75rem', textAlign: 'right' }}>
+                    <td
+                      style={{
+                        padding: '0.75rem',
+                        textAlign: 'right',
+                        color: '#1f2937',
+                      }}
+                    >
                       {formatNumber(day.totalOutputTokens)}
                     </td>
                     <td
@@ -421,6 +463,7 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
                         padding: '0.75rem',
                         textAlign: 'right',
                         fontWeight: 'bold',
+                        color: '#1f2937',
                       }}
                     >
                       {formatCurrency(day.totalCost)}
