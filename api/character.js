@@ -131,12 +131,8 @@ export default async function handler(req, res) {
 
       console.log('[CHARACTER] Calculated cost:', totalCost);
 
-      // Log to analytics - use VERCEL_URL for production, localhost for dev
-      const baseUrl = process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : 'http://localhost:3000';
-
-      const analyticsUrl = `${baseUrl}/api/analytics`;
+      // Log to analytics - use relative URL to call same deployment
+      const analyticsUrl = '/api/analytics';
       const payload = {
         model,
         inputTokens: input_tokens,
