@@ -99,9 +99,14 @@ export default async function handler(req, res) {
       return res.status(response.status).json(data);
     }
 
-    // Log analytics (await to ensure completion before function exits)
+    // ============ ANALYTICS LOGGING START ============
+    console.log('[CHARACTER] Starting analytics logging');
+    console.log('[CHARACTER] data.usage present?', !!data.usage);
+    console.log('[CHARACTER] VERCEL_URL:', process.env.VERCEL_URL);
+
     if (data.usage) {
       const { input_tokens, output_tokens } = data.usage;
+      console.log('[CHARACTER] Token usage:', { input_tokens, output_tokens });
 
       // Calculate cost based on Claude model pricing (as of 2025)
       // Sonnet 4.5: $3/M input, $15/M output
@@ -124,28 +129,64 @@ export default async function handler(req, res) {
         (input_tokens / 1000000) * inputCostPerMillion +
         (output_tokens / 1000000) * outputCostPerMillion;
 
+      console.log('[CHARACTER] Calculated cost:', totalCost);
+
       // Log to analytics - use VERCEL_URL for production, localhost for dev
       const baseUrl = process.env.VERCEL_URL
         ? `https://${process.env.VERCEL_URL}`
         : 'http://localhost:3000';
 
+      const analyticsUrl = `${baseUrl}/api/analytics`;
+      const payload = {
+        model,
+        inputTokens: input_tokens,
+        outputTokens: output_tokens,
+        totalCost,
+        endpoint: 'character',
+      };
+
+      console.log('[CHARACTER] Analytics URL:', analyticsUrl);
+      console.log('[CHARACTER] Analytics payload:', JSON.stringify(payload));
+
       try {
-        await fetch(`${baseUrl}/api/analytics`, {
+        console.log('[CHARACTER] Calling fetch...');
+        const analyticsResponse = await fetch(analyticsUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model,
-            inputTokens: input_tokens,
-            outputTokens: output_tokens,
-            totalCost,
-            endpoint: 'character',
-          }),
+          body: JSON.stringify(payload),
         });
-        console.log('Analytics logged successfully');
+
+        console.log(
+          '[CHARACTER] Fetch completed, status:',
+          analyticsResponse.status
+        );
+        console.log('[CHARACTER] Response ok?', analyticsResponse.ok);
+
+        if (analyticsResponse.ok) {
+          const responseData = await analyticsResponse.json();
+          console.log(
+            '[CHARACTER] ✓ Analytics logged successfully:',
+            responseData
+          );
+        } else {
+          const errorText = await analyticsResponse.text();
+          console.error('[CHARACTER] ✗ Analytics logging failed:', {
+            status: analyticsResponse.status,
+            statusText: analyticsResponse.statusText,
+            errorBody: errorText,
+          });
+        }
       } catch (err) {
-        console.error('Failed to log analytics:', err);
+        console.error('[CHARACTER] ✗ Exception during analytics fetch:', {
+          message: err.message,
+          name: err.name,
+          stack: err.stack,
+        });
       }
+    } else {
+      console.warn('[CHARACTER] No usage data in API response');
     }
+    console.log('[CHARACTER] ============ ANALYTICS LOGGING END ============');
 
     // Prevent caching of API responses
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
