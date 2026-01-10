@@ -131,8 +131,11 @@ export default async function handler(req, res) {
 
       console.log('[CHARACTER] Calculated cost:', totalCost);
 
-      // Log to analytics - use relative URL to call same deployment
-      const analyticsUrl = '/api/analytics';
+      // Log to analytics - construct full URL from request headers
+      const protocol = req.headers['x-forwarded-proto'] || 'https';
+      const host = req.headers['x-forwarded-host'] || req.headers.host;
+      const analyticsUrl = `${protocol}://${host}/api/analytics`;
+
       const payload = {
         model,
         inputTokens: input_tokens,
