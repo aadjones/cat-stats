@@ -1,5 +1,11 @@
 import { trackEvent } from './utils/analyticsTracker.js';
 
+const VALID_EVENTS = [
+  'hall_of_fame_views',
+  'pdf_downloads',
+  'share_button_clicks',
+];
+
 export default async function handler(req, res) {
   // Add CORS headers for production
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -16,10 +22,19 @@ export default async function handler(req, res) {
   }
 
   try {
-    await trackEvent('pdf_downloads');
+    const { event } = req.body;
+
+    if (!event || !VALID_EVENTS.includes(event)) {
+      return res.status(400).json({
+        error: 'Invalid event type',
+        validEvents: VALID_EVENTS,
+      });
+    }
+
+    await trackEvent(event);
     res.status(200).json({ success: true });
   } catch (error) {
-    console.error('Error tracking PDF download:', error);
+    console.error('Error tracking event:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 }
