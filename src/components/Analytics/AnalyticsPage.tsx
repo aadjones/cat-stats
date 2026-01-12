@@ -244,9 +244,7 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
           marginBottom: '2rem',
         }}
       >
-        <h1 style={{ fontSize: '2rem', fontWeight: 'bold' }}>
-          Analytics Dashboard
-        </h1>
+        <h1 style={{ fontSize: '2rem', fontWeight: 'bold' }}>CatStats Stats</h1>
         <Button onClick={onBack} variant="secondary">
           Back to App
         </Button>
