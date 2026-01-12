@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Button } from '../UI/Button';
 
 interface DailyAnalytics {
@@ -59,7 +59,7 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const fetchAnalytics = async () => {
+  const fetchAnalytics = useCallback(async () => {
     if (!adminToken) {
       setError('Please enter admin token');
       return;
@@ -109,13 +109,13 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [adminToken, days]);
 
   useEffect(() => {
     if (isAuthenticated && adminToken) {
       fetchAnalytics();
     }
-  }, [days]);
+  }, [days, isAuthenticated, adminToken, fetchAnalytics]);
 
   if (!isAuthenticated) {
     return (
@@ -311,7 +311,7 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
               textAlign: 'center',
             }}
           >
-            <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>🎨</div>
+            <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>🐈‍⬛</div>
             <div
               style={{
                 fontSize: '2.5rem',
