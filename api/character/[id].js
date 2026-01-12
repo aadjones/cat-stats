@@ -1,4 +1,5 @@
 import { kv } from '@vercel/kv';
+import { trackEvent } from '../utils/analyticsTracker.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -18,6 +19,7 @@ export default async function handler(req, res) {
       return res.status(404).json({ error: 'Character not found' });
     }
 
+    // Don't track here - we track share button clicks instead
     res.status(200).json(character);
   } catch (error) {
     console.error('Error loading character:', error);

@@ -55,6 +55,10 @@ export function HallOfFame() {
 
   useEffect(() => {
     loadFeaturedCharacters();
+    // Track Hall of Fame view
+    fetch('/api/track-hall-of-fame-view', { method: 'POST' }).catch((err) =>
+      console.error('Failed to track hall of fame view:', err)
+    );
   }, []);
 
   const loadFeaturedCharacters = async () => {

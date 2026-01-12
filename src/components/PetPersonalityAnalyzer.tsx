@@ -129,6 +129,11 @@ export function PetPersonalityAnalyzer() {
   const handlePdfDownload = async () => {
     if (characterSheet) {
       try {
+        // Track PDF download click
+        fetch('/api/track-pdf-download', { method: 'POST' }).catch((err) =>
+          console.error('Failed to track PDF download:', err)
+        );
+
         await generatePdfExport(characterSheet, currentCharacterId);
       } catch (error) {
         console.error('PDF generation failed:', error);
@@ -233,6 +238,12 @@ export function PetPersonalityAnalyzer() {
                       : null;
 
                     try {
+                      // Track share button click
+                      fetch('/api/track-share-click', { method: 'POST' }).catch(
+                        (err) =>
+                          console.error('Failed to track share click:', err)
+                      );
+
                       if (
                         navigator.share &&
                         imageBlob &&

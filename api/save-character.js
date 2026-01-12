@@ -1,5 +1,6 @@
 import { kv } from '@vercel/kv';
 import { put } from '@vercel/blob';
+import { trackEvent } from './utils/analyticsTracker.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -13,8 +14,11 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Invalid character data' });
     }
 
+    let hasPhoto = false;
+
     // Handle image upload to Vercel Blob if present
     if (characterData.petPhoto && characterData.petPhoto.startsWith('data:')) {
+      hasPhoto = true;
       try {
         // Convert base64 data URL to blob
         const base64Data = characterData.petPhoto.split(',')[1];
@@ -32,6 +36,7 @@ export default async function handler(req, res) {
         console.error('Error uploading image to blob storage:', imageError);
         // Continue without image rather than failing entirely
         characterData.petPhoto = null;
+        hasPhoto = false;
       }
     }
 
@@ -43,6 +48,12 @@ export default async function handler(req, res) {
 
     // Save character to Vercel KV
     await kv.set(`character:${characterData.id}`, characterData);
+
+    // Track analytics
+    await trackEvent('characters_created');
+    if (hasPhoto) {
+      await trackEvent('photos_uploaded');
+    }
 
     res.status(201).json({
       success: true,
