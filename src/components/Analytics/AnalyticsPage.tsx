@@ -573,7 +573,7 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
               {[
                 { value: 7, label: '7 days' },
                 { value: 30, label: '30 days' },
-                { value: 365, label: 'All time' },
+                { value: 365, label: '1 year' },
               ].map((option) => (
                 <button
                   key={option.value}
