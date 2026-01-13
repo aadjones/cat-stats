@@ -548,7 +548,7 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
                 flexWrap: 'wrap',
               }}
             >
-              {[7, 30, 60, 90].map((d) => (
+              {[7, 30, 90].map((d) => (
                 <button
                   key={d}
                   onClick={() => setDays(d)}
