@@ -311,163 +311,185 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
 
       {/* Usage Tab Content */}
       {activeTab === 'usage' && usageData && (
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-            gap: '1.5rem',
-          }}
-        >
+        <>
           <div
             style={{
-              background: 'white',
-              border: '2px solid #3b82f6',
-              borderRadius: '8px',
-              padding: '2rem',
-              textAlign: 'center',
+              marginBottom: '1.5rem',
+              padding: '0.75rem 1rem',
+              background: '#f9fafb',
+              borderRadius: '6px',
+              borderLeft: '3px solid #3b82f6',
             }}
           >
-            <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>🐈‍⬛</div>
-            <div
+            <p
               style={{
-                fontSize: '2.5rem',
-                fontWeight: 'bold',
-                color: '#3b82f6',
+                margin: 0,
+                fontSize: '0.875rem',
+                color: '#4b5563',
               }}
             >
-              {usageData.charactersCreated}
-            </div>
-            <div
-              style={{
-                fontSize: '1rem',
-                color: '#6b7280',
-                marginTop: '0.5rem',
-              }}
-            >
-              Characters Created
-            </div>
+              📈 <strong>All-time totals</strong> — These metrics show
+              cumulative counts since launch
+            </p>
           </div>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+              gap: '1.5rem',
+            }}
+          >
+            <div
+              style={{
+                background: 'white',
+                border: '2px solid #3b82f6',
+                borderRadius: '8px',
+                padding: '2rem',
+                textAlign: 'center',
+              }}
+            >
+              <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>🐈‍⬛</div>
+              <div
+                style={{
+                  fontSize: '2.5rem',
+                  fontWeight: 'bold',
+                  color: '#3b82f6',
+                }}
+              >
+                {usageData.charactersCreated}
+              </div>
+              <div
+                style={{
+                  fontSize: '1rem',
+                  color: '#6b7280',
+                  marginTop: '0.5rem',
+                }}
+              >
+                Characters Created
+              </div>
+            </div>
 
-          <div
-            style={{
-              background: 'white',
-              border: '1px solid #e5e7eb',
-              borderRadius: '8px',
-              padding: '2rem',
-              textAlign: 'center',
-            }}
-          >
-            <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>📸</div>
             <div
               style={{
-                fontSize: '2.5rem',
-                fontWeight: 'bold',
-                color: '#1f2937',
+                background: 'white',
+                border: '1px solid #e5e7eb',
+                borderRadius: '8px',
+                padding: '2rem',
+                textAlign: 'center',
               }}
             >
-              {usageData.photosUploaded}
+              <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>📸</div>
+              <div
+                style={{
+                  fontSize: '2.5rem',
+                  fontWeight: 'bold',
+                  color: '#1f2937',
+                }}
+              >
+                {usageData.photosUploaded}
+              </div>
+              <div
+                style={{
+                  fontSize: '1rem',
+                  color: '#6b7280',
+                  marginTop: '0.5rem',
+                }}
+              >
+                With Photo
+              </div>
             </div>
-            <div
-              style={{
-                fontSize: '1rem',
-                color: '#6b7280',
-                marginTop: '0.5rem',
-              }}
-            >
-              With Photo
-            </div>
-          </div>
 
-          <div
-            style={{
-              background: 'white',
-              border: '1px solid #e5e7eb',
-              borderRadius: '8px',
-              padding: '2rem',
-              textAlign: 'center',
-            }}
-          >
-            <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>🏆</div>
             <div
               style={{
-                fontSize: '2.5rem',
-                fontWeight: 'bold',
-                color: '#1f2937',
+                background: 'white',
+                border: '1px solid #e5e7eb',
+                borderRadius: '8px',
+                padding: '2rem',
+                textAlign: 'center',
               }}
             >
-              {usageData.hallOfFameViews}
+              <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>🏆</div>
+              <div
+                style={{
+                  fontSize: '2.5rem',
+                  fontWeight: 'bold',
+                  color: '#1f2937',
+                }}
+              >
+                {usageData.hallOfFameViews}
+              </div>
+              <div
+                style={{
+                  fontSize: '1rem',
+                  color: '#6b7280',
+                  marginTop: '0.5rem',
+                }}
+              >
+                Hall of Fame Views
+              </div>
             </div>
-            <div
-              style={{
-                fontSize: '1rem',
-                color: '#6b7280',
-                marginTop: '0.5rem',
-              }}
-            >
-              Hall of Fame Views
-            </div>
-          </div>
 
-          <div
-            style={{
-              background: 'white',
-              border: '1px solid #e5e7eb',
-              borderRadius: '8px',
-              padding: '2rem',
-              textAlign: 'center',
-            }}
-          >
-            <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>📑</div>
             <div
               style={{
-                fontSize: '2.5rem',
-                fontWeight: 'bold',
-                color: '#1f2937',
+                background: 'white',
+                border: '1px solid #e5e7eb',
+                borderRadius: '8px',
+                padding: '2rem',
+                textAlign: 'center',
               }}
             >
-              {usageData.pdfDownloads}
+              <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>📑</div>
+              <div
+                style={{
+                  fontSize: '2.5rem',
+                  fontWeight: 'bold',
+                  color: '#1f2937',
+                }}
+              >
+                {usageData.pdfDownloads}
+              </div>
+              <div
+                style={{
+                  fontSize: '1rem',
+                  color: '#6b7280',
+                  marginTop: '0.5rem',
+                }}
+              >
+                PDF Downloads
+              </div>
             </div>
-            <div
-              style={{
-                fontSize: '1rem',
-                color: '#6b7280',
-                marginTop: '0.5rem',
-              }}
-            >
-              PDF Downloads
-            </div>
-          </div>
 
-          <div
-            style={{
-              background: 'white',
-              border: '1px solid #e5e7eb',
-              borderRadius: '8px',
-              padding: '2rem',
-              textAlign: 'center',
-            }}
-          >
-            <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>📤</div>
             <div
               style={{
-                fontSize: '2.5rem',
-                fontWeight: 'bold',
-                color: '#1f2937',
+                background: 'white',
+                border: '1px solid #e5e7eb',
+                borderRadius: '8px',
+                padding: '2rem',
+                textAlign: 'center',
               }}
             >
-              {usageData.shareButtonClicks}
-            </div>
-            <div
-              style={{
-                fontSize: '1rem',
-                color: '#6b7280',
-                marginTop: '0.5rem',
-              }}
-            >
-              Share Button Clicks
+              <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>📤</div>
+              <div
+                style={{
+                  fontSize: '2.5rem',
+                  fontWeight: 'bold',
+                  color: '#1f2937',
+                }}
+              >
+                {usageData.shareButtonClicks}
+              </div>
+              <div
+                style={{
+                  fontSize: '1rem',
+                  color: '#6b7280',
+                  marginTop: '0.5rem',
+                }}
+              >
+                Share Button Clicks
+              </div>
             </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* Costs Tab Content */}
@@ -548,14 +570,18 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
                 flexWrap: 'wrap',
               }}
             >
-              {[7, 30, 90].map((d) => (
+              {[
+                { value: 7, label: '7 days' },
+                { value: 30, label: '30 days' },
+                { value: 365, label: 'All time' },
+              ].map((option) => (
                 <button
-                  key={d}
-                  onClick={() => setDays(d)}
+                  key={option.value}
+                  onClick={() => setDays(option.value)}
                   style={{
                     padding: '0.5rem 1rem',
-                    background: days === d ? '#3b82f6' : '#e5e7eb',
-                    color: days === d ? 'white' : 'black',
+                    background: days === option.value ? '#3b82f6' : '#e5e7eb',
+                    color: days === option.value ? 'white' : 'black',
                     border: 'none',
                     borderRadius: '4px',
                     cursor: 'pointer',
@@ -563,7 +589,7 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
                     minWidth: '80px',
                   }}
                 >
-                  {d} days
+                  {option.label}
                 </button>
               ))}
             </div>
