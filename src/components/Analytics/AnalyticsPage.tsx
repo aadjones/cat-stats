@@ -235,16 +235,32 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
   );
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px' }}>
+    <div
+      style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: 'clamp(1rem, 5vw, 2.5rem) clamp(1rem, 3vw, 1.25rem)',
+      }}
+    >
       <div
         style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           marginBottom: '2rem',
+          gap: '1rem',
+          flexWrap: 'wrap',
         }}
       >
-        <h1 style={{ fontSize: '2rem', fontWeight: 'bold' }}>CatStats Stats</h1>
+        <h1
+          style={{
+            fontSize: 'clamp(1.5rem, 5vw, 2rem)',
+            fontWeight: 'bold',
+            margin: 0,
+          }}
+        >
+          CatStats Stats
+        </h1>
         <Button onClick={onBack} variant="secondary">
           Back to App
         </Button>
@@ -516,26 +532,41 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
 
           {/* Time Range Selector */}
           <div style={{ marginBottom: '2rem' }}>
-            <label style={{ marginRight: '1rem', fontWeight: '600' }}>
+            <label
+              style={{
+                display: 'block',
+                marginBottom: '0.75rem',
+                fontWeight: '600',
+              }}
+            >
               Time Range:
             </label>
-            {[7, 30, 60, 90].map((d) => (
-              <button
-                key={d}
-                onClick={() => setDays(d)}
-                style={{
-                  padding: '0.5rem 1rem',
-                  marginRight: '0.5rem',
-                  background: days === d ? '#3b82f6' : '#e5e7eb',
-                  color: days === d ? 'white' : 'black',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                }}
-              >
-                {d} days
-              </button>
-            ))}
+            <div
+              style={{
+                display: 'flex',
+                gap: '0.5rem',
+                flexWrap: 'wrap',
+              }}
+            >
+              {[7, 30, 60, 90].map((d) => (
+                <button
+                  key={d}
+                  onClick={() => setDays(d)}
+                  style={{
+                    padding: '0.5rem 1rem',
+                    background: days === d ? '#3b82f6' : '#e5e7eb',
+                    color: days === d ? 'white' : 'black',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    flex: '1 1 auto',
+                    minWidth: '80px',
+                  }}
+                >
+                  {d} days
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Summary Cards */}
@@ -702,7 +733,7 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
               background: 'white',
               border: '1px solid #e5e7eb',
               borderRadius: '8px',
-              padding: '1.5rem',
+              padding: 'clamp(0.75rem, 3vw, 1.5rem)',
             }}
           >
             <h2
@@ -714,7 +745,9 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
             >
               Daily Breakdown
             </h2>
-            <div style={{ overflowX: 'auto' }}>
+            <div
+              style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}
+            >
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ borderBottom: '2px solid #e5e7eb' }}>
