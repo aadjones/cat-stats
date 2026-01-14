@@ -4,6 +4,30 @@ This guide covers development-specific features, debugging tools, and internal r
 
 ## Hidden Features & Debug Tools
 
+### Photo Processor Tool
+
+**Location:** `tools/photo-processor.html`
+
+**URL:** https://cat-stats-six.vercel.app/tools/photo-processor.html
+
+**Purpose:** Add or update a photo for an existing character in the database.
+
+**How to use:**
+
+1. Open the tool at the production URL above (or via `vercel dev` locally)
+2. Click to upload your cat photo
+3. Enter the character ID (e.g., `5eo7b9`)
+4. Click **Update Database**
+
+The tool automatically:
+
+- Resizes images to max 800x800 (maintains aspect ratio)
+- Compresses to JPEG at 85% quality
+- Uploads to Vercel Blob storage
+- Updates the character record in Vercel KV
+
+**Important:** This tool must be run from the deployed site or via `vercel dev`. Running it via VS Code Live Server (port 5500) will fail with a 405 error because the `/api/update-character` endpoint only exists on Vercel.
+
 ### Frontend Design Debug Panel
 
 Press the **backtick key (`)** to toggle the design debug panel. This panel shows:

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { loadCharacter } from '../../services/characterStorage';
 import { Button } from '../UI/Button';
 import { CharacterModal } from './CharacterModal';
+import { FEATURED_CHARACTER_IDS } from '../../config/featuredCharacters';
 
 interface CharacterPreview {
   id: string;
@@ -9,31 +10,6 @@ interface CharacterPreview {
   archetype: string;
   photoUrl?: string | null;
 }
-
-const FEATURED_CHARACTER_IDS = [
-  'us0suh', // Swapped from sente1 since it's used on main page
-  'g2rq99',
-  'oo035s',
-  'ps8raj',
-  'q9jqk6',
-  'eg8smy',
-  'umwqpi',
-  'nze8vt',
-  '6appoh',
-  '9oug8t',
-  'sq56qj',
-  '7pyi5t',
-  'kspziz',
-  'svetnf',
-  '92rkx5',
-  'urs10a',
-  'pva4fp',
-  'jwio68',
-  'd9p9rt',
-  '597m90',
-  '9fb3p8',
-  'qaqbm2',
-];
 
 const LOADING_MESSAGES = [
   'Summoning legendary felines...',
