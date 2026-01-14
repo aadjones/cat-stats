@@ -9,9 +9,18 @@ export interface WorkflowResult<T = unknown> {
   error?: string;
 }
 
+export type AdminSection = 'analytics' | 'characters';
+
 export interface SharedContentInfo {
-  type: 'character' | 'showdown' | 'hall-of-fame' | 'analytics' | null;
+  type:
+    | 'character'
+    | 'showdown'
+    | 'hall-of-fame'
+    | 'analytics'
+    | 'admin'
+    | null;
   id: string | null;
+  adminSection?: AdminSection;
 }
 
 export interface CharacterGenerationProgress {
@@ -39,6 +48,7 @@ export class CharacterWorkflowService {
     const showdownMatch = path.match(/^\/showdown\/([a-z0-9]{6,10})$/);
     const hallOfFameMatch = path.match(/^\/hall-of-fame$/);
     const analyticsMatch = path.match(/^\/analytics$/);
+    const adminMatch = path.match(/^\/admin(?:\/([a-z-]+))?$/);
 
     if (legendMatch) {
       return { type: 'character', id: legendMatch[1] };
@@ -49,8 +59,14 @@ export class CharacterWorkflowService {
     if (hallOfFameMatch) {
       return { type: 'hall-of-fame', id: null };
     }
+    // Redirect old /analytics to /admin/analytics
     if (analyticsMatch) {
-      return { type: 'analytics', id: null };
+      window.history.replaceState({}, '', '/admin/analytics');
+      return { type: 'admin', id: null, adminSection: 'analytics' };
+    }
+    if (adminMatch) {
+      const section = (adminMatch[1] || 'analytics') as AdminSection;
+      return { type: 'admin', id: null, adminSection: section };
     }
     return { type: null, id: null };
   }

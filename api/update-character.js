@@ -6,6 +6,14 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // Verify admin token
+  const authHeader = req.headers.authorization;
+  const adminToken = process.env.ADMIN_TOKEN;
+
+  if (!authHeader || authHeader !== `Bearer ${adminToken}`) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
   try {
     const { id, petPhoto } = req.body;
 

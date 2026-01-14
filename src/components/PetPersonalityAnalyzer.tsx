@@ -20,14 +20,15 @@ import { ErrorBoundary } from './ErrorBoundary/ErrorBoundary';
 import { CharacterGenerationErrorBoundary } from './ErrorBoundary/CharacterGenerationErrorBoundary';
 import { HallOfFame } from './HallOfFame/HallOfFame';
 import { CharacterSheetPreview } from './Landing/CharacterSheetPreview';
-import { AnalyticsPage } from './Analytics/AnalyticsPage';
+import { AdminLayout } from './Admin/AdminLayout';
+import type { AdminSection } from '../services/characterWorkflowService';
 
 type AppStep =
   | 'questionnaire'
   | 'result'
   | 'showdown'
   | 'hall-of-fame'
-  | 'analytics';
+  | 'admin';
 type ViewMode = 'animated' | 'static';
 
 export function PetPersonalityAnalyzer() {
@@ -41,6 +42,7 @@ export function PetPersonalityAnalyzer() {
     null
   );
   const [showdownId, setShowdownId] = useState<string | null>(null);
+  const [adminSection, setAdminSection] = useState<AdminSection>('analytics');
 
   // Check for shared character or showdown URL on mount
   useEffect(() => {
@@ -72,8 +74,9 @@ export function PetPersonalityAnalyzer() {
         setCurrentStep('showdown');
       } else if (sharedContent.type === 'hall-of-fame') {
         setCurrentStep('hall-of-fame');
-      } else if (sharedContent.type === 'analytics') {
-        setCurrentStep('analytics');
+      } else if (sharedContent.type === 'admin') {
+        setAdminSection(sharedContent.adminSection || 'analytics');
+        setCurrentStep('admin');
       }
     };
 
@@ -351,8 +354,8 @@ export function PetPersonalityAnalyzer() {
     return <HallOfFame />;
   }
 
-  if (currentStep === 'analytics') {
-    return <AnalyticsPage onBack={handleReset} />;
+  if (currentStep === 'admin') {
+    return <AdminLayout initialSection={adminSection} onBack={handleReset} />;
   }
 
   if (currentStep === 'showdown' && showdownId) {

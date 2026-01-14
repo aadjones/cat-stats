@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Button } from '../UI/Button';
 
 interface DailyAnalytics {
   date: string;
@@ -38,33 +37,19 @@ interface UsageAnalytics {
 
 type Tab = 'costs' | 'usage';
 
-export function AnalyticsPage({ onBack }: { onBack: () => void }) {
+interface AnalyticsPageProps {
+  adminToken: string;
+}
+
+export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [usageData, setUsageData] = useState<UsageAnalytics | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [adminToken, setAdminToken] = useState(
-    () => sessionStorage.getItem('adminToken') || ''
-  );
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [days, setDays] = useState(30);
   const [activeTab, setActiveTab] = useState<Tab>('costs');
 
-  // Try to auto-authenticate on mount if token exists in session
-  useEffect(() => {
-    if (adminToken && !isAuthenticated) {
-      console.log('Auto-authenticating with cached token');
-      fetchAnalytics();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const fetchAnalytics = useCallback(async () => {
-    if (!adminToken) {
-      setError('Please enter admin token');
-      return;
-    }
-
     setLoading(true);
     setError(null);
 
@@ -75,23 +60,12 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
         },
       });
 
-      if (response.status === 401) {
-        setError('Invalid admin token');
-        setIsAuthenticated(false);
-        setLoading(false);
-        return;
-      }
-
       if (!response.ok) {
         throw new Error('Failed to fetch analytics');
       }
 
       const analyticsData = await response.json();
       setData(analyticsData);
-      setIsAuthenticated(true);
-
-      // Save token to sessionStorage for this session
-      sessionStorage.setItem('adminToken', adminToken);
 
       // Also fetch usage analytics
       const usageResponse = await fetch('/api/get-usage-analytics', {
@@ -111,98 +85,23 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
     }
   }, [adminToken, days]);
 
+  // Fetch on mount and when days change
   useEffect(() => {
-    if (isAuthenticated && adminToken) {
-      fetchAnalytics();
-    }
-  }, [days, isAuthenticated, adminToken, fetchAnalytics]);
-
-  if (!isAuthenticated) {
-    return (
-      <div
-        style={{
-          maxWidth: '600px',
-          margin: '0 auto',
-          padding: '40px 20px',
-        }}
-      >
-        <h1
-          style={{
-            fontSize: '2rem',
-            fontWeight: 'bold',
-            marginBottom: '2rem',
-            textAlign: 'center',
-          }}
-        >
-          Analytics Dashboard
-        </h1>
-
-        <div
-          style={{
-            background: 'white',
-            border: '1px solid #e5e7eb',
-            borderRadius: '8px',
-            padding: '2rem',
-          }}
-        >
-          <label
-            style={{
-              display: 'block',
-              marginBottom: '0.5rem',
-              fontWeight: '600',
-            }}
-          >
-            Admin Token
-          </label>
-          <input
-            type="password"
-            value={adminToken}
-            onChange={(e) => setAdminToken(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && fetchAnalytics()}
-            placeholder="Enter admin token"
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              border: '1px solid #d1d5db',
-              borderRadius: '4px',
-              marginBottom: '1rem',
-            }}
-          />
-
-          {error && (
-            <div
-              style={{
-                padding: '0.75rem',
-                background: '#fee2e2',
-                color: '#991b1b',
-                borderRadius: '4px',
-                marginBottom: '1rem',
-              }}
-            >
-              {error}
-            </div>
-          )}
-
-          <Button onClick={fetchAnalytics} disabled={loading}>
-            {loading ? 'Loading...' : 'Access Analytics'}
-          </Button>
-
-          <Button
-            onClick={onBack}
-            variant="secondary"
-            style={{ marginLeft: '1rem' }}
-          >
-            Back
-          </Button>
-        </div>
-      </div>
-    );
-  }
+    fetchAnalytics();
+  }, [fetchAnalytics]);
 
   if (loading && !data) {
     return (
       <div style={{ textAlign: 'center', padding: '40px' }}>
         <p>Loading analytics...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{ textAlign: 'center', padding: '40px', color: '#991b1b' }}>
+        <p>Error: {error}</p>
       </div>
     );
   }
@@ -242,30 +141,6 @@ export function AnalyticsPage({ onBack }: { onBack: () => void }) {
         padding: 'clamp(1rem, 5vw, 2.5rem) clamp(1rem, 3vw, 1.25rem)',
       }}
     >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '2rem',
-          gap: '1rem',
-          flexWrap: 'wrap',
-        }}
-      >
-        <h1
-          style={{
-            fontSize: 'clamp(1.5rem, 5vw, 2rem)',
-            fontWeight: 'bold',
-            margin: 0,
-          }}
-        >
-          CatStats Stats
-        </h1>
-        <Button onClick={onBack} variant="secondary">
-          Back to App
-        </Button>
-      </div>
-
       {/* Tab Switcher */}
       <div
         style={{

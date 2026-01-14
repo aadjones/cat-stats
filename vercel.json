@@ -48,6 +48,14 @@
     {
       "source": "/analytics",
       "destination": "/index.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin/(.*)",
+      "destination": "/index.html"
     }
   ]
 }

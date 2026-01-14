@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { loadCharacter } from '../../services/characterStorage';
 import { Button } from '../UI/Button';
 import { CharacterModal } from './CharacterModal';
-import { FEATURED_CHARACTER_IDS } from '../../config/featuredCharacters';
 
 interface CharacterPreview {
   id: string;
@@ -53,16 +52,20 @@ export function HallOfFame() {
         );
       }, 800);
 
-      const characterPromises = FEATURED_CHARACTER_IDS.map(loadCharacter);
+      // Fetch featured character IDs from API
+      const hofResponse = await fetch('/api/hall-of-fame');
+      const hofData = await hofResponse.json();
+      const featuredIds: string[] = hofData.characterIds || [];
+
+      const characterPromises = featuredIds.map(loadCharacter);
       const results = await Promise.allSettled(characterPromises);
+
+      type LoadCharacterResult = Awaited<ReturnType<typeof loadCharacter>>;
 
       const loadedCharacters: CharacterPreview[] = results
         .filter(
-          (
-            result
-          ): result is PromiseFulfilledResult<
-            Awaited<ReturnType<typeof loadCharacter>>
-          > => result.status === 'fulfilled' && result.value !== null
+          (result): result is PromiseFulfilledResult<LoadCharacterResult> =>
+            result.status === 'fulfilled' && result.value !== null
         )
         .map((result) => ({
           id: result.value!.id,

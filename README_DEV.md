@@ -4,29 +4,42 @@ This guide covers development-specific features, debugging tools, and internal r
 
 ## Hidden Features & Debug Tools
 
-### Photo Processor Tool
+### Admin Panel
 
-**Location:** `tools/photo-processor.html`
+**Route:** `/admin`
 
-**URL:** https://cat-stats-six.vercel.app/tools/photo-processor.html
+**URL:** https://cat-stats-six.vercel.app/admin
 
-**Purpose:** Add or update a photo for an existing character in the database.
+**Purpose:** Unified admin interface for site management, analytics, and character curation.
 
-**How to use:**
+**Authentication:** Requires `ADMIN_TOKEN` (same token used for analytics).
 
-1. Open the tool at the production URL above (or via `vercel dev` locally)
-2. Click to upload your cat photo
-3. Enter the character ID (e.g., `5eo7b9`)
-4. Click **Update Database**
+**Features:**
 
-The tool automatically:
+1. **Analytics Tab** (`/admin/analytics`)
+   - View API costs over 7/30/90 day periods
+   - Daily breakdown of token usage and costs
+   - Usage metrics (characters created, PDF downloads, shares, etc.)
 
-- Resizes images to max 800x800 (maintains aspect ratio)
+2. **Characters Tab** (`/admin/characters`)
+   - Look up any character by ID
+   - Upload or replace character photos
+   - Add/remove characters from Hall of Fame
+
+**How to access:**
+
+1. Navigate to `https://cat-stats-six.vercel.app/admin`
+2. Enter your admin token
+3. Use tabs to switch between Analytics and Characters
+
+**Photo upload in admin:**
+
+- Automatically resizes to max 800x800 (maintains aspect ratio)
 - Compresses to JPEG at 85% quality
 - Uploads to Vercel Blob storage
 - Updates the character record in Vercel KV
 
-**Important:** This tool must be run from the deployed site or via `vercel dev`. Running it via VS Code Live Server (port 5500) will fail with a 405 error because the `/api/update-character` endpoint only exists on Vercel.
+**Backwards compatibility:** `/analytics` redirects to `/admin/analytics`.
 
 ### Frontend Design Debug Panel
 
@@ -46,29 +59,11 @@ Press the **backtick key (`)** to toggle the design debug panel. This panel show
 
 **Location:** The debug panel component is defined in the main app file and toggles visibility based on a local state variable triggered by the backtick key.
 
-### Analytics Dashboard
+### Analytics (moved to Admin Panel)
 
-**Route:** `/analytics`
+Analytics is now part of the Admin Panel at `/admin/analytics`. See "Admin Panel" above.
 
-**Purpose:** Admin-only dashboard for tracking Claude API usage and costs.
-
-**Authentication:** Requires `ADMIN_TOKEN` (set in Vercel environment variables).
-
-**Features:**
-
-- View total API costs over 7/30/60/90 day periods
-- Daily average cost calculation
-- Total API calls and token usage (input/output)
-- Daily breakdown table with per-day statistics
-- Pricing assumptions banner (shows current Claude model pricing)
-
-**How to access:**
-
-1. Navigate to `https://cat-stats-six.vercel.app/analytics`
-2. Enter your admin token (stored in 1Password or Vercel environment variables)
-3. Dashboard loads with last 30 days of data
-
-**Backend:**
+**Backend details:**
 
 - API endpoint: `/api/analytics`
 - Storage: Vercel KV (Redis) database named `legendary-pets`
@@ -227,6 +222,68 @@ Logs an API call (internal use only, no authentication required).
 }
 ```
 
+### `/api/hall-of-fame` (GET)
+
+Returns the list of featured character IDs for the Hall of Fame (public, no auth required).
+
+**Response:**
+
+```json
+{
+  "characterIds": ["us0suh", "g2rq99", "..."],
+  "updatedAt": "2026-01-14T00:00:00.000Z"
+}
+```
+
+### `/api/hall-of-fame` (POST)
+
+Add or remove a character from the Hall of Fame (admin-only).
+
+**Headers:**
+
+```
+Authorization: Bearer YOUR_ADMIN_TOKEN
+```
+
+**Request body:**
+
+```json
+{
+  "action": "add",
+  "characterId": "abc123"
+}
+```
+
+Actions: `add` or `remove`
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "characterIds": ["...updated list..."]
+}
+```
+
+### `/api/update-character` (POST)
+
+Updates a character's photo (admin-only).
+
+**Headers:**
+
+```
+Authorization: Bearer YOUR_ADMIN_TOKEN
+```
+
+**Request body:**
+
+```json
+{
+  "id": "abc123",
+  "petPhoto": "data:image/jpeg;base64,..."
+}
+```
+
 ## Data Storage
 
 ### Vercel KV (Redis)
@@ -237,6 +294,8 @@ Logs an API call (internal use only, no authentication required).
 
 - `analytics:log:{timestamp}` - Individual API call logs
 - `analytics:daily:{YYYY-MM-DD}` - Daily aggregates (sum of all calls for that day)
+- `config:hall-of-fame` - Hall of Fame featured character IDs
+- `character:{id}` - Individual character data
 
 **TTL:** None currently set (data persists indefinitely)
 
@@ -287,10 +346,13 @@ PetPersonalityAnalyzer (main app)
 The app uses a simple URL-based routing system (not React Router):
 
 - `/` - Questionnaire
-- `/character/:id` - Shared character view
-- `/showdown/:id1/:id2` - Battle between two characters
-- `/hall-of-fame` - Gallery of characters
-- `/analytics` - Admin analytics dashboard
+- `/legend/:id` - Shared character view
+- `/showdown/:id` - Battle between two characters
+- `/hall-of-fame` - Gallery of featured characters
+- `/admin` - Admin panel (analytics, character management)
+- `/admin/analytics` - Analytics tab
+- `/admin/characters` - Character management tab
+- `/analytics` - Redirects to `/admin/analytics` (backwards compatibility)
 
 Routes are parsed in `characterWorkflowService.ts` and mapped to component states.
 
