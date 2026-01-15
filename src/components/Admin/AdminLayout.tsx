@@ -80,26 +80,39 @@ export function AdminLayout({
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f9fafb' }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        background:
+          'linear-gradient(135deg, var(--gradient-start), var(--gradient-middle), var(--gradient-end))',
+      }}
+    >
       {/* Header */}
       <div
         style={{
-          background: 'white',
-          borderBottom: '1px solid #e5e7eb',
+          background: 'var(--color-surface)',
+          borderBottom: '1px solid var(--color-border)',
           padding: '1rem 2rem',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
         }}
       >
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: 0 }}>
+        <h1
+          style={{
+            fontSize: '1.5rem',
+            fontWeight: 'bold',
+            margin: 0,
+            color: 'var(--color-text-primary)',
+          }}
+        >
           Admin Panel
         </h1>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          <Button onClick={onBack} variant="secondary">
+          <Button onClick={onBack} variant="secondary" size="sm">
             Back to App
           </Button>
-          <Button onClick={handleLogout} variant="secondary">
+          <Button onClick={handleLogout} variant="secondary" size="sm">
             Logout
           </Button>
         </div>
@@ -108,8 +121,8 @@ export function AdminLayout({
       {/* Tab Navigation */}
       <div
         style={{
-          background: 'white',
-          borderBottom: '1px solid #e5e7eb',
+          background: 'var(--color-surface)',
+          borderBottom: '1px solid var(--color-border)',
           padding: '0 2rem',
           display: 'flex',
           gap: '0',
@@ -125,7 +138,7 @@ export function AdminLayout({
           active={activeSection === 'characters'}
           onClick={() => handleSectionChange('characters')}
         >
-          🐱 Characters
+          🐈‍⬛ Characters
         </TabButton>
       </div>
 
@@ -158,8 +171,12 @@ function TabButton({
         padding: '1rem 1.5rem',
         background: 'transparent',
         border: 'none',
-        borderBottom: active ? '2px solid #2563eb' : '2px solid transparent',
-        color: active ? '#2563eb' : '#6b7280',
+        borderBottom: active
+          ? '2px solid var(--color-accent)'
+          : '2px solid transparent',
+        color: active
+          ? 'var(--color-text-primary)'
+          : 'var(--color-text-secondary)',
         fontWeight: active ? '600' : '400',
         cursor: 'pointer',
         transition: 'all 0.2s',

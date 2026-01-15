@@ -35,77 +35,93 @@ export function AdminLogin({ onLogin, onBack }: AdminLoginProps) {
   return (
     <div
       style={{
-        maxWidth: '600px',
-        margin: '0 auto',
-        padding: '40px 20px',
+        minHeight: '100vh',
+        background:
+          'linear-gradient(135deg, var(--gradient-start), var(--gradient-middle), var(--gradient-end))',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '20px',
       }}
     >
-      <h1
-        style={{
-          fontSize: '2rem',
-          fontWeight: 'bold',
-          marginBottom: '2rem',
-          textAlign: 'center',
-        }}
-      >
-        Admin Panel
-      </h1>
-
       <div
         style={{
-          background: 'white',
-          border: '1px solid #e5e7eb',
-          borderRadius: '8px',
-          padding: '2rem',
+          maxWidth: '400px',
+          width: '100%',
         }}
       >
-        <label
+        <h1
           style={{
-            display: 'block',
-            marginBottom: '0.5rem',
-            fontWeight: '600',
+            fontSize: '2rem',
+            fontWeight: 'bold',
+            marginBottom: '2rem',
+            textAlign: 'center',
+            color: 'var(--color-text-on-gradient)',
           }}
         >
-          Admin Token
-        </label>
-        <input
-          type="password"
-          value={token}
-          onChange={(e) => setToken(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-          placeholder="Enter admin token"
-          style={{
-            width: '100%',
-            padding: '0.75rem',
-            border: '1px solid #d1d5db',
-            borderRadius: '4px',
-            marginBottom: '1rem',
-            boxSizing: 'border-box',
-          }}
-        />
+          Admin Panel
+        </h1>
 
-        {error && (
-          <div
+        <div
+          style={{
+            background: 'var(--color-surface)',
+            border: '1px solid var(--color-border)',
+            borderRadius: '12px',
+            padding: '2rem',
+          }}
+        >
+          <label
             style={{
-              padding: '0.75rem',
-              background: '#fee2e2',
-              color: '#991b1b',
-              borderRadius: '4px',
-              marginBottom: '1rem',
+              display: 'block',
+              marginBottom: '0.5rem',
+              fontWeight: '600',
+              color: 'var(--color-text-primary)',
             }}
           >
-            {error}
+            Admin Token
+          </label>
+          <input
+            type="password"
+            value={token}
+            onChange={(e) => setToken(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+            placeholder="Enter admin token"
+            style={{
+              width: '100%',
+              padding: '0.75rem',
+              border: '1px solid var(--color-border)',
+              borderRadius: '8px',
+              marginBottom: '1rem',
+              boxSizing: 'border-box',
+              background: 'var(--color-surface-alt)',
+              color: 'var(--color-text-primary)',
+            }}
+          />
+
+          {error && (
+            <div
+              style={{
+                padding: '0.75rem',
+                background: 'rgba(239, 68, 68, 0.2)',
+                color: '#f87171',
+                borderRadius: '8px',
+                marginBottom: '1rem',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+              }}
+            >
+              {error}
+            </div>
+          )}
+
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            <Button onClick={handleSubmit} disabled={loading}>
+              {loading ? 'Authenticating...' : 'Login'}
+            </Button>
+
+            <Button onClick={onBack} variant="secondary">
+              Back
+            </Button>
           </div>
-        )}
-
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          <Button onClick={handleSubmit} disabled={loading}>
-            {loading ? 'Authenticating...' : 'Login'}
-          </Button>
-
-          <Button onClick={onBack} variant="secondary">
-            Back
-          </Button>
         </div>
       </div>
     </div>

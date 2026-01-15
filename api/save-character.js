@@ -49,6 +49,9 @@ export default async function handler(req, res) {
     // Save character to Vercel KV
     await kv.set(`character:${characterData.id}`, characterData);
 
+    // Invalidate the search index so it rebuilds on next search
+    await kv.del('characters:index');
+
     // Track analytics
     await trackEvent('characters_created');
     if (hasPhoto) {

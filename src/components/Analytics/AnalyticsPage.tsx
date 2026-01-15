@@ -100,7 +100,13 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
 
   if (error) {
     return (
-      <div style={{ textAlign: 'center', padding: '40px', color: '#991b1b' }}>
+      <div
+        style={{
+          textAlign: 'center',
+          padding: '40px',
+          color: 'var(--color-danger)',
+        }}
+      >
         <p>Error: {error}</p>
       </div>
     );
@@ -147,7 +153,7 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
           display: 'flex',
           gap: '0.5rem',
           marginBottom: '2rem',
-          borderBottom: '2px solid #e5e7eb',
+          borderBottom: '2px solid var(--color-border)',
         }}
       >
         <button
@@ -156,8 +162,12 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
             padding: '0.75rem 1.5rem',
             background: 'none',
             border: 'none',
-            borderBottom: activeTab === 'costs' ? '2px solid #3b82f6' : 'none',
-            color: activeTab === 'costs' ? '#3b82f6' : '#6b7280',
+            borderBottom:
+              activeTab === 'costs' ? '2px solid var(--color-accent)' : 'none',
+            color:
+              activeTab === 'costs'
+                ? 'var(--color-text-primary)'
+                : 'var(--color-text-secondary)',
             fontWeight: activeTab === 'costs' ? 'bold' : 'normal',
             cursor: 'pointer',
             marginBottom: '-2px',
@@ -172,8 +182,12 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
             padding: '0.75rem 1.5rem',
             background: 'none',
             border: 'none',
-            borderBottom: activeTab === 'usage' ? '2px solid #3b82f6' : 'none',
-            color: activeTab === 'usage' ? '#3b82f6' : '#6b7280',
+            borderBottom:
+              activeTab === 'usage' ? '2px solid var(--color-accent)' : 'none',
+            color:
+              activeTab === 'usage'
+                ? 'var(--color-text-primary)'
+                : 'var(--color-text-secondary)',
             fontWeight: activeTab === 'usage' ? 'bold' : 'normal',
             cursor: 'pointer',
             marginBottom: '-2px',
@@ -191,16 +205,16 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
             style={{
               marginBottom: '1.5rem',
               padding: '0.75rem 1rem',
-              background: '#f9fafb',
+              background: 'var(--color-surface-alt)',
               borderRadius: '6px',
-              borderLeft: '3px solid #3b82f6',
+              borderLeft: '3px solid var(--color-accent)',
             }}
           >
             <p
               style={{
                 margin: 0,
                 fontSize: '0.875rem',
-                color: '#4b5563',
+                color: 'var(--color-text-secondary)',
               }}
             >
               📈 <strong>All-time totals</strong> — These metrics show
@@ -216,8 +230,8 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
           >
             <div
               style={{
-                background: 'white',
-                border: '2px solid #3b82f6',
+                background: 'var(--color-surface)',
+                border: '2px solid var(--color-accent)',
                 borderRadius: '8px',
                 padding: '2rem',
                 textAlign: 'center',
@@ -228,7 +242,7 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
                 style={{
                   fontSize: '2.5rem',
                   fontWeight: 'bold',
-                  color: '#3b82f6',
+                  color: 'var(--color-accent)',
                 }}
               >
                 {usageData.charactersCreated}
@@ -236,7 +250,7 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
               <div
                 style={{
                   fontSize: '1rem',
-                  color: '#6b7280',
+                  color: 'var(--color-text-secondary)',
                   marginTop: '0.5rem',
                 }}
               >
@@ -246,8 +260,8 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
 
             <div
               style={{
-                background: 'white',
-                border: '1px solid #e5e7eb',
+                background: 'var(--color-surface)',
+                border: '1px solid var(--color-border)',
                 borderRadius: '8px',
                 padding: '2rem',
                 textAlign: 'center',
@@ -258,7 +272,7 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
                 style={{
                   fontSize: '2.5rem',
                   fontWeight: 'bold',
-                  color: '#1f2937',
+                  color: 'var(--color-text-primary)',
                 }}
               >
                 {usageData.photosUploaded}
@@ -266,7 +280,7 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
               <div
                 style={{
                   fontSize: '1rem',
-                  color: '#6b7280',
+                  color: 'var(--color-text-secondary)',
                   marginTop: '0.5rem',
                 }}
               >
@@ -276,8 +290,8 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
 
             <div
               style={{
-                background: 'white',
-                border: '1px solid #e5e7eb',
+                background: 'var(--color-surface)',
+                border: '1px solid var(--color-border)',
                 borderRadius: '8px',
                 padding: '2rem',
                 textAlign: 'center',
@@ -288,7 +302,7 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
                 style={{
                   fontSize: '2.5rem',
                   fontWeight: 'bold',
-                  color: '#1f2937',
+                  color: 'var(--color-text-primary)',
                 }}
               >
                 {usageData.hallOfFameViews}
@@ -296,7 +310,7 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
               <div
                 style={{
                   fontSize: '1rem',
-                  color: '#6b7280',
+                  color: 'var(--color-text-secondary)',
                   marginTop: '0.5rem',
                 }}
               >
@@ -306,8 +320,8 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
 
             <div
               style={{
-                background: 'white',
-                border: '1px solid #e5e7eb',
+                background: 'var(--color-surface)',
+                border: '1px solid var(--color-border)',
                 borderRadius: '8px',
                 padding: '2rem',
                 textAlign: 'center',
@@ -318,7 +332,7 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
                 style={{
                   fontSize: '2.5rem',
                   fontWeight: 'bold',
-                  color: '#1f2937',
+                  color: 'var(--color-text-primary)',
                 }}
               >
                 {usageData.pdfDownloads}
@@ -326,7 +340,7 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
               <div
                 style={{
                   fontSize: '1rem',
-                  color: '#6b7280',
+                  color: 'var(--color-text-secondary)',
                   marginTop: '0.5rem',
                 }}
               >
@@ -336,8 +350,8 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
 
             <div
               style={{
-                background: 'white',
-                border: '1px solid #e5e7eb',
+                background: 'var(--color-surface)',
+                border: '1px solid var(--color-border)',
                 borderRadius: '8px',
                 padding: '2rem',
                 textAlign: 'center',
@@ -348,7 +362,7 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
                 style={{
                   fontSize: '2.5rem',
                   fontWeight: 'bold',
-                  color: '#1f2937',
+                  color: 'var(--color-text-primary)',
                 }}
               >
                 {usageData.shareButtonClicks}
@@ -356,7 +370,7 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
               <div
                 style={{
                   fontSize: '1rem',
-                  color: '#6b7280',
+                  color: 'var(--color-text-secondary)',
                   marginTop: '0.5rem',
                 }}
               >
@@ -373,8 +387,8 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
           {/* Pricing Info Banner */}
           <div
             style={{
-              background: '#eff6ff',
-              border: '1px solid #bfdbfe',
+              background: 'var(--color-surface-alt)',
+              border: '1px solid var(--color-border)',
               borderRadius: '8px',
               padding: '1rem',
               marginBottom: '2rem',
@@ -383,7 +397,7 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
             <div
               style={{
                 fontSize: '0.875rem',
-                color: '#1e40af',
+                color: 'var(--color-accent)',
                 fontWeight: '600',
                 marginBottom: '0.5rem',
               }}
@@ -393,7 +407,7 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
             <div
               style={{
                 fontSize: '0.875rem',
-                color: '#1f2937',
+                color: 'var(--color-text-primary)',
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
                 gap: '1rem',
@@ -413,13 +427,21 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
                 <br />
                 Output: $5.00/M tokens
               </div>
-              <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>
+              <div
+                style={{
+                  fontSize: '0.75rem',
+                  color: 'var(--color-text-secondary)',
+                }}
+              >
                 Verify current pricing at{' '}
                 <a
                   href="https://www.anthropic.com/pricing"
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ color: '#2563eb', textDecoration: 'underline' }}
+                  style={{
+                    color: 'var(--color-accent)',
+                    textDecoration: 'underline',
+                  }}
                 >
                   anthropic.com/pricing
                 </a>
@@ -455,9 +477,15 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
                   onClick={() => setDays(option.value)}
                   style={{
                     padding: '0.5rem 1rem',
-                    background: days === option.value ? '#3b82f6' : '#e5e7eb',
-                    color: days === option.value ? 'white' : 'black',
-                    border: 'none',
+                    background:
+                      days === option.value
+                        ? 'var(--color-accent)'
+                        : 'var(--color-surface-alt)',
+                    color:
+                      days === option.value
+                        ? 'var(--color-text-primary)'
+                        : 'var(--color-text-primary)',
+                    border: '1px solid var(--color-border)',
                     borderRadius: '4px',
                     cursor: 'pointer',
                     flex: '1 1 auto',
@@ -481,20 +509,25 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
           >
             <div
               style={{
-                background: 'white',
-                border: '2px solid #3b82f6',
+                background: 'var(--color-surface)',
+                border: '2px solid var(--color-accent)',
                 borderRadius: '8px',
                 padding: '1.5rem',
               }}
             >
-              <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+              <div
+                style={{
+                  fontSize: '0.875rem',
+                  color: 'var(--color-text-secondary)',
+                }}
+              >
                 Total Cost ({days} days)
               </div>
               <div
                 style={{
                   fontSize: '2rem',
                   fontWeight: 'bold',
-                  color: '#3b82f6',
+                  color: 'var(--color-accent)',
                 }}
               >
                 {formatCurrency(data.totals.totalCost)}
@@ -503,20 +536,25 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
 
             <div
               style={{
-                background: 'white',
-                border: '1px solid #e5e7eb',
+                background: 'var(--color-surface)',
+                border: '1px solid var(--color-border)',
                 borderRadius: '8px',
                 padding: '1.5rem',
               }}
             >
-              <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+              <div
+                style={{
+                  fontSize: '0.875rem',
+                  color: 'var(--color-text-secondary)',
+                }}
+              >
                 Daily Average
               </div>
               <div
                 style={{
                   fontSize: '2rem',
                   fontWeight: 'bold',
-                  color: '#1f2937',
+                  color: 'var(--color-text-primary)',
                 }}
               >
                 {formatCurrency(dailyAverage)}
@@ -525,20 +563,25 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
 
             <div
               style={{
-                background: 'white',
-                border: '1px solid #e5e7eb',
+                background: 'var(--color-surface)',
+                border: '1px solid var(--color-border)',
                 borderRadius: '8px',
                 padding: '1.5rem',
               }}
             >
-              <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+              <div
+                style={{
+                  fontSize: '0.875rem',
+                  color: 'var(--color-text-secondary)',
+                }}
+              >
                 Total API Calls
               </div>
               <div
                 style={{
                   fontSize: '2rem',
                   fontWeight: 'bold',
-                  color: '#1f2937',
+                  color: 'var(--color-text-primary)',
                 }}
               >
                 {formatNumber(data.totals.totalCalls)}
@@ -547,25 +590,35 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
 
             <div
               style={{
-                background: 'white',
-                border: '1px solid #e5e7eb',
+                background: 'var(--color-surface)',
+                border: '1px solid var(--color-border)',
                 borderRadius: '8px',
                 padding: '1.5rem',
               }}
             >
-              <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+              <div
+                style={{
+                  fontSize: '0.875rem',
+                  color: 'var(--color-text-secondary)',
+                }}
+              >
                 Most Expensive Day
               </div>
               <div
                 style={{
                   fontSize: '1.25rem',
                   fontWeight: 'bold',
-                  color: '#1f2937',
+                  color: 'var(--color-text-primary)',
                 }}
               >
                 {formatCurrency(mostExpensiveDay.totalCost)}
               </div>
-              <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>
+              <div
+                style={{
+                  fontSize: '0.75rem',
+                  color: 'var(--color-text-secondary)',
+                }}
+              >
                 {mostExpensiveDay.date}
               </div>
             </div>
@@ -574,8 +627,8 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
           {/* Token Usage */}
           <div
             style={{
-              background: 'white',
-              border: '1px solid #e5e7eb',
+              background: 'var(--color-surface)',
+              border: '1px solid var(--color-border)',
               borderRadius: '8px',
               padding: '1.5rem',
               marginBottom: '2rem',
@@ -598,28 +651,38 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
               }}
             >
               <div>
-                <div style={{ color: '#6b7280', fontSize: '0.875rem' }}>
+                <div
+                  style={{
+                    color: 'var(--color-text-secondary)',
+                    fontSize: '0.875rem',
+                  }}
+                >
                   Input Tokens
                 </div>
                 <div
                   style={{
                     fontSize: '1.5rem',
                     fontWeight: 'bold',
-                    color: '#1f2937',
+                    color: 'var(--color-text-primary)',
                   }}
                 >
                   {formatNumber(data.totals.totalInputTokens)}
                 </div>
               </div>
               <div>
-                <div style={{ color: '#6b7280', fontSize: '0.875rem' }}>
+                <div
+                  style={{
+                    color: 'var(--color-text-secondary)',
+                    fontSize: '0.875rem',
+                  }}
+                >
                   Output Tokens
                 </div>
                 <div
                   style={{
                     fontSize: '1.5rem',
                     fontWeight: 'bold',
-                    color: '#1f2937',
+                    color: 'var(--color-text-primary)',
                   }}
                 >
                   {formatNumber(data.totals.totalOutputTokens)}
@@ -631,8 +694,8 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
           {/* Daily Breakdown */}
           <div
             style={{
-              background: 'white',
-              border: '1px solid #e5e7eb',
+              background: 'var(--color-surface)',
+              border: '1px solid var(--color-border)',
               borderRadius: '8px',
               padding: 'clamp(0.75rem, 3vw, 1.5rem)',
             }}
@@ -651,7 +714,7 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
             >
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
-                  <tr style={{ borderBottom: '2px solid #e5e7eb' }}>
+                  <tr style={{ borderBottom: '2px solid var(--color-border)' }}>
                     <th style={{ padding: '0.75rem', textAlign: 'left' }}>
                       Date
                     </th>
@@ -676,16 +739,23 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
                     .map((day) => (
                       <tr
                         key={day.date}
-                        style={{ borderBottom: '1px solid #f3f4f6' }}
+                        style={{
+                          borderBottom: '1px solid var(--color-border)',
+                        }}
                       >
-                        <td style={{ padding: '0.75rem', color: '#1f2937' }}>
+                        <td
+                          style={{
+                            padding: '0.75rem',
+                            color: 'var(--color-text-primary)',
+                          }}
+                        >
                           {day.date}
                         </td>
                         <td
                           style={{
                             padding: '0.75rem',
                             textAlign: 'right',
-                            color: '#1f2937',
+                            color: 'var(--color-text-primary)',
                           }}
                         >
                           {day.totalCalls}
@@ -694,7 +764,7 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
                           style={{
                             padding: '0.75rem',
                             textAlign: 'right',
-                            color: '#1f2937',
+                            color: 'var(--color-text-primary)',
                           }}
                         >
                           {formatNumber(day.totalInputTokens)}
@@ -703,7 +773,7 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
                           style={{
                             padding: '0.75rem',
                             textAlign: 'right',
-                            color: '#1f2937',
+                            color: 'var(--color-text-primary)',
                           }}
                         >
                           {formatNumber(day.totalOutputTokens)}
@@ -713,7 +783,7 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
                             padding: '0.75rem',
                             textAlign: 'right',
                             fontWeight: 'bold',
-                            color: '#1f2937',
+                            color: 'var(--color-text-primary)',
                           }}
                         >
                           {formatCurrency(day.totalCost)}

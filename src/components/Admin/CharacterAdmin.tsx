@@ -9,35 +9,91 @@ interface CharacterInfo {
   isInHallOfFame: boolean;
 }
 
+interface SearchResult {
+  id: string;
+  petName: string;
+  archetype: string;
+}
+
 interface CharacterAdminProps {
   adminToken: string;
 }
 
 export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
-  const [characterId, setCharacterId] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [character, setCharacter] = useState<CharacterInfo | null>(null);
   const [loading, setLoading] = useState(false);
+  const [searching, setSearching] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [newPhoto, setNewPhoto] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const fetchCharacter = async () => {
-    if (!characterId.trim()) {
-      setError('Please enter a character ID');
+  const searchCharacters = async () => {
+    if (!searchQuery.trim()) {
+      setError('Please enter a search term');
       return;
     }
 
+    setSearching(true);
+    setError(null);
+    setSearchResults([]);
+
+    // Check if it looks like an ID (6 character lowercase alphanumeric, no uppercase letters)
+    // IDs are always lowercase, so "Stella" won't match but "qaqbm2" will
+    const trimmed = searchQuery.trim();
+    if (/^[a-z0-9]{6}$/.test(trimmed) && trimmed === trimmed.toLowerCase()) {
+      // Direct ID lookup
+      await fetchCharacter(trimmed);
+      setSearching(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `/api/search-characters?q=${encodeURIComponent(searchQuery)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${adminToken}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          setError('No characters found');
+        } else {
+          setError('Search failed');
+        }
+        setSearching(false);
+        return;
+      }
+
+      const data = await response.json();
+      if (data.results && data.results.length > 0) {
+        setSearchResults(data.results);
+      } else {
+        setError('No characters found matching that name');
+      }
+    } catch {
+      setError('Search failed');
+    } finally {
+      setSearching(false);
+    }
+  };
+
+  const fetchCharacter = async (id: string) => {
     setLoading(true);
     setError(null);
     setSuccess(null);
     setCharacter(null);
     setNewPhoto(null);
+    setSearchResults([]);
 
     try {
-      // Fetch character data
-      const charResponse = await fetch(`/api/character/${characterId}`);
+      const charResponse = await fetch(`/api/character/${id}`);
       if (!charResponse.ok) {
         if (charResponse.status === 404) {
           setError('Character not found');
@@ -50,14 +106,12 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
 
       const charData = await charResponse.json();
 
-      // Check if in Hall of Fame
       const hofResponse = await fetch('/api/hall-of-fame');
       const hofData = await hofResponse.json();
-      const isInHallOfFame =
-        hofData.characterIds?.includes(characterId) || false;
+      const isInHallOfFame = hofData.characterIds?.includes(id) || false;
 
       setCharacter({
-        id: characterId,
+        id,
         petName: charData.petName,
         archetype: charData.characterData?.archetype || 'Unknown',
         petPhoto: charData.petPhoto || null,
@@ -83,7 +137,6 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
             return;
           }
 
-          // Calculate new dimensions (max 800x800, maintain aspect ratio)
           const maxSize = 800;
           let { width, height } = img;
 
@@ -99,8 +152,6 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
 
           canvas.width = width;
           canvas.height = height;
-
-          // Draw and compress to JPEG at 85% quality
           ctx.drawImage(img, 0, 0, width, height);
           const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
           resolve(compressedDataUrl);
@@ -156,7 +207,7 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
       }
 
       const result = await response.json();
-      setSuccess(`Photo updated! URL: ${result.photoUrl}`);
+      setSuccess(`Photo updated!`);
       setCharacter({ ...character, petPhoto: result.photoUrl });
       setNewPhoto(null);
     } catch {
@@ -213,6 +264,7 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
           fontSize: '1.5rem',
           fontWeight: 'bold',
           marginBottom: '1.5rem',
+          color: 'var(--color-text-on-gradient)',
         }}
       >
         Character Admin
@@ -221,9 +273,9 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
       {/* Search */}
       <div
         style={{
-          background: 'white',
-          border: '1px solid #e5e7eb',
-          borderRadius: '8px',
+          background: 'var(--color-surface)',
+          border: '1px solid var(--color-border)',
+          borderRadius: '12px',
           padding: '1.5rem',
           marginBottom: '1.5rem',
         }}
@@ -233,39 +285,120 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
             display: 'block',
             marginBottom: '0.5rem',
             fontWeight: '600',
+            color: 'var(--color-text-primary)',
           }}
         >
-          Character ID
+          Search by ID or Name
         </label>
-        <div style={{ display: 'flex', gap: '1rem' }}>
+        <div
+          style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}
+        >
           <input
             type="text"
-            value={characterId}
-            onChange={(e) => setCharacterId(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && fetchCharacter()}
-            placeholder="e.g., us0suh"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && searchCharacters()}
+            placeholder="e.g., us0suh or Whiskers"
             style={{
-              flex: 1,
+              width: '100%',
               padding: '0.75rem',
-              border: '1px solid #d1d5db',
-              borderRadius: '4px',
+              border: '1px solid var(--color-border)',
+              borderRadius: '8px',
+              background: 'var(--color-surface-alt)',
+              color: 'var(--color-text-primary)',
+              boxSizing: 'border-box',
             }}
           />
-          <Button onClick={fetchCharacter} disabled={loading}>
-            {loading ? 'Loading...' : 'Lookup'}
+          <Button onClick={searchCharacters} disabled={loading || searching}>
+            {loading || searching ? 'Searching...' : 'Search'}
           </Button>
         </div>
       </div>
+
+      {/* Search Results */}
+      {searchResults.length > 0 && (
+        <div
+          style={{
+            background: 'var(--color-surface)',
+            border: '1px solid var(--color-border)',
+            borderRadius: '12px',
+            padding: '1rem',
+            marginBottom: '1.5rem',
+          }}
+        >
+          <div
+            style={{
+              fontSize: '0.875rem',
+              color: 'var(--color-text-secondary)',
+              marginBottom: '0.75rem',
+            }}
+          >
+            Found {searchResults.length} character
+            {searchResults.length !== 1 ? 's' : ''}:
+          </div>
+          <div
+            style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}
+          >
+            {searchResults.map((result) => (
+              <button
+                key={result.id}
+                onClick={() => fetchCharacter(result.id)}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '0.75rem 1rem',
+                  background: 'var(--color-surface-alt)',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  textAlign: 'left',
+                }}
+              >
+                <div>
+                  <div
+                    style={{
+                      fontWeight: '600',
+                      color: 'var(--color-text-primary)',
+                    }}
+                  >
+                    {result.petName}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: '0.875rem',
+                      color: 'var(--color-text-secondary)',
+                    }}
+                  >
+                    {result.archetype}
+                  </div>
+                </div>
+                <div
+                  style={{
+                    fontSize: '0.75rem',
+                    color: 'var(--color-text-muted)',
+                    fontFamily: 'monospace',
+                  }}
+                >
+                  {result.id}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Error/Success Messages */}
       {error && (
         <div
           style={{
             padding: '0.75rem',
-            background: '#fee2e2',
-            color: '#991b1b',
-            borderRadius: '4px',
+            background: 'rgba(239, 68, 68, 0.2)',
+            color: '#f87171',
+            borderRadius: '8px',
             marginBottom: '1rem',
+            border: '1px solid rgba(239, 68, 68, 0.3)',
           }}
         >
           {error}
@@ -275,10 +408,11 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
         <div
           style={{
             padding: '0.75rem',
-            background: '#d1fae5',
-            color: '#065f46',
-            borderRadius: '4px',
+            background: 'rgba(34, 197, 94, 0.2)',
+            color: '#4ade80',
+            borderRadius: '8px',
             marginBottom: '1rem',
+            border: '1px solid rgba(34, 197, 94, 0.3)',
           }}
         >
           {success}
@@ -289,9 +423,9 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
       {character && (
         <div
           style={{
-            background: 'white',
-            border: '1px solid #e5e7eb',
-            borderRadius: '8px',
+            background: 'var(--color-surface)',
+            border: '1px solid var(--color-border)',
+            borderRadius: '12px',
             padding: '1.5rem',
           }}
         >
@@ -310,12 +444,12 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
                   height: '200px',
                   borderRadius: '50%',
                   overflow: 'hidden',
-                  background: '#f3f4f6',
+                  background: 'var(--color-surface-alt)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginBottom: '1rem',
-                  border: '3px solid #e5e7eb',
+                  border: '3px solid var(--color-border)',
                 }}
               >
                 {newPhoto ? (
@@ -339,7 +473,7 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
                     }}
                   />
                 ) : (
-                  <span style={{ fontSize: '4rem' }}>🐱</span>
+                  <span style={{ fontSize: '4rem' }}>🐈‍⬛</span>
                 )}
               </div>
 
@@ -380,18 +514,25 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
                   fontSize: '1.5rem',
                   fontWeight: 'bold',
                   marginBottom: '0.5rem',
+                  color: 'var(--color-text-primary)',
                 }}
               >
                 {character.petName}
               </h3>
-              <p style={{ color: '#6b7280', marginBottom: '1rem' }}>
+              <p
+                style={{
+                  color: 'var(--color-text-secondary)',
+                  marginBottom: '1rem',
+                }}
+              >
                 {character.archetype}
               </p>
               <p
                 style={{
-                  color: '#9ca3af',
+                  color: 'var(--color-text-muted)',
                   fontSize: '0.875rem',
                   marginBottom: '1.5rem',
+                  fontFamily: 'monospace',
                 }}
               >
                 ID: {character.id}
@@ -401,16 +542,33 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
               <div
                 style={{
                   padding: '1rem',
-                  background: character.isInHallOfFame ? '#fef3c7' : '#f3f4f6',
+                  background: character.isInHallOfFame
+                    ? 'rgba(234, 179, 8, 0.2)'
+                    : 'var(--color-surface-alt)',
                   borderRadius: '8px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
+                  border: character.isInHallOfFame
+                    ? '1px solid rgba(234, 179, 8, 0.3)'
+                    : '1px solid var(--color-border)',
                 }}
               >
                 <div>
-                  <div style={{ fontWeight: '600' }}>Hall of Fame</div>
-                  <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                  <div
+                    style={{
+                      fontWeight: '600',
+                      color: 'var(--color-text-primary)',
+                    }}
+                  >
+                    Hall of Fame
+                  </div>
+                  <div
+                    style={{
+                      fontSize: '0.875rem',
+                      color: 'var(--color-text-secondary)',
+                    }}
+                  >
                     {character.isInHallOfFame
                       ? '⭐ Currently featured'
                       : 'Not featured'}
