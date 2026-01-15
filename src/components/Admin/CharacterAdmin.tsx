@@ -522,7 +522,7 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
               <p
                 style={{
                   color: 'var(--color-text-secondary)',
-                  marginBottom: '1rem',
+                  marginBottom: '0.5rem',
                 }}
               >
                 {character.archetype}
@@ -531,12 +531,26 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
                 style={{
                   color: 'var(--color-text-muted)',
                   fontSize: '0.875rem',
-                  marginBottom: '1.5rem',
+                  marginBottom: '0.5rem',
                   fontFamily: 'monospace',
                 }}
               >
                 ID: {character.id}
               </p>
+              <a
+                href={`/legend/${character.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'inline-block',
+                  fontSize: '0.875rem',
+                  color: 'var(--color-accent)',
+                  marginBottom: '1.5rem',
+                  textDecoration: 'underline',
+                }}
+              >
+                View character page →
+              </a>
 
               {/* Hall of Fame Toggle */}
               <div

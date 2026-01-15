@@ -147,6 +147,17 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
         padding: 'clamp(1rem, 5vw, 2.5rem) clamp(1rem, 3vw, 1.25rem)',
       }}
     >
+      <h1
+        style={{
+          fontSize: 'clamp(1.5rem, 4vw, 2rem)',
+          fontWeight: 'bold',
+          marginBottom: '1.5rem',
+          color: 'var(--color-text-primary)',
+        }}
+      >
+        🐈‍⬛ CatStats Stats
+      </h1>
+
       {/* Tab Switcher */}
       <div
         style={{
