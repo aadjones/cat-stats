@@ -84,7 +84,7 @@ export class CharacterWorkflowService {
         return {
           success: false,
           error:
-            'Character not found. It may have been removed or the link is invalid.',
+            'This legend has faded into the mists of time. The character may have been removed, or the link has lost its way.',
         };
       }
 
@@ -96,7 +96,8 @@ export class CharacterWorkflowService {
       console.error('Error loading shared character:', error);
       return {
         success: false,
-        error: 'Sorry, there was an error loading the shared character.',
+        error:
+          'The ancient scrolls could not be read. Please try summoning this legend again.',
       };
     }
   }
