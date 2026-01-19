@@ -4,8 +4,9 @@ Scripts for backing up, restoring, and maintaining the pet character database.
 
 ## Table of Contents
 
-- [Backup & Restore](#backup--restore)
 - [Database Heartbeat](#database-heartbeat)
+- [Backup & Restore](#backup--restore)
+- [Manual Character Deletion](#manual-character-deletion)
 - [Prerequisites](#prerequisites)
 
 ---
@@ -182,6 +183,42 @@ node tools/backup-database.js backups/production-export.json
 vercel env pull .env.development
 node tools/restore-database.js backups/production-export.json
 ```
+
+## Manual Character Deletion
+
+For rare cases where you need to delete a character (test data, inappropriate content), use the Vercel KV CLI directly. There's no admin UI for deletion to prevent accidents.
+
+### Steps
+
+```bash
+# 1. Pull credentials if needed
+vercel env pull .env.local
+
+# 2. Delete the character record
+npx vercel kv del character:{id}
+# Example: npx vercel kv del character:abc123
+
+# 3. Invalidate search cache (forces rebuild on next search)
+npx vercel kv del characters:index
+
+# 4. (Optional) Remove from Hall of Fame if featured
+# Check first: npx vercel kv get config:hall-of-fame
+# If the character ID is in the list, update via admin panel or manually
+```
+
+### What About Other Data?
+
+| Data                | Cleanup needed? | Notes                                              |
+| ------------------- | --------------- | -------------------------------------------------- |
+| `character:{id}`    | **Yes**         | The main record                                    |
+| `characters:index`  | **Yes**         | Search cache - delete to force rebuild             |
+| Hall of Fame        | Maybe           | App gracefully ignores 404s, but cleaner to remove |
+| Blob photo          | Optional        | Orphaned photos are cheap storage, harmless        |
+| Showdown reports    | No              | Self-contained, store full data not IDs            |
+| Analytics           | No              | Tracks events, not current count                   |
+| `/legend/{id}` page | No              | Already shows friendly 404 message                 |
+
+---
 
 ## Safety Notes
 
