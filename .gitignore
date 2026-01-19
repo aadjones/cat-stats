@@ -33,3 +33,7 @@ coverage
 
 # Database backups (may contain user data)
 backups/
+
+# Claude Code
+.claude/settings.local.json
+.playwright-mcp/
