@@ -286,7 +286,7 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
                 }}
               >
                 (
-                {usageData.pageVisits >= 10
+                {usageData.pageVisits > 0
                   ? `${Math.round((usageData.questionnaireEngaged / usageData.pageVisits) * 100)}%`
                   : '--'}
                 )
@@ -311,8 +311,8 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
                 }}
               >
                 (
-                {usageData.questionnaireEngaged >= 10
-                  ? `${Math.round((usageData.funnelCompleted / usageData.questionnaireEngaged) * 100)}%`
+                {usageData.pageVisits > 0
+                  ? `${Math.round((usageData.funnelCompleted / usageData.pageVisits) * 100)}%`
                   : '--'}
                 )
               </span>
@@ -325,8 +325,7 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
                 textAlign: 'center',
               }}
             >
-              Percentages shown after 10+ visits • Engagement = started filling
-              out form
+              Engagement = started filling out form
             </p>
           </div>
           <div
