@@ -31,6 +31,14 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Browse mode state
+  const [mode, setMode] = useState<'search' | 'browse'>('search');
+  const [browseResults, setBrowseResults] = useState<SearchResult[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCharacters, setTotalCharacters] = useState(0);
+  const [browsing, setBrowsing] = useState(false);
+
   const searchCharacters = async () => {
     if (!searchQuery.trim()) {
       setError('Please enter a search term');
@@ -84,13 +92,62 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
     }
   };
 
+  const fetchAllCharacters = async (page: number = 1) => {
+    setBrowsing(true);
+    setError(null);
+    setCharacter(null);
+
+    try {
+      const response = await fetch(
+        `/api/search-characters?page=${page}&limit=20`,
+        {
+          headers: {
+            Authorization: `Bearer ${adminToken}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        setError('Failed to load characters');
+        setBrowsing(false);
+        return;
+      }
+
+      const data = await response.json();
+      setBrowseResults(data.results || []);
+      setCurrentPage(data.page || 1);
+      setTotalPages(data.totalPages || 1);
+      setTotalCharacters(data.total || 0);
+    } catch {
+      setError('Failed to load characters');
+    } finally {
+      setBrowsing(false);
+    }
+  };
+
+  const enterBrowseMode = () => {
+    setMode('browse');
+    setSearchResults([]);
+    setSearchQuery('');
+    fetchAllCharacters(1);
+  };
+
+  const exitBrowseMode = () => {
+    setMode('search');
+    setBrowseResults([]);
+    setCurrentPage(1);
+  };
+
   const fetchCharacter = async (id: string) => {
     setLoading(true);
     setError(null);
     setSuccess(null);
     setCharacter(null);
     setNewPhoto(null);
-    setSearchResults([]);
+    // Only clear search results in search mode, preserve browse state
+    if (mode === 'search') {
+      setSearchResults([]);
+    }
 
     try {
       const charResponse = await fetch(`/api/character/${id}`);
@@ -258,7 +315,7 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
   };
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem' }}>
+    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '1rem' }}>
       <h2
         style={{
           fontSize: '1.5rem',
@@ -270,53 +327,263 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
         Character Admin
       </h2>
 
-      {/* Search */}
-      <div
-        style={{
-          background: 'var(--color-surface)',
-          border: '1px solid var(--color-border)',
-          borderRadius: '12px',
-          padding: '1.5rem',
-          marginBottom: '1.5rem',
-        }}
-      >
-        <label
+      {/* Search - only shown in search mode */}
+      {mode === 'search' && (
+        <div
           style={{
-            display: 'block',
-            marginBottom: '0.5rem',
-            fontWeight: '600',
-            color: 'var(--color-text-primary)',
+            background: 'var(--color-surface)',
+            border: '1px solid var(--color-border)',
+            borderRadius: '12px',
+            padding: '1.5rem',
+            marginBottom: '1.5rem',
           }}
         >
-          Search by ID or Name
-        </label>
-        <div
-          style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}
-        >
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && searchCharacters()}
-            placeholder="e.g., us0suh or Whiskers"
+          <label
             style={{
-              width: '100%',
-              padding: '0.75rem',
-              border: '1px solid var(--color-border)',
-              borderRadius: '8px',
-              background: 'var(--color-surface-alt)',
+              display: 'block',
+              marginBottom: '0.5rem',
+              fontWeight: '600',
               color: 'var(--color-text-primary)',
-              boxSizing: 'border-box',
             }}
-          />
-          <Button onClick={searchCharacters} disabled={loading || searching}>
-            {loading || searching ? 'Searching...' : 'Search'}
-          </Button>
+          >
+            Search by ID or Name
+          </label>
+          <div
+            style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}
+          >
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && searchCharacters()}
+              placeholder="e.g., us0suh or Whiskers"
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid var(--color-border)',
+                borderRadius: '8px',
+                background: 'var(--color-surface-alt)',
+                color: 'var(--color-text-primary)',
+                boxSizing: 'border-box',
+              }}
+            />
+            <Button onClick={searchCharacters} disabled={loading || searching}>
+              {loading || searching ? 'Searching...' : 'Search'}
+            </Button>
+          </div>
+
+          {/* Browse All Button */}
+          <div
+            style={{
+              marginTop: '1rem',
+              paddingTop: '1rem',
+              borderTop: '1px solid var(--color-border)',
+              textAlign: 'center',
+            }}
+          >
+            <button
+              onClick={enterBrowseMode}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'var(--color-accent)',
+                cursor: 'pointer',
+                fontSize: '0.875rem',
+                textDecoration: 'underline',
+              }}
+            >
+              Or browse all characters
+            </button>
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Browse Mode - hide list when character is selected or loading */}
+      {mode === 'browse' && !character && !loading && (
+        <div
+          style={{
+            background: 'var(--color-surface)',
+            border: '1px solid var(--color-border)',
+            borderRadius: '12px',
+            padding: '1.5rem',
+            marginBottom: '1.5rem',
+          }}
+        >
+          {/* Header with back button */}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '1rem',
+            }}
+          >
+            <button
+              onClick={exitBrowseMode}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'var(--color-accent)',
+                cursor: 'pointer',
+                fontSize: '0.875rem',
+              }}
+            >
+              &larr; Back to Search
+            </button>
+            <span
+              style={{
+                fontSize: '0.875rem',
+                color: 'var(--color-text-secondary)',
+              }}
+            >
+              {totalCharacters} characters total
+            </span>
+          </div>
+
+          {/* Loading state */}
+          {browsing && (
+            <div
+              style={{
+                textAlign: 'center',
+                padding: '2rem',
+                color: 'var(--color-text-secondary)',
+              }}
+            >
+              Loading characters...
+            </div>
+          )}
+
+          {/* Character list */}
+          {!browsing && browseResults.length > 0 && (
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.5rem',
+                marginBottom: '1rem',
+              }}
+            >
+              {browseResults.map((result) => (
+                <button
+                  key={result.id}
+                  onClick={() => fetchCharacter(result.id)}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '0.75rem 1rem',
+                    background: 'var(--color-surface-alt)',
+                    border: '1px solid var(--color-border)',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    textAlign: 'left',
+                  }}
+                >
+                  <div>
+                    <div
+                      style={{
+                        fontWeight: '600',
+                        color: 'var(--color-text-primary)',
+                      }}
+                    >
+                      {result.petName}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: '0.875rem',
+                        color: 'var(--color-text-secondary)',
+                      }}
+                    >
+                      {result.archetype}
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      fontSize: '0.75rem',
+                      color: 'var(--color-text-muted)',
+                      fontFamily: 'monospace',
+                    }}
+                  >
+                    {result.id}
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Empty state */}
+          {!browsing && browseResults.length === 0 && (
+            <div
+              style={{
+                textAlign: 'center',
+                padding: '2rem',
+                color: 'var(--color-text-secondary)',
+              }}
+            >
+              No characters found
+            </div>
+          )}
+
+          {/* Pagination controls */}
+          {!browsing && browseResults.length > 0 && (
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                paddingTop: '1rem',
+                borderTop: '1px solid var(--color-border)',
+              }}
+            >
+              <Button
+                onClick={() => fetchAllCharacters(currentPage - 1)}
+                disabled={currentPage === 1}
+                variant="secondary"
+              >
+                Previous
+              </Button>
+              <span
+                style={{
+                  fontSize: '0.875rem',
+                  color: 'var(--color-text-secondary)',
+                }}
+              >
+                Page {currentPage} of {totalPages}
+              </span>
+              <Button
+                onClick={() => fetchAllCharacters(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                variant="secondary"
+              >
+                Next
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Loading overlay when fetching character in browse mode */}
+      {mode === 'browse' && loading && !character && (
+        <div
+          style={{
+            background: 'var(--color-surface)',
+            border: '1px solid var(--color-border)',
+            borderRadius: '12px',
+            padding: '2rem',
+            marginBottom: '1.5rem',
+            textAlign: 'center',
+          }}
+        >
+          <div className="animate-spin w-8 h-8 border-2 border-text-primary border-t-transparent rounded-full mx-auto mb-4" />
+          <p style={{ color: 'var(--color-text-secondary)', margin: 0 }}>
+            Loading character...
+          </p>
+        </div>
+      )}
 
       {/* Search Results */}
-      {searchResults.length > 0 && (
+      {mode === 'search' && searchResults.length > 0 && (
         <div
           style={{
             background: 'var(--color-surface)',
@@ -429,19 +696,42 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
             padding: '1.5rem',
           }}
         >
+          {/* Back to list button when in browse mode */}
+          {mode === 'browse' && !loading && (
+            <button
+              onClick={() => setCharacter(null)}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'var(--color-accent)',
+                cursor: 'pointer',
+                fontSize: '0.875rem',
+                marginBottom: '1rem',
+                padding: 0,
+              }}
+            >
+              &larr; Back to Character List
+            </button>
+          )}
           <div
             style={{
-              display: 'grid',
-              gridTemplateColumns: '200px 1fr',
-              gap: '2rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1.5rem',
             }}
           >
             {/* Photo Section */}
-            <div>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
               <div
                 style={{
-                  width: '200px',
-                  height: '200px',
+                  width: '150px',
+                  height: '150px',
                   borderRadius: '50%',
                   overflow: 'hidden',
                   background: 'var(--color-surface-alt)',
@@ -508,12 +798,12 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
             </div>
 
             {/* Info Section */}
-            <div>
+            <div style={{ textAlign: 'center' }}>
               <h3
                 style={{
-                  fontSize: '1.5rem',
+                  fontSize: '1.25rem',
                   fontWeight: 'bold',
-                  marginBottom: '0.5rem',
+                  marginBottom: '0.25rem',
                   color: 'var(--color-text-primary)',
                 }}
               >
@@ -522,7 +812,7 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
               <p
                 style={{
                   color: 'var(--color-text-secondary)',
-                  marginBottom: '0.5rem',
+                  marginBottom: '0.25rem',
                 }}
               >
                 {character.archetype}
@@ -545,7 +835,7 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
                   display: 'inline-block',
                   fontSize: '0.875rem',
                   color: 'var(--color-accent)',
-                  marginBottom: '1.5rem',
+                  marginBottom: '1rem',
                   textDecoration: 'underline',
                 }}
               >
@@ -561,14 +851,15 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
                     : 'var(--color-surface-alt)',
                   borderRadius: '8px',
                   display: 'flex',
+                  flexDirection: 'column',
                   alignItems: 'center',
-                  justifyContent: 'space-between',
+                  gap: '0.75rem',
                   border: character.isInHallOfFame
                     ? '1px solid rgba(234, 179, 8, 0.3)'
                     : '1px solid var(--color-border)',
                 }}
               >
-                <div>
+                <div style={{ textAlign: 'center' }}>
                   <div
                     style={{
                       fontWeight: '600',

@@ -13,15 +13,7 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  const { q } = req.query;
-
-  if (!q || typeof q !== 'string' || q.trim().length < 2) {
-    return res
-      .status(400)
-      .json({ error: 'Search query must be at least 2 characters' });
-  }
-
-  const searchTerm = q.trim().toLowerCase();
+  const { q, page: pageParam, limit: limitParam } = req.query;
 
   try {
     // Strategy: Get the character index (ONE fetch), then filter in memory
@@ -32,6 +24,36 @@ export default async function handler(req, res) {
     if (!index) {
       index = await rebuildIndex();
     }
+
+    // If no query provided, return paginated full list (browse mode)
+    if (!q || q.trim() === '') {
+      const page = Math.max(1, parseInt(pageParam) || 1);
+      const limit = Math.min(100, Math.max(1, parseInt(limitParam) || 20));
+      const start = (page - 1) * limit;
+
+      const sorted = [...index].sort((a, b) =>
+        a.petName.localeCompare(b.petName)
+      );
+      const results = sorted.slice(start, start + limit);
+      const totalPages = Math.ceil(index.length / limit);
+
+      return res.status(200).json({
+        results,
+        count: results.length,
+        total: index.length,
+        page,
+        totalPages,
+      });
+    }
+
+    // Search mode: require at least 2 characters
+    if (q.trim().length < 2) {
+      return res
+        .status(400)
+        .json({ error: 'Search query must be at least 2 characters' });
+    }
+
+    const searchTerm = q.trim().toLowerCase();
 
     // Filter in memory - this is instant for ~100 items
     const results = index
