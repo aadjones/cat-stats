@@ -54,6 +54,7 @@ export default async function handler(req, res) {
 
     // Track analytics
     await trackEvent('characters_created');
+    await trackEvent('funnel_completed'); // For conversion funnel (started Jan 2026)
     if (hasPhoto) {
       await trackEvent('photos_uploaded');
     }

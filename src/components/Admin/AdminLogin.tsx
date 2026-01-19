@@ -86,6 +86,7 @@ export function AdminLogin({ onLogin, onBack }: AdminLoginProps) {
             onChange={(e) => setToken(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
             placeholder="Enter admin token"
+            autoFocus
             style={{
               width: '100%',
               padding: '0.75rem',

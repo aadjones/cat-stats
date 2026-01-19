@@ -44,6 +44,18 @@ export function PetPersonalityAnalyzer() {
   const [showdownId, setShowdownId] = useState<string | null>(null);
   const [adminSection, setAdminSection] = useState<AdminSection>('analytics');
 
+  // Track page visit (once per session)
+  useEffect(() => {
+    const key = 'tracked_page_visits';
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, 'true');
+    fetch('/api/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event: 'page_visits' }),
+    }).catch((err) => console.error('Failed to track page visit:', err));
+  }, []);
+
   // Check for shared character or showdown URL on mount
   useEffect(() => {
     const checkForSharedContent = async () => {

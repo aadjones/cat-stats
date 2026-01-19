@@ -33,6 +33,9 @@ interface UsageAnalytics {
   hallOfFameViews: number;
   pdfDownloads: number;
   shareButtonClicks: number;
+  pageVisits: number;
+  questionnaireEngaged: number;
+  funnelCompleted: number;
 }
 
 type Tab = 'costs' | 'usage';
@@ -212,24 +215,118 @@ export function AnalyticsPage({ adminToken }: AnalyticsPageProps) {
       {/* Usage Tab Content */}
       {activeTab === 'usage' && usageData && (
         <>
+          {/* Conversion Funnel */}
           <div
             style={{
-              marginBottom: '1.5rem',
-              padding: '0.75rem 1rem',
-              background: 'var(--color-surface-alt)',
-              borderRadius: '6px',
-              borderLeft: '3px solid var(--color-accent)',
+              marginBottom: '2rem',
+              padding: '1.5rem',
+              background: 'var(--color-surface)',
+              border: '2px solid var(--color-accent)',
+              borderRadius: '8px',
             }}
           >
-            <p
+            <h2
               style={{
-                margin: 0,
-                fontSize: '0.875rem',
-                color: 'var(--color-text-secondary)',
+                fontSize: '1.25rem',
+                fontWeight: 'bold',
+                marginBottom: '1rem',
+                color: 'var(--color-text-primary)',
               }}
             >
-              📈 <strong>All-time totals</strong> — These metrics show
-              cumulative counts since launch
+              📊 Conversion Funnel
+              <span
+                style={{
+                  fontSize: '0.75rem',
+                  fontWeight: 'normal',
+                  color: 'var(--color-text-muted)',
+                  marginLeft: '0.5rem',
+                }}
+              >
+                (since Jan 2026)
+              </span>
+            </h2>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                flexWrap: 'wrap',
+                fontSize: '1.1rem',
+              }}
+            >
+              <span
+                style={{
+                  fontWeight: 'bold',
+                  color: 'var(--color-text-primary)',
+                }}
+              >
+                {usageData.pageVisits}
+              </span>
+              <span style={{ color: 'var(--color-text-secondary)' }}>
+                visits
+              </span>
+              <span style={{ color: 'var(--color-text-muted)' }}>→</span>
+              <span
+                style={{
+                  fontWeight: 'bold',
+                  color: 'var(--color-text-primary)',
+                }}
+              >
+                {usageData.questionnaireEngaged}
+              </span>
+              <span style={{ color: 'var(--color-text-secondary)' }}>
+                engaged
+              </span>
+              <span
+                style={{
+                  fontSize: '0.875rem',
+                  color: 'var(--color-accent)',
+                  fontWeight: '600',
+                }}
+              >
+                (
+                {usageData.pageVisits >= 10
+                  ? `${Math.round((usageData.questionnaireEngaged / usageData.pageVisits) * 100)}%`
+                  : '--'}
+                )
+              </span>
+              <span style={{ color: 'var(--color-text-muted)' }}>→</span>
+              <span
+                style={{
+                  fontWeight: 'bold',
+                  color: 'var(--color-text-primary)',
+                }}
+              >
+                {usageData.funnelCompleted}
+              </span>
+              <span style={{ color: 'var(--color-text-secondary)' }}>
+                created
+              </span>
+              <span
+                style={{
+                  fontSize: '0.875rem',
+                  color: 'var(--color-accent)',
+                  fontWeight: '600',
+                }}
+              >
+                (
+                {usageData.questionnaireEngaged >= 10
+                  ? `${Math.round((usageData.funnelCompleted / usageData.questionnaireEngaged) * 100)}%`
+                  : '--'}
+                )
+              </span>
+            </div>
+            <p
+              style={{
+                margin: '1rem 0 0 0',
+                fontSize: '0.75rem',
+                color: 'var(--color-text-muted)',
+                textAlign: 'center',
+              }}
+            >
+              Percentages shown after 10+ visits • Engagement = started filling
+              out form
             </p>
           </div>
           <div

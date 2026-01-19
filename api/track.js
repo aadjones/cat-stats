@@ -4,6 +4,9 @@ const VALID_EVENTS = [
   'hall_of_fame_views',
   'pdf_downloads',
   'share_button_clicks',
+  'page_visits',
+  'questionnaire_engaged',
+  'funnel_completed',
 ];
 
 export default async function handler(req, res) {

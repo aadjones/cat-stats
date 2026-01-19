@@ -35,12 +35,18 @@ export async function getAnalytics() {
       hallOfFameViews,
       pdfDownloads,
       shareButtonClicks,
+      pageVisits,
+      questionnaireEngaged,
+      funnelCompleted,
     ] = await Promise.all([
       kv.get('analytics:total:characters_created'),
       kv.get('analytics:total:photos_uploaded'),
       kv.get('analytics:total:hall_of_fame_views'),
       kv.get('analytics:total:pdf_downloads'),
       kv.get('analytics:total:share_button_clicks'),
+      kv.get('analytics:total:page_visits'),
+      kv.get('analytics:total:questionnaire_engaged'),
+      kv.get('analytics:total:funnel_completed'),
     ]);
 
     // If characters_created is 0, backfill from database
@@ -84,6 +90,9 @@ export async function getAnalytics() {
       hallOfFameViews: hallOfFameViews || 0,
       pdfDownloads: pdfDownloads || 0,
       shareButtonClicks: shareButtonClicks || 0,
+      pageVisits: pageVisits || 0,
+      questionnaireEngaged: questionnaireEngaged || 0,
+      funnelCompleted: funnelCompleted || 0,
     };
   } catch (error) {
     console.error('[ANALYTICS] Failed to fetch analytics:', error);

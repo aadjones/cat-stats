@@ -18,6 +18,18 @@ interface QuestionnaireFormProps {
   loading?: boolean;
 }
 
+// Track questionnaire engagement (once per session)
+const trackEngagement = () => {
+  const key = 'tracked_questionnaire_engaged';
+  if (sessionStorage.getItem(key)) return;
+  sessionStorage.setItem(key, 'true');
+  fetch('/api/track', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ event: 'questionnaire_engaged' }),
+  }).catch((err) => console.error('Failed to track engagement:', err));
+};
+
 export function QuestionnaireForm({
   onSubmit,
   loading = false,
@@ -27,10 +39,18 @@ export function QuestionnaireForm({
   const [petPhoto, setPetPhoto] = useState<string | null>(null);
 
   const handleAnswerChange = (questionId: string, value: string) => {
+    trackEngagement();
     setAnswers((prev) => ({
       ...prev,
       [questionId]: value,
     }));
+  };
+
+  const handlePetNameChange = (value: string) => {
+    if (value && !petName) {
+      trackEngagement();
+    }
+    setPetName(value);
   };
 
   const handleSubmit = () => {
@@ -70,7 +90,7 @@ export function QuestionnaireForm({
           <input
             type="text"
             value={petName}
-            onChange={(e) => setPetName(e.target.value)}
+            onChange={(e) => handlePetNameChange(e.target.value)}
             className="w-full bg-glass border border-glass-border rounded-lg px-3 sm:px-4 py-3 sm:py-2 text-text-primary placeholder-text-muted focus:bg-glass-hover focus:border-theme-accent transition-colors text-base sm:text-sm min-h-[44px] sm:min-h-0 font-body"
             placeholder="e.g., Dr. Mittens"
           />
