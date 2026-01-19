@@ -356,7 +356,7 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && searchCharacters()}
-              placeholder="e.g., us0suh or Whiskers"
+              placeholder="e.g., us0suh or Gote"
               style={{
                 width: '100%',
                 padding: '0.75rem',
