@@ -205,6 +205,11 @@ Before committing to git, ensure:
 - **Run tests in watch mode**: `npm run test:watch`
 - **Format code**: `npm run format`
 
+## Project URLs
+
+- **Production**: https://cat-stats-six.vercel.app/
+- **Hosting**: Vercel
+
 ## Architecture Overview
 
 This is a React + TypeScript + Vite application called "CatStats" - a pet personality analyzer that generates RPG-style character sheets for cats.
