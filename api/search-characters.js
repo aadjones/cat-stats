@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  const { q, page: pageParam, limit: limitParam } = req.query;
+  const { q, page: pageParam, limit: limitParam, sort: sortParam } = req.query;
 
   try {
     // Strategy: Get the character index (ONE fetch), then filter in memory
@@ -30,10 +30,19 @@ export default async function handler(req, res) {
       const page = Math.max(1, parseInt(pageParam) || 1);
       const limit = Math.min(100, Math.max(1, parseInt(limitParam) || 20));
       const start = (page - 1) * limit;
+      const sortBy = sortParam === 'recent' ? 'recent' : 'name';
 
-      const sorted = [...index].sort((a, b) =>
-        a.petName.localeCompare(b.petName)
-      );
+      const sorted = [...index].sort((a, b) => {
+        if (sortBy === 'recent') {
+          // Sort by createdAt descending (newest first)
+          // Characters without createdAt go to the end
+          const aTime = a.createdAt || 0;
+          const bTime = b.createdAt || 0;
+          return bTime - aTime;
+        }
+        // Default: sort by name A-Z
+        return a.petName.localeCompare(b.petName);
+      });
       const results = sorted.slice(start, start + limit);
       const totalPages = Math.ceil(index.length / limit);
 
@@ -43,6 +52,7 @@ export default async function handler(req, res) {
         total: index.length,
         page,
         totalPages,
+        sortBy,
       });
     }
 
@@ -104,6 +114,7 @@ async function rebuildIndex() {
             id,
             petName: data.petName,
             archetype: data.characterData?.archetype || 'Unknown',
+            createdAt: data.createdAt || null,
           });
         }
       }

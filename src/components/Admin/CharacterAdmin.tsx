@@ -38,6 +38,7 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
   const [totalPages, setTotalPages] = useState(1);
   const [totalCharacters, setTotalCharacters] = useState(0);
   const [browsing, setBrowsing] = useState(false);
+  const [sortBy, setSortBy] = useState<'name' | 'recent'>('name');
 
   const searchCharacters = async () => {
     if (!searchQuery.trim()) {
@@ -92,14 +93,17 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
     }
   };
 
-  const fetchAllCharacters = async (page: number = 1) => {
+  const fetchAllCharacters = async (
+    page: number = 1,
+    sort: 'name' | 'recent' = sortBy
+  ) => {
     setBrowsing(true);
     setError(null);
     setCharacter(null);
 
     try {
       const response = await fetch(
-        `/api/search-characters?page=${page}&limit=20`,
+        `/api/search-characters?page=${page}&limit=20&sort=${sort}`,
         {
           headers: {
             Authorization: `Bearer ${adminToken}`,
@@ -129,7 +133,13 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
     setMode('browse');
     setSearchResults([]);
     setSearchQuery('');
-    fetchAllCharacters(1);
+    fetchAllCharacters(1, sortBy);
+  };
+
+  const handleSortChange = (newSort: 'name' | 'recent') => {
+    setSortBy(newSort);
+    setCurrentPage(1);
+    fetchAllCharacters(1, newSort);
   };
 
   const exitBrowseMode = () => {
@@ -440,6 +450,52 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
             </span>
           </div>
 
+          {/* Sort toggle */}
+          <div
+            style={{
+              display: 'flex',
+              gap: '0.5rem',
+              marginBottom: '1rem',
+            }}
+          >
+            <button
+              onClick={() => handleSortChange('name')}
+              style={{
+                padding: '0.5rem 1rem',
+                background:
+                  sortBy === 'name'
+                    ? 'var(--color-accent)'
+                    : 'var(--color-surface-alt)',
+                color: 'var(--color-text-primary)',
+                border: '1px solid var(--color-border)',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontSize: '0.875rem',
+                fontWeight: sortBy === 'name' ? '600' : '400',
+              }}
+            >
+              A-Z
+            </button>
+            <button
+              onClick={() => handleSortChange('recent')}
+              style={{
+                padding: '0.5rem 1rem',
+                background:
+                  sortBy === 'recent'
+                    ? 'var(--color-accent)'
+                    : 'var(--color-surface-alt)',
+                color: 'var(--color-text-primary)',
+                border: '1px solid var(--color-border)',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontSize: '0.875rem',
+                fontWeight: sortBy === 'recent' ? '600' : '400',
+              }}
+            >
+              Recent
+            </button>
+          </div>
+
           {/* Loading state */}
           {browsing && (
             <div
@@ -537,7 +593,7 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
               }}
             >
               <Button
-                onClick={() => fetchAllCharacters(currentPage - 1)}
+                onClick={() => fetchAllCharacters(currentPage - 1, sortBy)}
                 disabled={currentPage === 1}
                 variant="secondary"
               >
@@ -552,7 +608,7 @@ export function CharacterAdmin({ adminToken }: CharacterAdminProps) {
                 Page {currentPage} of {totalPages}
               </span>
               <Button
-                onClick={() => fetchAllCharacters(currentPage + 1)}
+                onClick={() => fetchAllCharacters(currentPage + 1, sortBy)}
                 disabled={currentPage === totalPages}
                 variant="secondary"
               >

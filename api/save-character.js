@@ -46,6 +46,9 @@ export default async function handler(req, res) {
       return res.status(409).json({ error: 'Character ID already exists' });
     }
 
+    // Add creation timestamp
+    characterData.createdAt = Date.now();
+
     // Save character to Vercel KV
     await kv.set(`character:${characterData.id}`, characterData);
 
