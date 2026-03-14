@@ -39,6 +39,14 @@
   ],
   "rewrites": [
     {
+      "source": "/api/get-usage-analytics",
+      "destination": "/api/analytics?type=usage"
+    },
+    {
+      "source": "/api/track",
+      "destination": "/api/analytics?action=track"
+    },
+    {
       "source": "/api/(.*)",
       "destination": "/api/$1"
     },
