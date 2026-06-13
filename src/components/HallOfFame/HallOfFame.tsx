@@ -21,6 +21,7 @@ const LOADING_MESSAGES = [
 
 export function HallOfFame() {
   const [characters, setCharacters] = useState<CharacterPreview[]>([]);
+  const [memorialIds, setMemorialIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [loadingMessage, setLoadingMessage] = useState(LOADING_MESSAGES[0]);
   const [error, setError] = useState<string | null>(null);
@@ -56,6 +57,7 @@ export function HallOfFame() {
       const hofResponse = await fetch('/api/hall-of-fame');
       const hofData = await hofResponse.json();
       const featuredIds: string[] = hofData.characterIds || [];
+      setMemorialIds(new Set<string>(hofData.memorialIds || []));
 
       const characterPromises = featuredIds.map(loadCharacter);
       const results = await Promise.allSettled(characterPromises);
@@ -96,6 +98,55 @@ export function HallOfFame() {
     window.location.href = '/';
   };
 
+  const renderCard = (character: CharacterPreview, isMemorial: boolean) => (
+    <div
+      key={character.id}
+      onClick={() => handleCharacterClick(character.id)}
+      className="rounded-xl p-6 cursor-pointer transition-colors shadow-lg bg-theme-surface hover:bg-theme-surface-alt"
+      style={
+        isMemorial ? { border: '1px solid rgba(212, 175, 55, 0.5)' } : undefined
+      }
+    >
+      {character.photoUrl && (
+        <div className="mb-4 flex justify-center">
+          <img
+            src={character.photoUrl}
+            alt={character.petName}
+            className={`w-24 h-24 rounded-full object-cover ${
+              isMemorial ? '' : 'border-2 border-theme-border'
+            }`}
+            style={
+              isMemorial
+                ? {
+                    border: '2px solid #d4af37',
+                    boxShadow:
+                      '0 0 0 3px rgba(212, 175, 55, 0.35), 0 0 18px rgba(212, 175, 55, 0.45)',
+                  }
+                : undefined
+            }
+          />
+        </div>
+      )}
+      <h3 className="text-xl font-bold font-display text-text-primary text-center mb-2">
+        {character.petName}
+      </h3>
+      <p className="text-text-secondary font-body text-center">
+        {character.archetype}
+      </p>
+      {isMemorial && (
+        <p
+          className="font-body text-center text-sm italic mt-2"
+          style={{ color: '#b8941f' }}
+        >
+          ~ in loving memory ~
+        </p>
+      )}
+    </div>
+  );
+
+  const legends = characters.filter((c) => !memorialIds.has(c.id));
+  const memorials = characters.filter((c) => memorialIds.has(c.id));
+
   if (loading) {
     return (
       <div
@@ -134,7 +185,7 @@ export function HallOfFame() {
 
   return (
     <div
-      className="min-h-screen py-8"
+      className="min-h-screen pt-8 pb-20"
       style={{
         background:
           'linear-gradient(135deg, var(--gradient-start), var(--gradient-middle), var(--gradient-end))',
@@ -164,30 +215,32 @@ export function HallOfFame() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {characters.map((character) => (
-              <div
-                key={character.id}
-                onClick={() => handleCharacterClick(character.id)}
-                className="bg-theme-surface border border-theme-border rounded-xl p-6 cursor-pointer hover:bg-theme-surface-alt transition-colors shadow-lg"
-              >
-                {character.photoUrl && (
-                  <div className="mb-4 flex justify-center">
-                    <img
-                      src={character.photoUrl}
-                      alt={character.petName}
-                      className="w-24 h-24 rounded-full object-cover border-2 border-theme-border"
-                    />
-                  </div>
-                )}
-                <h3 className="text-xl font-bold font-display text-text-primary text-center mb-2">
-                  {character.petName}
-                </h3>
-                <p className="text-text-secondary font-body text-center">
-                  {character.archetype}
-                </p>
-              </div>
-            ))}
+            {legends.map((character) => renderCard(character, false))}
           </div>
+        )}
+
+        {memorials.length > 0 && (
+          <section className="mt-16">
+            <div className="flex items-center justify-center gap-4 mb-2">
+              <span
+                className="h-px flex-1 max-w-32"
+                style={{ background: 'rgba(212, 175, 55, 0.5)' }}
+              />
+              <h2 className="text-2xl font-bold font-display text-text-on-gradient whitespace-nowrap">
+                ✦ In Memoriam ✦
+              </h2>
+              <span
+                className="h-px flex-1 max-w-32"
+                style={{ background: 'rgba(212, 175, 55, 0.5)' }}
+              />
+            </div>
+            <p className="text-center text-text-on-gradient/70 font-body italic mb-8">
+              Forever in our hearts
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {memorials.map((character) => renderCard(character, true))}
+            </div>
+          </section>
         )}
       </div>
 

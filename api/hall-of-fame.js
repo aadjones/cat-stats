@@ -27,6 +27,13 @@ const DEFAULT_FEATURED_IDS = [
   '5eo7b9',
 ];
 
+// Pets who have sadly passed away — shown in a dedicated "In Memoriam" section
+const DEFAULT_MEMORIAL_IDS = [
+  'umwqpi', // Pumpkin
+  'oo035s', // Atlas
+  '9oug8t', // Sliver
+];
+
 const KV_KEY = 'config:hall-of-fame';
 
 export default async function handler(req, res) {
@@ -38,6 +45,7 @@ export default async function handler(req, res) {
       if (data && data.characterIds) {
         return res.status(200).json({
           characterIds: data.characterIds,
+          memorialIds: data.memorialIds || DEFAULT_MEMORIAL_IDS,
           updatedAt: data.updatedAt,
         });
       }
@@ -45,6 +53,7 @@ export default async function handler(req, res) {
       // Fallback to default list if KV is empty
       return res.status(200).json({
         characterIds: DEFAULT_FEATURED_IDS,
+        memorialIds: DEFAULT_MEMORIAL_IDS,
         updatedAt: null,
       });
     } catch (error) {
@@ -52,6 +61,7 @@ export default async function handler(req, res) {
       // Return default list on error
       return res.status(200).json({
         characterIds: DEFAULT_FEATURED_IDS,
+        memorialIds: DEFAULT_MEMORIAL_IDS,
         updatedAt: null,
       });
     }
